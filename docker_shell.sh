@@ -6,4 +6,4 @@ if [ -z "$1" ] ; then
     exit 1
 fi
 
-docker run -v`pwd`:/code -it $1:latest /bin/bash
+docker run -v`pwd`:/code -it $1:latest
