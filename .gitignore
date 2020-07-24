@@ -1,2 +1,4 @@
 .DS_Store
 .idea
+devenvcpp/app/build
+devenvcpp/app/cmake-*
