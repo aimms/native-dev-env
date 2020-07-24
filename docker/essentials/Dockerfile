@@ -8,7 +8,9 @@ RUN apt install -y build-essential
 RUN apt install -y libssl-dev libbz2-dev zlib1g-dev libreadline-dev libsqlite3-dev
 RUN apt install -y clang-10 libc++-dev libc++abi-dev && \
     update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-10 100 && \
-    update-alternatives --install /usr/bin/clang clang /usr/bin/clang-10 100
+    update-alternatives --install /usr/bin/clang clang /usr/bin/clang-10 100 && \
+    update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100 && \
+    update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y
 
