@@ -1,5 +1,4 @@
-ARG FROM_IMAGE=base:latest
-FROM $FROM_IMAGE
+FROM aimmspro/native-devenv-base:0.1
 
 RUN apt update -y
 RUN apt upgrade -y

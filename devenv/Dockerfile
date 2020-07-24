@@ -1,5 +1,4 @@
-ARG FROM_IMAGE=essentials:latest
-FROM $FROM_IMAGE
+FROM aimmspro/native-devenv-essentials:0.1
 
 COPY setup.zsh /tmp/setup.zsh
 RUN /usr/bin/zsh -c /tmp/setup.zsh
