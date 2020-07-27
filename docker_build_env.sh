@@ -1,8 +1,8 @@
 #!/bin/bash
 
 function build_image() {
-  local img_tag=`git describe --tags | sed 's/\-.*//' || true`
-  if [ ! -e "$img_tag" ]; then
+  local img_tag=`git describe --tags | sed 's/\-.*//'`
+  if [ -e "$img_tag" ]; then
     img_tag=latest
   fi
 
