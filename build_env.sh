@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ $# -lt 1  || $# -gt 2 || ( "$2" != "" && "$2" != "--skip-devenv-cpp" ) ]]; then
+if [[  "$1" != "" && "$1" != "--skip-devenv-cpp"  ]]; then
   echo "Usage: $0 [--skip-devenv-cpp]"
   exit 1
 fi
@@ -22,7 +22,7 @@ build_image base aimmspro/native-devenv-base
 build_image essentials aimmspro/native-devenv-essentials
 build_image devenv aimmspro/native-devenv
 
-if [ "$2" == "--skip-devenv-cpp" ]; then
+if [ "$1" == "--skip-devenv-cpp" ]; then
   echo "Skiping creating of devenv-cpp"
   exit 0
 fi
