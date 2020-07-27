@@ -1,14 +1,8 @@
 #!/bin/bash
 
-
-function get_arch_type() {
-  if [ "${machine}" == "Mac" ]; then
-
-}
-
-
 function get_os_name() {
   local unameOut="$(uname -s)"
+
   case "${unameOut}" in
       Linux*)     local os_name=Linux;;
       Darwin*)    local os_name=Mac;;
@@ -26,7 +20,7 @@ function get_os_name() {
 }
 
 function get_conan_profile() {
-  local config=$0
+  local config=${1}
 
   if [ "${os_name}" == "Mac" ]; then
     local conan_profile="apple_clang_11_cppstd_17_libc++_${config}"
@@ -42,7 +36,7 @@ function get_conan_profile() {
 }
 
 function get_conan_profile_path() {
-  local conan_profile=$0
+  local conan_profile=$1
 
   script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
   local conan_profile_path=${script_dir}/conan_profiles/${conan_profile}
@@ -51,13 +45,13 @@ function get_conan_profile_path() {
 }
 
 function copy_conan_profile() {
-  local conan_profile_path=$0
+  local conan_profile_path=$1
   echo "Copying conan profile: ${conan_profile_path} to ~/.conan/profiles"
   cp  ${conan_profile_path} ~/.conan/profiles
 }
 
 function install_for_config() {
-  local config=$0
+  local config=$1
 
   local conan_profile=$(get_conan_profile ${config})
   local conan_profile_path=$(get_conan_profile_path ${conan_profile})
@@ -67,4 +61,3 @@ function install_for_config() {
 
   conan install . --build=missing -pr=${conan_profile} -s compiler.libcxx=libc++
 }
-

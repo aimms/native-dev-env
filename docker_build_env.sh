@@ -1,13 +1,11 @@
 #!/bin/bash
 
-
-
 function build_image() {
-  pushd ./$1
-
-  img_name=$1
   img_tag=`git describe --tags | sed 's/\-.*//'`
-  name="${img_name}:${img_tag}"
+
+  local dir_name=$1
+  local name="${2}:${img_tag}"
+  pushd ./${dir_name}
 
   echo "Building ${name}..."
   docker build -t "${name}" --build-arg img_tag=${img_tag} .
@@ -16,7 +14,8 @@ function build_image() {
   popd
 }
 
-build_image base
-build_image essentials
-#build_image devenv
+build_image base aimmspro/native-devenv-base
+build_image essentials aimmspro/native-devenv-essentials
+build_image devenv aimmspro/native-devenv
+build_image devenvcpp aimmspro/native-devenv-cpp
 
