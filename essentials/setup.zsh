@@ -26,7 +26,15 @@ plugins=(
 )
 
 # oh-my-zsh theme
-ZSH_THEME=avit
+ZSH_THEME="avit"
+
+export GIT_EDITOR=vim
+
+alias vi-zshrc="vi ~/.zshrc"
+alias src-zshrc="source ~/.zshrc"
+
+[[ /usr/bin/kubectl ]] && alias k=kubectl
+[[ /usr/bin/kubectl ]] && source <(kubectl completion zsh)
 
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
