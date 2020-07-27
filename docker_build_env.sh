@@ -1,18 +1,21 @@
 #!/bin/bash
 
-if [ $# -lt 1  ]; then
-  echo "Usage: $0 tag_prefix"
-  exit 1
-fi
 
-echo "Building ${1}/base..."
-pushd docker
-./utils/docker_build.sh ./base ${1}/base
-echo "Building ${1}/essentials..."
-./utils/docker_build.sh ./essentials ${1}/essentials ${1}/base
-echo "Building ${1}/devenv..."
-./utils/docker_build.sh ./devenv ${1}/devenv ${1}/essentials
-#echo "Building ${1}/devenvcpp..."
-#./utils/docker_build.sh ./devenvcpp ${1}/devenvcpp ${1}/devenv
+
+function build_image() {
+  img_name=$0
+  img_tag=`git describe --tags`
+  name="${img_name}:${img_tag}"
+
+  pushd docker
+
+  echo "Building ${name}..."
+  docker build -t ${name} --build-arg img_tag=${img_tag}
+  docker tag ${name} "${img_name}:latest"
+}
+
+build_image base
+#build_image essentials
+#build_image devenv
 
 popd
