@@ -3,6 +3,31 @@
 echo "export PATH=\"${HOME}/.pyenv/bin:${HOME}/.cargo/bin:\$PATH\"" >> ~/.zshrc
 cat << 'EOF' >> ~/.zshrc
 
+# zsh plugins
+plugins=(
+  git
+  cargo
+  rust
+  rustup
+  cp
+  debian
+  dirhistory
+  dirpersist
+  encode64
+  gitignore
+  helm
+  kubectl
+  pip
+  pyenv
+  terraform
+  tmux
+  zsh_reload
+  dirhistory
+)
+
+# oh-my-zsh theme
+ZSH_THEME=avit
+
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1

@@ -5,7 +5,7 @@ The environment consist of several images. End user should use either _devenv_ o
 
 #### Basic [devenv]
   - _build-essential_ package
-  - tools: _curl_, _vim_, _git_
+  - tools: _curl_, _vim_, _git_, tmux, _zsh_ with plugins
   - _llvm/clang 10.0.0_
   - _rust_ latest
   - _pyenv_ latest
