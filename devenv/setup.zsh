@@ -1,9 +1,8 @@
 #!/bin/zsh
 
 
-#source ~/.zshrc
-#
-#CC=clang CXX=clang++ pyenv install 3.8.3 --verbose
+source ~/.zshrc
+
 pyenv global 3.8.3 && c dev && pyenv global dev
 pip3 install cmake
 pip3 install conan
@@ -15,3 +14,10 @@ curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s http
     chmod +x ./kubectl && \
     mv ./kubectl /usr/bin/kubectl && \
     echo "kubectl version: $(kubectl version --client)"
+
+
+cat << 'EOF' >> ~/.zshrc
+
+alias k=kubectl
+source <(kubectl completion zsh)
+EOF

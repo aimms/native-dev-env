@@ -33,13 +33,10 @@ export GIT_EDITOR=vim
 alias vi-zshrc="vi ~/.zshrc"
 alias src-zshrc="source ~/.zshrc"
 
-[[ /usr/bin/kubectl ]] && alias k=kubectl
-[[ /usr/bin/kubectl ]] && source <(kubectl completion zsh)
-
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 alias a="pyenv activate"
 alias v="pyenv versions"
-alias c(){ pyenv virtualenv "$1" && pyenv activate "$1" && pip install --upgrade pip ;}
+alias c='(){ pyenv virtualenv $1 && pyenv activate $1 && pip install --upgrade pip ;}'
 EOF
