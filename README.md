@@ -22,9 +22,9 @@ The environment consist of several images. End user should use either _devenv_ o
 
 ## Building images
 
-Docker is required. Run 
+Docker is required. Building image with pre-build boost (devenv-cpp) is optional. Run 
 ~~~~
-./build_env.sh
+./build_env.sh [--build-devenv-cpp]
 ~~~~
 
 result images will be:
@@ -33,14 +33,9 @@ result images will be:
 aimmspro/native-devenv-base:latest
 aimmspro/native-devenv-essentials:latest
 aimmspro/native-devenv:latest
-aimmspro/native-devenv-cpp:latest
+aimmspro/native-devenv-cpp:latest # optional
 ~~~~
 
-if you don't want the image with Boost pre-installed, run the script with the option:
-
-~~~~
-./build_env.sh --skip-devenv-cpp
-~~~~
 
 ## Shortcuts to use Python virtual environments
 
