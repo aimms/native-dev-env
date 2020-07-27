@@ -1,5 +1,4 @@
-ARG IMG_TAG=latest
-FROM aimmspro/native-devenv-base:${IMG_TAG}
+FROM aimmspro/native-devenv-base:latest
 
 RUN apt update -y
 RUN apt upgrade -y

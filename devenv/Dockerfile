@@ -1,5 +1,4 @@
-ARG IMG_TAG=latest
-FROM aimmspro/native-devenv-essentials:${IMG_TAG}
+FROM aimmspro/native-devenv-essentials:latest
 
 COPY setup.zsh /tmp/setup.zsh
 RUN /usr/bin/zsh -c /tmp/setup.zsh

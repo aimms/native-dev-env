@@ -1,5 +1,4 @@
-ARG IMG_TAG=latest
-FROM aimmspro/native-devenv:${IMG_TAG}
+FROM aimmspro/native-devenv:latest
 
 COPY conan_profiles /tmp/conan_profiles
 COPY conanfile.txt /tmp/conanfile.txt
