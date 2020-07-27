@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ $# -lt 1  || $# -gt 2 || ( "$2" != "" && "$2" != "--build-devenv-cpp" ) ]]; then
+if [[ "$1" == "--help" || "$1" == "-h" ]]; then
   echo "Usage: $0 [--build-devenv-cpp]"
   exit 1
 fi
@@ -22,6 +22,6 @@ build_image base aimmspro/native-devenv-base
 build_image essentials aimmspro/native-devenv-essentials
 build_image devenv aimmspro/native-devenv
 
-if [ "$2" == "--build-devenv-cpp" ]; then
+if [ "$1" == "--build-devenv-cpp" ]; then
   build_image devenvcpp aimmspro/native-devenv-cpp
 fi
