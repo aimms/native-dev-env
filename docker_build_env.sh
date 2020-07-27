@@ -3,19 +3,20 @@
 
 
 function build_image() {
-  img_name=$0
-  img_tag=`git describe --tags`
+  pushd ./$1
+
+  img_name=$1
+  img_tag=`git describe --tags | sed 's/\-.*//'`
   name="${img_name}:${img_tag}"
 
-  pushd docker
-
   echo "Building ${name}..."
-  docker build -t ${name} --build-arg img_tag=${img_tag}
-  docker tag ${name} "${img_name}:latest"
+  docker build -t "${name}" --build-arg img_tag=${img_tag} .
+  docker tag "${name}" "${img_name}:latest"
+
+  popd
 }
 
 build_image base
-#build_image essentials
+build_image essentials
 #build_image devenv
 
-popd

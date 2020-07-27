@@ -1,5 +1,5 @@
-ARG IMG_VERSION=latest
-FROM aimmspro/native-devenv-base:${IMG_VERSION}
+ARG IMG_TAG=latest
+FROM aimmspro/native-devenv-base:${IMG_TAG}
 
 RUN apt update -y
 RUN apt upgrade -y
@@ -18,4 +18,5 @@ RUN curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-instal
 
 COPY setup.zsh /tmp/setup.sh
 RUN /usr/bin/zsh -c /tmp/setup.sh
+RUN rm -rf /tmp/*
 CMD zsh

@@ -1,5 +1,5 @@
-ARG FROM_IMAGE=devenv:latest
-FROM $FROM_IMAGE
+ARG IMG_TAG=latest
+FROM devenv:$IMG_TAG
 
 COPY conan_profiles /tmp/conan_profiles
 COPY conanfile.txt /tmp/conanfile.txt
