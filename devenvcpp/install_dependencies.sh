@@ -30,8 +30,6 @@ function get_conan_profile() {
     export CXX=/usr/bin/clang++
   fi
 
-  echo "Using profile: ${conan_profile}"
-
   echo ${conan_profile}
 }
 
@@ -39,25 +37,34 @@ function get_conan_profile_path() {
   local conan_profile=$1
 
   script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-  local conan_profile_path=${script_dir}/conan_profiles/${conan_profile}
+  local conan_profile_path="${script_dir}/conan_profiles/${conan_profile}"
 
   echo ${conan_profile_path}
 }
 
 function copy_conan_profile() {
   local conan_profile_path=$1
+  mkdir -p ~/.conan/profiles
+
   echo "Copying conan profile: ${conan_profile_path} to ~/.conan/profiles"
-  cp  ${conan_profile_path} ~/.conan/profiles
+  cp  ${conan_profile_path} ~/.conan/profiles/
 }
 
 function install_for_config() {
   local config=$1
 
   local conan_profile=$(get_conan_profile ${config})
+  echo "Using conan profile: ${conan_profile}"
+
   local conan_profile_path=$(get_conan_profile_path ${conan_profile})
+  echo "Conan profile path: ${conan_profile_path}"
+
   copy_conan_profile ${conan_profile_path}
 
   echo "Building dependencies for profile: ${conan_profile}"
 
   conan install . --build=missing -pr=${conan_profile} -s compiler.libcxx=libc++
 }
+
+install_for_config debug
+install_for_config release
