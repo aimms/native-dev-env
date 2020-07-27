@@ -5,21 +5,9 @@ boost/1.73.0@
 boost:shared=True
 boost:fPIC=True
 
-# comment out if not needed
-#boost:zlib=False
-#boost:bzip2=False
-#boost:lzma=False
-#boost:zstd=False
-
 boost:asio_no_deprecated=True
 boost:filesystem_no_deprecated=True
 boost:system_no_deprecated=True
-
-# comment out if needed
-boost:without_contract =True
-boost:without_iostreams=True
-boost:without_locale=True
-boost:without_regex=True
 
 [generators]
 cmake_multi
