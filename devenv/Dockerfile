@@ -1,4 +1,5 @@
-FROM aimmspro/native-devenv-essentials:0.1
+ARG IMG_VERSION=latest
+FROM aimmspro/native-devenv-essentials:${IMG_VERSION}
 
 COPY setup.zsh /tmp/setup.zsh
 RUN /usr/bin/zsh -c /tmp/setup.zsh

@@ -1,4 +1,5 @@
-FROM aimmspro/native-devenv-base:0.1
+ARG IMG_VERSION=latest
+FROM aimmspro/native-devenv-base:${IMG_VERSION}
 
 RUN apt update -y
 RUN apt upgrade -y
