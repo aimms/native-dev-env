@@ -1,9 +1,9 @@
 #!/bin/zsh
 
 
-source ~/.zshrc
-
-CC=clang CXX=clang++ pyenv install 3.8.3 --verbose
+#source ~/.zshrc
+#
+#CC=clang CXX=clang++ pyenv install 3.8.3 --verbose
 pyenv global 3.8.3 && c dev && pyenv global dev
 pip3 install cmake
 pip3 install conan
