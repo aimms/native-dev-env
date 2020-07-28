@@ -21,8 +21,6 @@ plugins=(
   pyenv
   terraform
   tmux
-  zsh_reload
-  dirhistory
 )
 
 # oh-my-zsh theme
