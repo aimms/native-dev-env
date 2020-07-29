@@ -1,6 +1,6 @@
 FROM aimmspro/native-devenv-base:latest
 
-RUN apt update -y
+RUN apt update
 RUN apt upgrade -y
 RUN apt install -y curl git zsh vim tmux
 RUN apt install -y build-essential
