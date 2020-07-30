@@ -1,8 +1,6 @@
-# Development Environment for native code from AIMMS
+# Development Environment for native code
 
-The environment is _Ubuntu 20.04 LTS_ based.
-
-Tools installed:
+_Ubuntu 20.04 LTS_ based; tools installed:
 
  * _curl: 7.68.0_
  * _vim: 8.1_
