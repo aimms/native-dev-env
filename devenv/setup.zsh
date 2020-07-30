@@ -67,4 +67,6 @@ info() {
 
   echo "\nTo see this again type 'info'"
 }
+info
 EOF
+
