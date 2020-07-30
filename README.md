@@ -19,14 +19,15 @@ _Ubuntu 20.04 LTS_ based; tools installed:
 
 _Docker_: https://www.docker.com
 
-## Building
- 
-~~~~
-./build_env.sh
-~~~~
-
 ## Using
 
 ~~~~
+docker pull aimmspro/native-devenv:latest
 docker run -v`pwd`:/code -it aimmspro/native-devenv:latest
+~~~~
+
+## Building locally
+ 
+~~~~
+./build_env.sh
 ~~~~
