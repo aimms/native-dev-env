@@ -56,7 +56,7 @@ info() {
   echo " $fg[red]az:\n  $fg[grey] `az --version 2>&1  | head -n 1`"
   a dev
 
-  echo "Alias Information:\n"
+  echo "\nAlias Information:\n"
 
   echo "$fg[red]vi-zshrc:$fg[blue] vi ~/.zshrc "
   echo "$fg[red]src-zshrc:$fg[blue] source ~/.zshrc "
@@ -65,7 +65,7 @@ info() {
   echo "$fg[red]a <env>:$fg[blue] activates virtualenv with the name <env>"
   echo "$fg[red]v:$fg[blue] lists installed virtual envs and Python versions$fg[grey]"
 
-  echo "\nTo see this again type 'info'"
+  echo "\n$fg[red]To see this again type 'info'$fg[grey]"
 }
 info
 EOF
