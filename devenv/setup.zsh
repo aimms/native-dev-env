@@ -4,6 +4,7 @@
 source ~/.zshrc
 
 pyenv global 3.8.3 && c dev && pyenv global dev
+pip3 install wheel
 pip3 install cmake
 pip3 install conan
 pip3 install ninja
@@ -62,7 +63,7 @@ info() {
   echo "$fg[red]vi-zshrc:$fg[blue] vi ~/.zshrc "
   echo "$fg[red]c <env>:$fg[blue] creates and activates new virtualenv with the name <env>"
   echo "$fg[red]a <env>:$fg[blue] activates virtualenv with the name <env>"
-  echo "$fg[red]v:$fg[blue] lists installed virtual envs and Python versions"
+  echo "$fg[red]v:$fg[blue] lists installed virtual envs and Python versions$fg[grey]"
 
   echo "\nTo see this again type 'info'"
 }
