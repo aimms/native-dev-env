@@ -20,7 +20,7 @@ The environment consist of several images. End user should use either _devenv_ o
   - _boost 1.73.0_ [debug and release builds]
   - _conan profiles_
 
-## Building images
+## Building
 
 Docker is required. Building image with pre-build boost (devenv-cpp) is optional. Run 
 ~~~~
@@ -35,6 +35,11 @@ aimmspro/native-devenv-essentials:latest
 aimmspro/native-devenv:latest
 ~~~~
 
+## Using
+
+~~~~
+docker run -v`pwd`:/code -it aimmspro/native-devenv:latest
+~~~~
 
 ## Shortcuts to use Python virtual environments
 
