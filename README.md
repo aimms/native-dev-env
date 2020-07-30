@@ -33,7 +33,6 @@ result images will be:
 aimmspro/native-devenv-base:latest
 aimmspro/native-devenv-essentials:latest
 aimmspro/native-devenv:latest
-aimmspro/native-devenv-cpp:latest # optional
 ~~~~
 
 
