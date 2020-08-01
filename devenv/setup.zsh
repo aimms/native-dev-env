@@ -31,8 +31,8 @@ function info_for_app() {
   else
     local ver_arg=$2
   fi
-  local ver=$($1 ${ver_arg} 2>&1 | sed -r '/^\s*$/d' | sed ':a;N;$!ba;s/\n/\n - /g')
-  echo "$fg[red] $1:\n  $fg[grey] -${ver}"
+  local ver=$($1 ${ver_arg} 2>&1 | sed -r '/^\s*$/d' | sed ':a;N;$!ba;s/\n/\n   /g')
+  echo "$fg[red] $1:\n  $fg[grey] ${ver}"
 }
 info() {
   python3 ~/.logo.py
