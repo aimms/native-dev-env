@@ -3,7 +3,6 @@
 source ~/.zshrc
 
 pyenv global ${PYTHON_VERSION} && c az
-pip3 install wheel
 pip3 install azure-cli
 pip3 install jmespath
 pip3 install typed-argument-parser

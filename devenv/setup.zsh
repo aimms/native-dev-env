@@ -4,7 +4,6 @@
 source ~/.zshrc
 
 pyenv global ${PYTHON_VERSION} && c dev && pyenv global dev
-pip3 install wheel
 pip3 install cmake
 pip3 install conan
 pip3 install ninja
