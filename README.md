@@ -10,7 +10,7 @@ _Ubuntu 20.04 LTS_ based; tools installed:
  * _clang: 10.0.0_
  * _rustc 1.45.0_
  * _pyenv: 1.2.20_
- * _python 3.8.3_
+ * _python 3.8.5_
  * _cmake: 3.18.0_
  * _conan: 1.27.1_
  * _ninja: 1.10.0_

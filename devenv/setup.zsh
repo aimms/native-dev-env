@@ -3,7 +3,7 @@
 
 source ~/.zshrc
 
-pyenv global 3.8.3 && c dev && pyenv global dev
+pyenv global ${PYTHON_VERSION} && c dev && pyenv global dev
 pip3 install wheel
 pip3 install cmake
 pip3 install conan

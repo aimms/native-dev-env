@@ -1,5 +1,10 @@
 #!/bin/zsh
 
+PYTHON_VERSION=3.8.5
+
+LLVM_PROFDATA=/usr/bin/llvm-profdata-10 CONFIGURE_OPTS="--enable-optimizations" CC=clang CXX=clang++ ~/.pyenv/bin/pyenv install ${PYTHON_VERSION} --verbose
+
+echo "export PYTHON_VERSION=\"${PYTHON_VERSION}\"" >> ~/.zshrc
 echo "export PATH=\"${HOME}/.pyenv/bin:${HOME}/.cargo/bin:\$PATH\"" >> ~/.zshrc
 cat << 'EOF' >> ~/.zshrc
 

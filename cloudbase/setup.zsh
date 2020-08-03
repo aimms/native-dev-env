@@ -2,7 +2,7 @@
 
 source ~/.zshrc
 
-pyenv global 3.8.3 && c az
+pyenv global ${PYTHON_VERSION} && c az
 pip3 install wheel
 pip3 install azure-cli
 pip3 install jmespath
