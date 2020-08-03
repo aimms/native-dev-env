@@ -14,7 +14,7 @@ RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | bash -s -- -y
 
 RUN curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
-RUN /usr/bin/zsh -c "CC=clang CXX=clang++ ~/.pyenv/bin/pyenv install 3.8.3 --verbose"
+RUN /usr/bin/zsh -c "CC=clang CXX=clang++ ~/.pyenv/bin/pyenv install 3.8.5 --verbose"
 
 COPY setup.zsh /tmp/setup.sh
 RUN /usr/bin/zsh -c /tmp/setup.sh
