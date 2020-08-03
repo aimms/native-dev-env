@@ -1,7 +1,6 @@
 FROM aimmspro/native-devenv-base:latest
 
 RUN apt update
-RUN apt upgrade -y
 RUN apt install -y curl git zsh vim tmux
 RUN apt install -y build-essential
 RUN apt install -y libssl-dev libbz2-dev zlib1g-dev libreadline-dev libsqlite3-dev

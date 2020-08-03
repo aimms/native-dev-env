@@ -1,5 +1,7 @@
 FROM aimmspro/native-devenv-essentials:latest
 
+RUN apt update
+RUN apt install -y dos2unix
 COPY setup.zsh /tmp/setup.zsh
 RUN /usr/bin/zsh -c /tmp/setup.zsh
 RUN rm -rf /tmp/*
