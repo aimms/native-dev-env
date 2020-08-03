@@ -15,4 +15,5 @@ function build_image() {
 
 build_image base aimmspro/native-devenv-base
 build_image essentials aimmspro/native-devenv-essentials
+build_image cloudbase aimmspro/cloud-devenv-base
 build_image devenv aimmspro/native-devenv

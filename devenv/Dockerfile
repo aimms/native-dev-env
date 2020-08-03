@@ -1,4 +1,4 @@
-FROM aimmspro/native-devenv-essentials:latest
+FROM aimmspro/cloud-devenv-base:latest
 
 COPY setup.zsh /tmp/setup.zsh
 COPY logo.py /root/.logo.py

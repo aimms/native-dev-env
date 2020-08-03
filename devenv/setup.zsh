@@ -10,19 +10,7 @@ pip3 install conan
 pip3 install ninja
 pip3 install sty
 
-c az && pip3 install azure-cli
-
-curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && \
-    chmod +x ./kubectl && \
-    mv ./kubectl /usr/bin/kubectl && \
-    echo "kubectl version: $(kubectl version --client)"
-
-
 cat << 'EOF' >> ~/.zshrc
-
-alias k=kubectl
-source <(kubectl completion zsh)
-
 function info_for_app() {
   # https://stackoverflow.com/questions/1251999/how-can-i-replace-a-newline-n-using-sed
   # https://www.cyberciti.biz/faq/using-sed-to-delete-empty-lines/
