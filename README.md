@@ -8,7 +8,7 @@ _Ubuntu 20.04 LTS_ based; tools installed:
  * _tmux: 3.0a_
  * _zsh: 5.8_
  * _clang: 10.0.0_
- * _rustc 1.45.0_
+ * _rustc 1.45.2_
  * _pyenv: 1.2.20_
  * _python 3.8.5_
  * _cmake: 3.18.0_
