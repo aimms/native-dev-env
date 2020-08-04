@@ -1,7 +1,6 @@
 #!/bin/zsh
 
 echo "export PATH=\"${HOME}/.pyenv/bin:\$PATH\"" >> ~/.zshrc
-echo "export PYTHON_VERSION=\"$1\"" >> ~/.zshrc
 
 cat << 'EOF' >> ~/.zshrc
 
