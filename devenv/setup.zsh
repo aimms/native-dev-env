@@ -9,6 +9,9 @@ pip3 install conan
 pip3 install ninja
 pip3 install sty
 
+
+echo "export PATH=\"${HOME}/.cargo/bin:\$PATH\"" >> ~/.zshrc
+
 cat << 'EOF' >> ~/.zshrc
 function info_for_app() {
   # https://stackoverflow.com/questions/1251999/how-can-i-replace-a-newline-n-using-sed
@@ -42,6 +45,7 @@ info() {
   a az
   echo " $fg[red]az:\n  $fg[grey] `az --version 2>&1  | head -n 1`"
   a dev
+  info_for_app terraform
 
   echo "\nAlias Information:\n"
 

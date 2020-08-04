@@ -1,4 +1,4 @@
-FROM aimmspro/native-devenv-essentials:latest
+FROM aimmspro/native-devenv-essentials-python:latest
 
 RUN apt update
 RUN apt install -y dos2unix

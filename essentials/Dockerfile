@@ -12,10 +12,7 @@ RUN apt install -y clang-10 libc++-dev libc++abi-dev && \
     update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
 
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+ENV CC clang
+ENV CXX clang++
 
-RUN curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
-
-COPY setup.zsh /tmp/setup.sh
-RUN zsh -c /tmp/setup.sh
-RUN rm -rf /tmp/*
 CMD zsh
