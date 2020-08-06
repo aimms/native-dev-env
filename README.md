@@ -9,6 +9,8 @@ _Ubuntu 20.04 LTS_ based; tools installed:
  * _git: 2.25.1+_
  * _tmux: 3.0a+_
  * _zsh: 5.8+_
+ * _openssh server: 8.2p1+_
+ * _rsync 3.1.3_
  * _clang: 10.0.0+_
  * _rustc 1.45.2+_
  * _pyenv: 1.2.20+_
@@ -24,9 +26,16 @@ _Docker_: https://www.docker.com
 
 ## Using
 
+### Basic
 ~~~~
-docker pull aimmspro/native-devenv:latest
-docker run -v`pwd`:/code -it aimmspro/native-devenv:latest
+docker run -v`pwd`:/code -it aimmspro/devenv-native
+~~~~
+### With zsh plugins and coloring
+
+Using https://github.com/ohmyzsh/ohmyzsh
+
+~~~~
+docker run -v`pwd`:/code -it aimmspro/devenv-native-ohmyzsh
 ~~~~
 
 ## Building locally
