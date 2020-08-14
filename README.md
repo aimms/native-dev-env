@@ -41,5 +41,5 @@ docker run -v`pwd`:/code -it aimmspro/devenv-native-ohmyzsh
 ## Building locally
  
 ~~~~
-./build_env.sh
+./build_env.sh <version> [--upload]
 ~~~~
