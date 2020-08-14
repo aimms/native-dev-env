@@ -3,10 +3,10 @@
 source ~/.zshrc
 
 pyenv global ${PYTHON_VERSION} && c dev && pyenv global dev
-pip3 install cmake
-pip3 install conan
-pip3 install ninja
-pip3 install sty
+pip install cmake
+pip install conan
+pip install ninja
+pip install sty
 
 cat << 'EOF' >> ~/.zshrc
 

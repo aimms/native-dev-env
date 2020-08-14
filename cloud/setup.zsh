@@ -3,10 +3,10 @@
 source ~/.zshrc
 
 pyenv global ${PYTHON_VERSION} && c az && pyenv global az
-pip3 install azure-cli
-pip3 install jmespath
-pip3 install typed-argument-parser
-pip3 install sty
+pip install azure-cli
+pip install jmespath
+pip install typed-argument-parser
+pip install sty
 
 curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && \
     chmod +x ./kubectl && \
