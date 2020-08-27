@@ -20,7 +20,6 @@ ENV CXX clang++
 RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 
 COPY setup.zsh /tmp/setup.zsh
-RUN /tmp/setup.zsh
-RUN rm -f /tmp/setup.zsh
+RUN /tmp/setup.zsh && rm -f /tmp/setup.zsh
 
 CMD zsh
