@@ -3,7 +3,7 @@
 source ~/.zshrc
 
 pyenv global ${PYTHON_VERSION} && c dev && pyenv global dev
-pip install cmake==3.18.0 # 3.18.2 setup is broken
+pip install cmake
 pip install conan
 pip install ninja
 pip install sty
