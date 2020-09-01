@@ -48,9 +48,9 @@ rm -f ~/.zshrc.pre-oh-my-zsh
 
 # shellcheck disable=SC1090
 source ~/.zshrc
-# shellcheck disable=SC2164
-pushd /root/.oh-my-zsh/custom/themes/powerlevel10k/gitstatus
+
+pushd /root/.oh-my-zsh/custom/themes/powerlevel10k/gitstatus || exit
 
 ./mbuild
 ./install
-popd
+popd || exit
