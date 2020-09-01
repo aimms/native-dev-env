@@ -26,7 +26,7 @@ cat << 'EOF' >> ~/.zshrc
 alias k=kubectl
 source <(kubectl completion zsh)
 
-if [[ "${ENABLE_OH_MY_ZSH}" == "YES" ]]; then
+if [[ "${ENABLE_THEMING}" == "YES" ]]; then
     color_red="$fg[red]"
     color_blue="$fg[blue]"
 fi
@@ -45,7 +45,7 @@ function info_for_app() {
 }
 
 cloud_info() {
-  if [[ "${ENABLE_OH_MY_ZSH}" == "YES" ]]; then
+  if [[ "${ENABLE_THEMING}" == "YES" ]]; then
     python3 ~/.logo.py
   fi
 
