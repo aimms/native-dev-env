@@ -12,7 +12,6 @@ _Ubuntu 20.04 LTS_ based; tools installed:
  * _openssh server: 8.2p1+_
  * _rsync 3.1.3_
  * _clang: 10.0.0+_
- * _rustc 1.45.2+_
  * _pyenv: 1.2.20+_
  * _python 3.8.5+_
  * _cmake: 3.18.0+_

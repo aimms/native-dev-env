@@ -28,8 +28,6 @@ info(){
   print_help_msg
 }
 
-print_help_msg
-
 
 EOF
 
