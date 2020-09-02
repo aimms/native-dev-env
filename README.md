@@ -43,3 +43,14 @@ docker run -v`pwd`:/code -it aimmspro/devenv-native-ohmyzsh
 ~~~~
 ./build_env.sh <version> [--upload]
 ~~~~
+
+## Result images
+
+~~~~
+aimmspro/devenv-essentials # build-essential package, llvm/clang, utilities
+aimmspro/devenv-python     # pyenv and Python, aliases for pyenv
+aimmspro/devenv-cloud      # azure-cli
+aimmspro/devenv-cloud-theming  # cloud image + TERM=xterm256color +  oh-my-zsh + powerlevel10k
+aimmspro/devenv-native           # cloud image + cmake + conan + ninja
+aimmspro/devenv-native-theming   # native image + TERM=xterm256color +  oh-my-zsh + powerlevel10k
+~~~~
