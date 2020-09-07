@@ -15,6 +15,7 @@ cat << 'EOF' >> ~/.zshrc
 native_info() {
   echo "${color_blue}Additional Native Tools:"
 
+  info_for_app clang
   info_for_app cmake
   info_for_app conan
   info_for_app ninja

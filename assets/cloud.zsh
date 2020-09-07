@@ -54,12 +54,10 @@ cloud_info() {
   echo "${color_blue}Welcome to ${color_red}AIMMS ${color_blue}development environment. Tools installed:"
   info_for_app curl
   echo " ${color_red}vim:\n  ${color_blue} `vim --version | head -1`"
-  echo " ${color_red}rsync:\n  ${color_blue} `rsync --version | head -1`"
   info_for_app git
   info_for_app tmux -V
   info_for_app ssh -V
   info_for_app zsh
-  info_for_app clang
   info_for_app pyenv
   echo " ${color_red}az:\n  ${color_blue} type 'a az && az --version' for version information"
   info_for_app terraform
