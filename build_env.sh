@@ -19,6 +19,7 @@ img_python=$pfx-python
 img_cloud=$pfx-cloud
 img_cloud_theming=$pfx-cloud-theming
 
+
 img_native=$pfx-native
 img_native_theming=$pfx-native-theming
 
@@ -102,6 +103,11 @@ fi
 # shellcheck disable=SC2046
 if [ $(image_exists $img_native) -eq 0 ]; then
   maybe_create $container $img_cloud
+
+  b apt update
+  b apt upgrade -y
+  b apt install -y --no-install-recommends doxygen graphviz ccache wget
+  b bash -c 'curl https://apt.llvm.org/llvm.sh | bash'
 
   buildah copy --chown root $container $script_dir/assets/native.zsh /tmp/
   b /tmp/native.zsh && rm -f /tmp/native.zsh
