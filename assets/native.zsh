@@ -4,7 +4,7 @@
 source ~/.zshrc
 
 
-pyenv global ${PYTHON_VERSION} && c dev && pyenv global dev
+pyenv global $PYTHON_VERSION && c dev && pyenv global dev
 pip install cmake
 pip install conan
 pip install ninja

@@ -7,7 +7,6 @@ pyenv global $PYTHON_VERSION && c az && pyenv global az
 pip install azure-cli
 pip install jmespath
 pip install typed-argument-parser
-pip install sty
 
 # shellcheck disable=SC2046
 curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl && \
@@ -28,7 +27,7 @@ cat << 'EOF' >> ~/.zshrc
 alias k=kubectl
 source <(kubectl completion zsh)
 
-if [ "$ENABLE_THEMING" == "YES" ]; then
+if [[ "$ENABLE_THEMING" == "YES" ]]; then
     color_red="$fg[red]"
     color_blue="$fg[blue]"
 fi
@@ -47,7 +46,7 @@ function info_for_app() {
 }
 
 cloud_info() {
-  if [ "$ENABLE_THEMING" == "YES" ]; then
+  if [[ "$ENABLE_THEMING" == "YES" ]]; then
     python3 ~/.logo.py
   fi
 

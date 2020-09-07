@@ -24,6 +24,8 @@ $(<~/.zshrc)
 $(<~/.zshrc.pre-oh-my-zsh)
 EOF
 
+#pip install sty
+
 cat << 'EOF' >> ~/.zshrc
 # zsh plugins
 plugins=(
