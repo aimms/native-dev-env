@@ -65,7 +65,7 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   b apt install -y --no-install-recommends zsh vim tmux wget curl fontconfig git zip unzip git ca-certificates \
        build-essential libssl-dev zlib1g-dev libbz2-dev \
        libreadline-dev libsqlite3-dev libncurses5-dev  \
-        xz-utils libffi-dev python3-openssl
+       xz-utils libffi-dev  #ptython3-openssl
 #  b $i llvm clang-10 libc++-dev libc++abi-dev
 #
 #  b update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-10 100
@@ -95,10 +95,18 @@ if [ $(image_exists $img_cloud) -eq 0 ]; then
   maybe_create $container $img_python
 
   buildah copy --chown root $container $script_dir/assets/cloud.zsh /tmp/
-  b /tmp/cloud.zsh && rm -r /tmp/cloud.zsh
+  b /tmp/cloud.zsh && rm -f /tmp/cloud.zsh
   buildah commit $container $img_cloud
 fi
 
+# shellcheck disable=SC2046
+if [ $(image_exists $img_native) -eq 0 ]; then
+  maybe_create $container $img_cloud
+
+  buildah copy --chown root $container $script_dir/assets/native.zsh /tmp/
+  b /tmp/native.zsh && rm -f /tmp/native.zsh
+  buildah commit $container $img_native
+fi
 
 # shellcheck disable=SC2046
 #if [ $(image_exists $img_cloud_theming) -eq 0 ]; then
