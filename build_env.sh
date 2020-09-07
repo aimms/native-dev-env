@@ -48,21 +48,39 @@ maybe_create(){
 
 # shellcheck disable=SC2046
 if [ $(image_exists $img_essentials) -eq 0 ]; then
-  maybe_create $container alpine
+  maybe_create $container ubuntu:20.04
 
-  b apk update
-  b apk upgrade
-  b apk add bash zsh vim tmux curl fontconfig git zip unzip \
-      automake autoconf make openssl-dev \
-       zlib-dev bzip2-dev xz-dev libffi-dev \
-       readline-dev sqlite-dev ncurses-dev \
-       g++
-       llvm clang
+#  b apk update
+#  b apk upgrade
+#  b apk add bash zsh vim tmux curl fontconfig git zip unzip \
+#      automake autoconf make openssl-dev \
+#       zlib-dev bzip2-dev xz-dev libffi-dev \
+#       readline-dev sqlite-dev ncurses-dev \
+#       g++
+#       llvm clang
 
+  buildah config --env DEBIAN_FRONTEND=noninteractive $container
   buildah config --env GIT_EDITOR=vim $container
   buildah config --env PYTHON_VERSION=3.8.5 $container
   buildah config --env PYENV_VIRTUALENV_DISABLE_PROMPT=1 $container
   buildah config --entrypoint /bin/zsh $container
+
+
+  b apt update
+  b apt upgrade -y
+  b install -y --no-install-recommends zsh vim tmux wget curl fontconfig git zip git ca-certificates
+       build-essential libssl-dev zlib1g-dev libbz2-dev \
+       libreadline-dev libsqlite3-dev libncurses5-dev  \
+        xz-utils libffi-dev python3-openssl
+#  b $i llvm clang-10 libc++-dev libc++abi-dev
+#
+#  b update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-10 100
+#  b update-alternatives --install /usr/bin/clang clang /usr/bin/clang-10 100
+#  b update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
+#  b update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
+  b rm -rf /var/lib/apt/lists/*
+
+
 
   buildah commit $container $img_essentials
 fi
