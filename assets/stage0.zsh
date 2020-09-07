@@ -3,7 +3,7 @@
 # shellcheck disable=SC1090
 source ~/.zshrc
 
-pyenv global ${PYTHON_VERSION} && c az && pyenv global az
+pyenv global $PYTHON_VERSION && c az && pyenv global az
 pip install azure-cli
 pip install jmespath
 pip install typed-argument-parser
@@ -19,8 +19,8 @@ pushd /usr/bin || exit
 tf_version=0.12.28
 terraform_zip=terraform_${tf_version}_linux_amd64.zip
 curl -LO https://releases.hashicorp.com/terraform/${tf_version}/${terraform_zip}
-unzip ${terraform_zip}
-rm -f ${terraform_zip}
+unzip $terraform_zip
+rm -f $terraform_zip
 popd || exit
 
 cat << 'EOF' >> ~/.zshrc
@@ -28,7 +28,7 @@ cat << 'EOF' >> ~/.zshrc
 alias k=kubectl
 source <(kubectl completion zsh)
 
-if [[ "${ENABLE_THEMING}" == "YES" ]]; then
+if [ "$ENABLE_THEMING" == "YES" ]; then
     color_red="$fg[red]"
     color_blue="$fg[blue]"
 fi
@@ -47,7 +47,7 @@ function info_for_app() {
 }
 
 cloud_info() {
-  if [[ "${ENABLE_THEMING}" == "YES" ]]; then
+  if [ "$ENABLE_THEMING" == "YES" ]; then
     python3 ~/.logo.py
   fi
 
