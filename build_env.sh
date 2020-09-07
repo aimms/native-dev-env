@@ -11,9 +11,14 @@
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 pushd "$script_dir" || exit
 
-img_essentials=aimmspro/devenv-essentials
-img_python=aimmspro/devenv-python
-img_cloud=aimmspro/devenv-cloud
+pfx=aimmspro/devenv
+img_essentials=$pfx-essentials
+img_python=$pfx-python
+img_cloud=$pfx-cloud
+img_cloud_theming=$pfx-cloud-theming
+
+img_native=$pfx-native
+img_native_theming=$pfx-native-theming
 
 # essentials
 container=build
@@ -52,7 +57,7 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
        zlib-dev bzip2-dev xz-dev libffi-dev \
        readline-dev sqlite-dev ncurses-dev \
        g++
-       #llvm clang
+       llvm clang
 
   buildah config --env GIT_EDITOR=vim $container
   buildah config --env PYTHON_VERSION=3.8.5 $container
@@ -78,10 +83,43 @@ fi
 if [ $(image_exists $img_cloud) -eq 0 ]; then
   maybe_create $container $img_python
 
-  buildah copy --chown root $container $script_dir/cloud.zsh /tmp
-  b /tmp/cloud.zsh && rm -f /tmp/stage0.zsh
-
+  buildah copy --chown root $container $script_dir/assets /tmp
+  b /tmp/cloud.zsh && rm -rf /tmp/*
+  buildah commit $container $img_cloud
 fi
 
+# shellcheck disable=SC2046
+if [ $(image_exists $img_cloud) -eq 0 ]; then
+  maybe_create $container $img_python
+
+  buildah copy --chown root $container $script_dir/assets /tmp
+  b /tmp/cloud.zsh && rm -rf /tmp/*
+  buildah commit $container $img_cloud
+fi
+
+# shellcheck disable=SC2046
+#if [ $(image_exists $img_cloud_theming) -eq 0 ]; then
+#  maybe_create $container $img_cloud
+#
+#  buildah copy --chown root $container $script_dir/assets /tmp
+#  b /tmp/theming.zsh && rm -f /tmp/*
+#  buildah commit $container $img_cloud_theming
+#fi
+
+#ARG BASE
+#FROM aimmspro/devenv-$BASE:latest
+#
+#ENV TERM=xterm-256color
+#ENV ENABLE_THEMING=YES
+#
+#COPY ../assets/logo.py /root/.logo.py
+#COPY MesloLGS* /usr/share/fonts/truetype/
+#RUN fc-cache -vf
+#COPY ../assets/.p10k.zsh /root/
+#COPY ../assets/theming.zsh /tmp/setup.zsh
+#RUN /tmp/setup.zsh && rm -f /tmp/setup.zsh
+#RUN zsh -c "source ~/.zshrc && info"
+#
+#CMD zsh
 
 popd || exit # script_dir
