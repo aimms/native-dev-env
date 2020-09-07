@@ -53,7 +53,6 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
 
   buildah config --env DEBIAN_FRONTEND=noninteractive $container
   buildah config --env GIT_EDITOR=vim $container
-  buildah config --env PYTHON_VERSION=3.8.5 $container
   buildah config --env PYENV_VIRTUALENV_DISABLE_PROMPT=1 $container
   buildah config --entrypoint /bin/zsh $container
 
@@ -61,14 +60,14 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   b apt upgrade -y
   b apt install -y --no-install-recommends \
     zsh vim tmux wget curl fontconfig git zip unzip git ca-certificates \
-    python3 python3-venv
+    python-is-python3 python3-venv
 
   b rm -rf /var/lib/apt/lists/*
 
   b bash -c 'curl https://pyenv.run | bash'
 
   buildah copy --chown root $container $script_dir/assets/.zshrc /root/.zshrc
-  b zsh -c 'pyenv global system'
+  b zsh -c 'source ~/.zshrc ; pyenv global system'
 
   buildah commit $container $img_essentials
 fi
@@ -93,8 +92,8 @@ if [ $(image_exists $img_native) -eq 0 ]; then
   b bash -c 'curl https://apt.llvm.org/llvm.sh | bash'
   b apt install -y --no-install-recommends libc++-dev libc++abi-dev
 
-  b update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-10 100
-  b update-alternatives --install /usr/bin/clang clang /usr/bin/clang-10 100
+  b update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-11 100
+  b update-alternatives --install /usr/bin/clang clang /usr/bin/clang-11 100
   b update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
   b update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
   b rm -rf /var/lib/apt/lists/*
