@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 
 #if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" || ($# -eq 2 && "$2" != "--upload") || $# -gt 2 ]]; then
 #  echo "Usage: $0 <version>"
@@ -50,14 +52,6 @@ maybe_create(){
 if [ $(image_exists $img_essentials) -eq 0 ]; then
   maybe_create $container ubuntu:20.04
 
-#  b apk update
-#  b apk upgrade
-#  b apk add bash zsh vim tmux curl fontconfig git zip unzip \
-#      automake autoconf make openssl-dev \
-#       zlib-dev bzip2-dev xz-dev libffi-dev \
-#       readline-dev sqlite-dev ncurses-dev \
-#       g++
-#       llvm clang
 
   buildah config --env DEBIAN_FRONTEND=noninteractive $container
   buildah config --env GIT_EDITOR=vim $container
@@ -68,7 +62,7 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
 
   b apt update
   b apt upgrade -y
-  b install -y --no-install-recommends zsh vim tmux wget curl fontconfig git zip git ca-certificates
+  b apt install -y --no-install-recommends zsh vim tmux wget curl fontconfig git zip unzip git ca-certificates \
        build-essential libssl-dev zlib1g-dev libbz2-dev \
        libreadline-dev libsqlite3-dev libncurses5-dev  \
         xz-utils libffi-dev python3-openssl
@@ -100,20 +94,11 @@ fi
 if [ $(image_exists $img_cloud) -eq 0 ]; then
   maybe_create $container $img_python
 
-  buildah copy --chown root $container $script_dir/assets /tmp
-  b /tmp/cloud.zsh && rm -rf /tmp/*
+  buildah copy --chown root $container $script_dir/assets/cloud.zsh /tmp/
+  b /tmp/cloud.zsh && rm -r /tmp/cloud.zsh
   buildah commit $container $img_cloud
 fi
 
-# shellcheck disable=SC2046
-if [ $(image_exists $img_cloud) -eq 0 ]; then
-  maybe_create $container $img_python
-
-  buildah copy --chown root $container $script_dir/assets /tmp
-  b /tmp/cloud.zsh && rm -rf /tmp/*
-  buildah commit $container $img_cloud
-  buildah rm $container
-fi
 
 # shellcheck disable=SC2046
 #if [ $(image_exists $img_cloud_theming) -eq 0 ]; then
