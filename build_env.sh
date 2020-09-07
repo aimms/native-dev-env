@@ -44,9 +44,9 @@ maybe_create(){
 if [ $(image_exists $img_essentials) -eq 0 ]; then
   maybe_create $container alpine
 
-  apk update
-  apk upgrade
-  apk add bash zsh vim tmux curl fontconfig git zip unzip \
+  b apk update
+  b apk upgrade
+  b apk add bash zsh vim tmux curl fontconfig git zip unzip \
       automake autoconf make openssl-dev \
        zlib-dev bzip2-dev xz-dev libffi-dev \
        readline-dev sqlite-dev ncurses-dev \
