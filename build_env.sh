@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
 
 #if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" || ($# -eq 2 && "$2" != "--upload") || $# -gt 2 ]]; then
 #  echo "Usage: $0 <version>"
@@ -20,27 +19,35 @@ img_python=aimmspro/devenv-python
 
 # essentials
 container=build
-buildah rm $container 2> /dev/null
+#buildah rm $container 2> /dev/null
 
 b(){
   # shellcheck disable=SC2068
-  buildah run --runtime /usr/bin/crun $container -- $@
+  buildah run --runtime /usr/bin/crun $container -- "$@"
 }
 
 image_exists(){
   if [ "$(buildah images --format '{{.Name}}' | grep $1)" != "" ]; then
     echo 1
-    return
+  else
+    echo 0
   fi
-
-  echo 0
 }
 
-# shellcheck disable=SC2046
-if [ $(image_exists $img_essentials) -ne 0 ]; then
-  buildah from --name $container ubuntu:$ubuntu_ver
-  echo "Created new container: $container"
+maybe_create(){
+  if [ -e $no_container ]; then
+    buildah from --name $1 $2 
+    no_container=1
+    echo "Created container: $1 from image: $2"
+  fi
+}
 
+
+# shellcheck disable=SC2046
+if [ $(image_exists $img_essentials) -eq 0 ]; then
+  maybe_create $container ubuntu:$ubuntu_ver
+
+  buildah from --name $container ubuntu:$ubuntu_ver
   buildah config --env DEBIAN_FRONTEND=noninteractive $container
   buildah config --env GIT_EDITOR=vim $container
   buildah config --env PYTHON_VERSION=3.8.5 $container
@@ -62,12 +69,10 @@ if [ $(image_exists $img_essentials) -ne 0 ]; then
   b rm -rf /var/lib/apt/lists/*
   buildah commit $container $img_essentials
 fi
-
 # shellcheck disable=SC2046
-if [ $(image_exists $img_essentials) -ne 0 ]; then
-  buildah from --name $container $img_essentials
-  echo "Created new container: $container"
-
+if [ $(image_exists $img_python) -eq 0 ]; then
+  maybe_create $container $img_essentials 
+ 
   b bash -c 'curl https://pyenv.run | bash'
   b bash -c 'MAKE_OPTS="V=1 -j`grep -c ^processor /proc/cpuinfo`" LLVM_PROFDATA=/usr/bin/llvm-profdata-10 CONFIGURE_OPTS=--enable-optimizations /root/.pyenv/bin/pyenv install $PYTHON_VERSION --verbose'
 
