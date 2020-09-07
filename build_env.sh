@@ -15,31 +15,37 @@ pushd "$script_dir" || exit
 ubuntu_ver=20.04
 i='apt install -y --no-install-recommends'
 
-# essentials
-container=essentials
 img_essentials=aimmspro/devenv-essentials
+img_python=aimmspro/devenv-python
 
-container_exists(){
-  buildah run --runtime /usr/bin/crun $1 -- sh -c ':' 2>/dev/null
-  echo $?
+# essentials
+container=build
+buildah rm $container 2> /dev/null
+
+b(){
+  # shellcheck disable=SC2068
+  buildah run --runtime /usr/bin/crun $container -- $@
+}
+
+image_exists(){
+  if [ "$(buildah images --format '{{.Name}}' | grep $1)" != "" ]; then
+    echo 1
+    return
+  fi
+
+  echo 0
 }
 
 # shellcheck disable=SC2046
-if [ $(container_exists $container) -ne 0 ]; then
+if [ $(image_exists $img_essentials) -ne 0 ]; then
   buildah from --name $container ubuntu:$ubuntu_ver
   echo "Created new container: $container"
-
-  b(){
-    # shellcheck disable=SC2068
-    buildah run --runtime /usr/bin/crun $container -- $@
-  }
 
   buildah config --env DEBIAN_FRONTEND=noninteractive $container
   buildah config --env GIT_EDITOR=vim $container
   buildah config --env PYTHON_VERSION=3.8.5 $container
   buildah config --env PYENV_VIRTUALENV_DISABLE_PROMPT=1 $container
   buildah config --entrypoint /bin/zsh $container
-
 
   b apt update
   b apt upgrade -y
@@ -55,24 +61,19 @@ if [ $(container_exists $container) -ne 0 ]; then
   b update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
   b rm -rf /var/lib/apt/lists/*
   buildah commit $container $img_essentials
-  buildah rm $container
 fi
 
-container=python
-if [ $(container_exists $container) -ne 0 ]; then
-  buildah from --name $container $img_essentials 
+# shellcheck disable=SC2046
+if [ $(image_exists $img_essentials) -ne 0 ]; then
+  buildah from --name $container $img_essentials
   echo "Created new container: $container"
 
-  b(){
-    # shellcheck disable=SC2068
-    buildah run --runtime /usr/bin/crun $container -- $@
-  }
   b bash -c 'curl https://pyenv.run | bash'
   b bash -c 'MAKE_OPTS="V=1 -j`grep -c ^processor /proc/cpuinfo`" LLVM_PROFDATA=/usr/bin/llvm-profdata-10 CONFIGURE_OPTS=--enable-optimizations /root/.pyenv/bin/pyenv install $PYTHON_VERSION --verbose'
 
   buildah copy --chown root $container $script_dir/assets/.zshrc /root/.zshrc
   buildah commit $container aimmspro/devenv-python
-  buildah rm $container
+#  buildah rm $container
 fi
 
 
