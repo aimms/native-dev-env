@@ -61,7 +61,6 @@ cloud_info() {
   info_for_app ssh -V
   info_for_app zsh
   info_for_app clang
-  info_for_app rustc
   info_for_app pyenv
   echo " ${color_red}az:\n  ${color_blue} type 'a az && az --version' for version information"
   info_for_app terraform
