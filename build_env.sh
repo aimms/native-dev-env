@@ -13,6 +13,7 @@ pushd "$script_dir" || exit
 
 img_essentials=aimmspro/devenv-essentials
 img_python=aimmspro/devenv-python
+img_cloud=aimmspro/devenv-cloud
 
 # essentials
 container=build
@@ -60,6 +61,7 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
 
   buildah commit $container $img_essentials
 fi
+
 # shellcheck disable=SC2046
 if [ $(image_exists $img_python) -eq 0 ]; then
   maybe_create $container $img_essentials
@@ -72,11 +74,14 @@ if [ $(image_exists $img_python) -eq 0 ]; then
   buildah rm $container
 fi
 
+# shellcheck disable=SC2046
+if [ $(image_exists $img_cloud) -eq 0 ]; then
+  maybe_create $container $img_python
 
+  buildah copy --chown root $container $script_dir/cloud.zsh /tmp
+  b /tmp/cloud.zsh && rm -f /tmp/stage0.zsh
 
-#buildah copy --chown root $container $script_dir/assets /tmp
-#b mv /tmp/.zshrc /root
-#b /tmp/state0.zsh && rm -f /tmp/stage0.zsh
+fi
 
 
 popd || exit # script_dir
