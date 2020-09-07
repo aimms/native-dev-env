@@ -76,25 +76,25 @@ if [ $(image_exists $img_python) -eq 0 ]; then
 
   buildah copy --chown root $container $script_dir/assets/.zshrc /root/.zshrc
   buildah commit $container $img_python
+fi
+
+# shellcheck disable=SC2046
+if [ $(image_exists $img_cloud) -eq 0 ]; then
+  maybe_create $container $img_python
+
+  buildah copy --chown root $container $script_dir/assets /tmp
+  b /tmp/cloud.zsh && rm -rf /tmp/*
+  buildah commit $container $img_cloud
+fi
+
+# shellcheck disable=SC2046
+if [ $(image_exists $img_cloud) -eq 0 ]; then
+  maybe_create $container $img_python
+
+  buildah copy --chown root $container $script_dir/assets /tmp
+  b /tmp/cloud.zsh && rm -rf /tmp/*
+  buildah commit $container $img_cloud
   buildah rm $container
-fi
-
-# shellcheck disable=SC2046
-if [ $(image_exists $img_cloud) -eq 0 ]; then
-  maybe_create $container $img_python
-
-  buildah copy --chown root $container $script_dir/assets /tmp
-  b /tmp/cloud.zsh && rm -rf /tmp/*
-  buildah commit $container $img_cloud
-fi
-
-# shellcheck disable=SC2046
-if [ $(image_exists $img_cloud) -eq 0 ]; then
-  maybe_create $container $img_python
-
-  buildah copy --chown root $container $script_dir/assets /tmp
-  b /tmp/cloud.zsh && rm -rf /tmp/*
-  buildah commit $container $img_cloud
 fi
 
 # shellcheck disable=SC2046
