@@ -69,6 +69,7 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   b rm -rf /var/lib/apt/lists/*
   buildah commit $container $img_essentials
 fi
+
 # shellcheck disable=SC2046
 if [ $(image_exists $img_python) -eq 0 ]; then
   maybe_create $container $img_essentials 
@@ -77,8 +78,8 @@ if [ $(image_exists $img_python) -eq 0 ]; then
   b bash -c 'MAKE_OPTS="V=1 -j`grep -c ^processor /proc/cpuinfo`" LLVM_PROFDATA=/usr/bin/llvm-profdata-10 CONFIGURE_OPTS=--enable-optimizations /root/.pyenv/bin/pyenv install $PYTHON_VERSION --verbose'
 
   buildah copy --chown root $container $script_dir/assets/.zshrc /root/.zshrc
-  buildah commit $container aimmspro/devenv-python
-#  buildah rm $container
+  buildah commit $container $img_python
+  buildah rm $container
 fi
 
 
