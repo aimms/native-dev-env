@@ -63,13 +63,13 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   b apt update
   b apt upgrade -y
 
+  b apt install -y --no-install-recommends \
+    zsh vim tmux wget curl fontconfig git zip unzip git ca-certificates \
+    python-is-python3 python3-venv locales
+
   b sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     dpkg-reconfigure --frontend=noninteractive locales && \
     update-locale LANG=en_US.UTF-8
-
-  b apt install -y --no-install-recommends \
-    zsh vim tmux wget curl fontconfig git zip unzip git ca-certificates \
-    python-is-python3 python3-venv
 
   b rm -rf /var/lib/apt/lists/*
 
