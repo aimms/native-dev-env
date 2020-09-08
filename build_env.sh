@@ -90,16 +90,18 @@ if [ $(image_exists $img_native) -eq 0 ]; then
   b apt install -y --no-install-recommends doxygen graphviz ccache wget gnupg \
     lsb-release software-properties-common make autoconf automake
   b bash -c 'curl https://apt.llvm.org/llvm.sh | bash'
-  b apt install -y --no-install-recommends libc++-dev libc++abi-dev
-
+  b apt install -y --no-install-recommends libc++-dev libc++abi-dev clang-tidy-11
   b update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-11 100
   b update-alternatives --install /usr/bin/clang clang /usr/bin/clang-11 100
   b update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
   b update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
+  b update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-11 100
+
   b rm -rf /var/lib/apt/lists/*
 
   buildah copy --chown root $container $script_dir/assets/native.zsh /tmp/
   b /tmp/native.zsh && rm -f /tmp/native.zsh
+  
   buildah commit $container $img_native
 fi
 

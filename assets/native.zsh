@@ -8,7 +8,6 @@ pyenv global $PYTHON_VERSION && c dev && pyenv global dev
 pip install cmake
 pip install conan
 pip install ninja
-pip install sty
 
 cat << 'EOF' >> ~/.zshrc
 

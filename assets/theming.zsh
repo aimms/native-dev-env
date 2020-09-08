@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+source ~/.zshrc
+pip install sty
+
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 powerlevel="powerlevel10k\\/powerlevel10k"
 sed -i "s/robbyrussell/$powerlevel/g" ~/.zshrc
@@ -23,8 +26,6 @@ $(<~/.zshrc)
 
 $(<~/.zshrc.pre-oh-my-zsh)
 EOF
-
-#pip install sty
 
 cat << 'EOF' >> ~/.zshrc
 # zsh plugins
