@@ -123,8 +123,9 @@ if [ $(image_exists $img_build) -eq 0 ]; then
   b apt install -y --no-install-recommends openssh-server gdb rsync sudo
 
   b mkdir -p /var/run/sshd
+
   b bash -c 'echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config && ssh-keygen -A'
-  buildah config --port 22
+  buildah config --port 22 $container
 
   b bash -c 'useradd -m -d /home/builderboy -s /bin/bash -G sudo builderboy && echo "builderboy:builderboy" | chpasswd && \
           sed -i /etc/sudoers -re "s/^%sudo.*/%sudo ALL=(ALL:ALL) NOPASSWD: ALL/g" && \
