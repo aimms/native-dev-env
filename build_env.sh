@@ -173,6 +173,6 @@ fi
 #CMD zsh
 
 buildah rm $container 2> /dev/null
-b_cho 'Done'
+b_echo 'Done'
 
 popd || exit # script_dir
