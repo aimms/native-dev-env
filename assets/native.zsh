@@ -16,8 +16,7 @@ deb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main
 EOF
 
 apt update && apt install -y --no-install-recommends \
-      zsh make autoconf automake doxygen graphviz ccache \
-      python-is-python3 python3-pyenv \
+      make autoconf automake doxygen graphviz ccache \
       llvm-11 clang-format-11 clang-tidy-11 clang-tools-11 clang-11 clangd-11 libc++-11-dev \
       libc++1-11 libc++abi-11-dev libc++abi1-11 libclang1-11 lld-11 llvm-11-runtime llvm-11
 
