@@ -20,4 +20,3 @@ mount --bind $script_dir $mnt/host
 chroot $mnt /host/$payload $@
 umount $mnt/host
 buildah unmount $container
-buildah rm $container
