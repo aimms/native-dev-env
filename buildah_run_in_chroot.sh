@@ -17,9 +17,6 @@ cp /etc/resolv.conf $mnt/etc/
 mkdir -p $mnt/host
 mount --bind $script_dir $mnt/host
 
-chroot $mnt /host/$payload fakeroot -- mknod -m 666 /dev/null c 1 3 && \ 
-				    mknod -m 666 /dev/zero c 1 5 && \
-			            chown root:root /dev/null /dev/zero
 chroot $mnt /host/$payload "$@"
 umount $mnt/host
 buildah unmount $container
