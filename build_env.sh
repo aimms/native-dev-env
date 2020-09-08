@@ -87,7 +87,7 @@ fi
 if [ $(image_exists $img_native_ssh_server) -eq 0 ]; then
   maybe_create $container $img_native
 
-  buildah config --entrypoint "/usr/bin/zsh -D" $container
+  buildah config --entrypoint "/usr/sbin/sshd -D" $container
   buildah config --port 22 $container
   buildah unshare ./buildah_run_in_chroot.sh $container ./assets/native_ssh_server.zsh
 

@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 export HOME=/root
+export DEBIAN_FRONTEND=noninteractive
 
 # install basic tools
-DEBIAN_FRONTEND=noninteractive \
-  apt update && apt upgrade -y && apt install -y --no-install-recommends \
+apt update && apt upgrade -y && apt install -y --no-install-recommends \
     zsh zsh vim wget git zip unzip python-is-python3 python3-venv locales fakeroot
 
 # generate locales
@@ -15,4 +15,4 @@ wget -O - https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pye
 
 cp /host/assets/.zshrc ~/.zshrc
 
-rm -rf /var/lib/apt/lists/*
+apt autoremove -y && rm -rf /var/lib/apt/lists/*
