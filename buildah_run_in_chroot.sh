@@ -5,8 +5,9 @@ if [[ $# -lt 2 || "$1" == "-h" || "$1" == "--help" ]]; then
   exit 1
 fi
 
+os=ubuntu:20.04
 
-container=$1
+container=$(buildah --name $1 from $os)
 shift
 payload=$1
 shift
@@ -21,3 +22,4 @@ mount --bind $script_dir $mnt/host
 chroot $mnt /host/$payload $@
 umount $mnt/host
 buildah unmount $container
+buildah rm $container
