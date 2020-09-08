@@ -71,7 +71,10 @@ fi
 # shellcheck disable=SC2046
 if [ $(image_exists $img_native) -eq 0 ]; then
   maybe_create $container $img_essentials
+
   buildah unshare ./buildah_run_in_chroot.sh $container ./assets/native.zsh
+
+  buildah commit $container $img_native
 fi
 
 
