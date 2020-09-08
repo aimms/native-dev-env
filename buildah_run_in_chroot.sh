@@ -9,7 +9,7 @@ mnt=$(buildah mount $container)
 cp /etc/resolv.conf $mnt/etc/
 mkdir -p $mnt/tmp/host
 mount --bind $script_dir $mnt/tmp/host
-umount $mnt/tmp/host
 
 chroot $mnt /tmp/host/$payload
-
+umount $mnt/tmp/host
+rm -rf $mnt/tmp/host
