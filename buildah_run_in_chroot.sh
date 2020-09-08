@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [[ $# -lt 2 || "$1" == "-h" || "$1" == "--help" || $# -gt 2 ]]; then
+if [[ $# -lt 2 || "$1" == "-h" || "$1" == "--help" ]]; then
   echo "Usage: $0 <buildah container name> <relative script path> <script arguments>"
   exit 1
 fi
