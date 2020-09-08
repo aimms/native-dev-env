@@ -3,11 +3,13 @@
 export HOME=/root
 export DEBIAN_FRONTEND=noninteractive
 
+
 apt update && apt upgrade -y
-apt install -y --no-install-recommends gnupg ca-certificates wget
+apt install -y --no-install-recommends gnupg ca-certificates wget fakeroot
 
 # add latest clang / llvm repo
 
+fakeroot --  mknod -m 666 /dev/null c 1 3
 wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
 
 cat << EOF >> /etc/apt/sources.list
@@ -26,7 +28,9 @@ apt update && apt install -y --no-install-recommends \
 
 cp /host/assets/.zshrc $HOME/.zshrc
 
-souce $HOME/.zshrc
+chown root:root $HOME/.zshrc
+
+source $HOME/.zshrc
 
 pyenv global system
 
