@@ -1,13 +1,11 @@
 #!/usr/bin/env bash
 
 if [[ $# -lt 2 || "$1" == "-h" || "$1" == "--help" ]]; then
-  echo "Usage: $0 <buildah container name> <relative script path> <script arguments>"
+  echo "Usage: $0 <buildah existing container name> <relative script path> <script arguments>"
   exit 1
 fi
 
-os=ubuntu:20.04
-
-container=$(buildah --name $1 from $os)
+container=$1
 shift
 payload=$1
 shift
