@@ -58,7 +58,7 @@ pushd $script_dir || exit
 if [ $(image_exists $img_essentials) -eq 0 ]; then
   maybe_create $container $os
 
-  buildah config --author "AIMMS B.V. <developer@aimms.com>"
+  buildah config --author "AIMMS B.V. <developer@aimms.com>" $container
   buildah config --env DEBIAN_FRONTEND=noninteractive $container
   buildah config --env GIT_EDITOR=vim $container
   buildah config --env PYENV_VIRTUALENV_DISABLE_PROMPT=1 $container
@@ -171,5 +171,8 @@ fi
 #RUN zsh -c "source ~/.zshrc && info"
 #
 #CMD zsh
+
+buildah rm $container 2> /dev/null
+b_cho 'Done'
 
 popd || exit # script_dir
