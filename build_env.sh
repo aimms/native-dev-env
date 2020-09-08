@@ -10,15 +10,15 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 os=ubuntu:20.04
 container=build
 
-prefix=aimmspro/devenv
-img_essentials=$prefix-essentials
+pfx=aimmspro/devenv
+img_essentials=$pfx-essentials
 
-img_native=$prefix-native
-#img_native_theming=$prefix-native-theming
-img_native_ssh_server=$prefix-native-ssh-server
+img_native=$pfx-native
+#img_native_theming=$pfx-native-theming
+img_native_ssh_server=$pfx-native-ssh-server
 
-#img_cloud=$prefix-cloud
-#img_cloud_theming=$prefix-cloud-theming
+#img_cloud=$pfx-cloud
+#img_cloud_theming=$pfx-cloud-theming
 
 b_echo(){
   # shellcheck disable=SC2145
@@ -43,13 +43,14 @@ maybe_create(){
 }
 
 image_exists(){
+  image=$1
   if [ "$(buildah images --format '{{.Name}}' | grep $1)" != "" ]; then
-    b_echo "Image exists: $1"
     echo 1
   else
     echo 0
   fi
 }
+
 
 pushd $script_dir || exit
 

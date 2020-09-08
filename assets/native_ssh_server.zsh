@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
 
 DEBIAN_FRONTEND=noninteractive apt update && \
-  apt install -y --no-install-recommends openssh-server gdb rsync &&
+  apt install -y --no-install-recommends openssh-server gdb rsync sudo &&
   apt autoremove -y && apt autoclean -y && rm -rf /var/lib/apt/lists/*
 
 # configure SSH for communication with Visual Studio
