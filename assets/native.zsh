@@ -1,10 +1,6 @@
-#!/bin/zsh
+#!/usr/bin/env zsh
 
-# shellcheck disable=SC1090
-source ~/.zshrc
-
-
-pyenv global $PYTHON_VERSION && c dev && pyenv global dev
+c dev && pyenv global dev
 pip install cmake
 pip install conan
 pip install ninja
