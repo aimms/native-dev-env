@@ -27,27 +27,11 @@ cat << 'EOF' >> ~/.zshrc
 alias k=kubectl
 source <(kubectl completion zsh)
 
-if [[ "$ENABLE_THEMING" == "YES" ]]; then
-    color_red="$fg[red]"
-    color_blue="$fg[blue]"
-fi
-
-function info_for_app() {
-  # https://stackoverflow.com/questions/1251999/how-can-i-replace-a-newline-n-using-sed
-  # https://www.cyberciti.biz/faq/using-sed-to-delete-empty-lines/
-  if [ -e $2 ]; then
-    local ver_arg="--version"
-  else
-    local ver_arg=$2
-  fi
-
-  local ver=$($1 ${ver_arg} 2>&1 | sed -r '/^\s*$/d' | sed ':a;N;$!ba;s/\n/\n   /g')
-  echo "${color_red} $1:\n  ${color_blue} ${ver}"
-}
 
 cloud_info() {
   if [[ "$ENABLE_THEMING" == "YES" ]]; then
-    python3 ~/.logo.py
+    python3 ~/.logo.
+    py
   fi
 
   echo " ${color_red}OS: ${color_blue}`uname -a`"
@@ -89,6 +73,13 @@ info() {
 }
 
 print_help_msg
+
+#info(){
+#  cloud_info
+#  native_info
+#  alias_info
+#  print_help_msg
+#}
 
 EOF
 

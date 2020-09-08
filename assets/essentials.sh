@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export HOME=/root
+
 # install basic tools
 DEBIAN_FRONTEND=noninteractive \
   apt update && apt upgrade -y && apt install -y --no-install-recommends \
@@ -9,7 +11,6 @@ DEBIAN_FRONTEND=noninteractive \
 sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
   dpkg-reconfigure --frontend=noninteractive locales && update-locale LANG=en_US.UTF-8
 
-export HOME=/root 
 
 curl https://pyenv.run | bash
 

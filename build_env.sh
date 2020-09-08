@@ -59,12 +59,20 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   buildah config --env LC_ALL=en_US.UTF-8 $container
   buildah config --env LANGUAGE=en_US:en $container
 
-  buildah copy --chown root $container $script_dir/assets/.zshrc /root/.zshrc
-
   buildah unshare ./buildah_run_in_chroot.sh $container ./assets/essentials.sh
 
   buildah commit $container $img_essentials
 fi
+
+# shellcheck disable=SC2046
+if [ $(image_exists $img_native) -eq 0 ]; then
+  maybe_create $container $img_essentials
+
+  buildah config --entrypoint "/usr/bin/zsh" $container
+
+  buildah unshare ./buildah_run_in_chroot.sh $container ./assets/native.sh
+fi
+
 
 ## shellcheck disable=SC2046
 #if [ $(image_exists $img_cloud) -eq 0 ]; then
@@ -75,9 +83,6 @@ fi
 #  buildah commit $container $img_cloud
 #fi
 
-# shellcheck disable=SC2046
-#if [ $(image_exists $img_native) -eq 0 ]; then
-#  maybe_create $container $img_cloud
 #
 #  b apt install -y --no-install-recommends doxygen graphviz ccache wget gnupg \
 #    lsb-release software-properties-common make autoconf automake
