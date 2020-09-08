@@ -21,14 +21,20 @@ apt update && apt install -y --no-install-recommends \
       llvm-11 clang-format-11 clang-tidy-11 clang-tools-11 clang-11 clangd-11 libc++-11-dev \
       libc++1-11 libc++abi-11-dev libc++abi1-11 libclang1-11 lld-11 llvm-11-runtime llvm-11
 
+
 /host/assets/update_alternatives.sh 11 100
 
 cp /host/assets/.zshrc $HOME/.zshrc
 
 souce $HOME/.zshrc
 
+pyenv global system
+
 c dev && pyenv global dev
 
 pip install cmake
 pip install conan
 pip install ninja
+
+apt autoremove -y
+rm -rf /var/lib/apt/lists/*
