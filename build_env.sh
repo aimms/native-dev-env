@@ -69,7 +69,7 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   buildah copy --chown root $container $script_dir/assets/.zshrc /root/.zshrc
   b zsh -c 'source ~/.zshrc ; pyenv global system'
 
-  buildah commit $container $img_essentials
+  buildah commit --squash $container $img_essentials
 fi
 
 # shellcheck disable=SC2046
@@ -78,7 +78,7 @@ if [ $(image_exists $img_cloud) -eq 0 ]; then
 
   buildah copy --chown root $container $script_dir/assets/cloud.zsh /tmp/
   b /tmp/cloud.zsh && rm -f /tmp/cloud.zsh
-  buildah commit $container $img_cloud
+  buildah commit --squash $container $img_cloud
 fi
 
 # shellcheck disable=SC2046
@@ -102,7 +102,7 @@ if [ $(image_exists $img_native) -eq 0 ]; then
   buildah copy --chown root $container $script_dir/assets/native.zsh /tmp/
   b /tmp/native.zsh && rm -f /tmp/native.zsh
   
-  buildah commit $container $img_native
+  buildah commit --squash $container $img_native
 fi
 
 # shellcheck disable=SC2046
@@ -111,7 +111,7 @@ fi
 #
 #  buildah copy --chown root $container $script_dir/assets /tmp
 #  b /tmp/theming.zsh && rm -f /tmp/*
-#  buildah commit $container $img_cloud_theming
+#  buildah commit --squash $container $img_cloud_theming
 #fi
 
 #ARG BASE
