@@ -30,8 +30,8 @@ maybe_create(){
 
   if [ -e $container_exists ]; then
     b_echo "(Re)creating container: $container from: $image"
-    buildah rm $container 2> /dev/null
-    container=$(buildah from --name $container $image)
+    buildah rm $container > /dev/null 2>&1
+    container=$(buildah from --name $container $image > /dev/null 2>&1)
     container_exists=1
   else
     b_echo "Using existing container: $container"
@@ -61,7 +61,7 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
 
   buildah copy --chown root $container $script_dir/assets/.zshrc /root/.zshrc
 
-  ./buildah_run_in_chroot.sh $container ./assets/essentials.sh
+  buildah unshare ./buildah_run_in_chroot.sh $container ./assets/essentials.sh
 
   buildah commit $container $img_essentials
 fi
