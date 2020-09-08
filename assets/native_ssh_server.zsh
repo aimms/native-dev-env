@@ -27,6 +27,7 @@ mv /root/.pyenv /home/$BUILD_USER
 mv /root/.zshrc /home/$BUILD_USER
 
 chown -R $BUILD_USER /home/$BUILD_USER
+sed -i /home/$BUILD_USER/.zshrc -re "s/\/root/\/home\/$BUILD_USER/g"
 
 chsh -s /bin/zsh $BUILD_USER
 
