@@ -19,6 +19,7 @@ img_cloud=$pfx-cloud
 img_cloud_theming=$pfx-cloud-theming
 
 img_native=$pfx-native
+img_build=$pfx-build
 img_native_theming=$pfx-native-theming
 
 # essentials
@@ -55,9 +56,17 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   buildah config --env GIT_EDITOR=vim $container
   buildah config --env PYENV_VIRTUALENV_DISABLE_PROMPT=1 $container
   buildah config --entrypoint /bin/zsh $container
+  buildah config --env LANG=en_US.utf8 $container
+  buildah config --env LC_ALL=en_US.UTF-8 $container
+  buildah config --env LANGUAGE=en_US:en $container
 
   b apt update
   b apt upgrade -y
+
+  b sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+    update-locale LANG=en_US.UTF-8
+
   b apt install -y --no-install-recommends \
     zsh vim tmux wget curl fontconfig git zip unzip git ca-certificates \
     python-is-python3 python3-venv
@@ -69,7 +78,7 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   buildah copy --chown root $container $script_dir/assets/.zshrc /root/.zshrc
   b zsh -c 'source ~/.zshrc ; pyenv global system'
 
-  buildah commit --squash $container $img_essentials
+  buildah commit $container $img_essentials
 fi
 
 # shellcheck disable=SC2046
@@ -78,7 +87,7 @@ if [ $(image_exists $img_cloud) -eq 0 ]; then
 
   buildah copy --chown root $container $script_dir/assets/cloud.zsh /tmp/
   b /tmp/cloud.zsh && rm -f /tmp/cloud.zsh
-  buildah commit --squash $container $img_cloud
+  buildah commit $container $img_cloud
 fi
 
 # shellcheck disable=SC2046
@@ -93,6 +102,7 @@ if [ $(image_exists $img_native) -eq 0 ]; then
   b apt install -y --no-install-recommends libc++-dev libc++abi-dev clang-tidy-11
   b update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-11 100
   b update-alternatives --install /usr/bin/clang clang /usr/bin/clang-11 100
+  b update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-11 100
   b update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
   b update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
   b update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-11 100
@@ -101,8 +111,30 @@ if [ $(image_exists $img_native) -eq 0 ]; then
 
   buildah copy --chown root $container $script_dir/assets/native.zsh /tmp/
   b /tmp/native.zsh && rm -f /tmp/native.zsh
-  
-  buildah commit --squash $container $img_native
+
+  buildah commit $container $img_native
+fi
+
+# shellcheck disable=SC2046
+if [ $(image_exists $img_build) -eq 0 ]; then
+  maybe_create $container $img_native
+
+  b apt update
+  b apt upgrade -y
+
+  b apt install -y --no-install-recommends openssh-server gdb rsync sudo
+
+  b mkdir -p /var/run/sshd
+  b echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config && ssh-keygen -A
+  buildah config --port 22
+  b useradd -m -d /home/builderboy -s /bin/bash -G sudo builderboy && echo "builderboy:builderboy" | chpasswd
+  b sed -i /etc/sudoers -re 's/^%sudo.*/%sudo ALL=(ALL:ALL) NOPASSWD: ALL/g' && \
+    sed -i /etc/sudoers -re 's/^root.*/root ALL=(ALL:ALL) NOPASSWD: ALL/g' && \
+    sed -i /etc/sudoers -re 's/^#includedir.*/## **Removed the include directive** ##"/g' && \
+    echo "foo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+  buildah config --entrypoint "/usr/sbin/sshd -D" $container
+  buildah commit $container $img_build
 fi
 
 # shellcheck disable=SC2046
@@ -111,7 +143,7 @@ fi
 #
 #  buildah copy --chown root $container $script_dir/assets /tmp
 #  b /tmp/theming.zsh && rm -f /tmp/*
-#  buildah commit --squash $container $img_cloud_theming
+#  buildah commit $container $img_cloud_theming
 #fi
 
 #ARG BASE
