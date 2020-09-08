@@ -12,12 +12,13 @@ container=build
 
 prefix=aimmspro/devenv
 img_essentials=$prefix-essentials
-img_cloud=$prefix-cloud
-img_cloud_theming=$prefix-cloud-theming
 
 img_native=$prefix-native
-img_build=$prefix-build
-img_native_theming=$prefix-native-theming
+#img_native_theming=$prefix-native-theming
+img_native_ssh_server=$prefix-native-ssh-server
+
+#img_cloud=$prefix-cloud
+#img_cloud_theming=$prefix-cloud-theming
 
 b_echo(){
   # shellcheck disable=SC2145
@@ -27,6 +28,8 @@ b_echo(){
 maybe_create(){
   container=$1
   image=$2
+
+  b_echo "Building image: $image"
 
   if [ -e $container_exists ]; then
     b_echo "(Re)creating container: $container from: $image"
@@ -41,6 +44,7 @@ maybe_create(){
 
 image_exists(){
   if [ "$(buildah images --format '{{.Name}}' | grep $1)" != "" ]; then
+    b_echo "Image exists: $1"
     echo 1
   else
     echo 0
@@ -53,6 +57,7 @@ pushd $script_dir || exit
 if [ $(image_exists $img_essentials) -eq 0 ]; then
   maybe_create $container $os
 
+  buildah config --author "AIMMS B.V. <developer@aimms.com>"
   buildah config --env DEBIAN_FRONTEND=noninteractive $container
   buildah config --env GIT_EDITOR=vim $container
   buildah config --env PYENV_VIRTUALENV_DISABLE_PROMPT=1 $container
@@ -75,6 +80,17 @@ if [ $(image_exists $img_native) -eq 0 ]; then
   buildah unshare ./buildah_run_in_chroot.sh $container ./assets/native.zsh
 
   buildah commit $container $img_native
+fi
+
+# shellcheck disable=SC2046
+if [ $(image_exists $img_native_ssh_server) -eq 0 ]; then
+  maybe_create $container $img_native
+
+  buildah config --entrypoint "/usr/bin/zsh -D" $container
+  buildah config --port 22 $container
+  buildah unshare ./buildah_run_in_chroot.sh $container ./assets/native_ssh_server.zsh
+
+  buildah commit $container $img_native_ssh_server
 fi
 
 

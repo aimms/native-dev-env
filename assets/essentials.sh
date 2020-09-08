@@ -5,7 +5,7 @@ export HOME=/root
 # install basic tools
 DEBIAN_FRONTEND=noninteractive \
   apt update && apt upgrade -y && apt install -y --no-install-recommends \
-    zsh zsh vim wget git zip unzip python-is-python3 python3-venv locales
+    zsh zsh vim wget git zip unzip python-is-python3 python3-venv locales fakeroot
 
 # generate locales
 sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \

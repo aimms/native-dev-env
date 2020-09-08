@@ -37,5 +37,4 @@ pip install cmake
 pip install conan
 pip install ninja
 
-apt autoremove -y
-rm -rf /var/lib/apt/lists/*
+apt autoremove -y && rm -rf /var/lib/apt/lists/*
