@@ -61,7 +61,7 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
 
   buildah copy --chown root $container $script_dir/assets/.zshrc /root/.zshrc
 
-  ./buildah_run_in_chroot.sh
+  ./buildah_run_in_chroot.sh $container ./assets/essentials.sh
 
   buildah commit $container $img_essentials
 fi
