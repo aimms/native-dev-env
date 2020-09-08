@@ -3,10 +3,8 @@
 export HOME=/root
 export DEBIAN_FRONTEND=noninteractive
 
-
 apt update && apt upgrade -y
 apt install -y --no-install-recommends gnupg ca-certificates wget fakeroot
-
 # add latest clang / llvm repo
 
 fakeroot --  mknod -m 666 /dev/null c 1 3

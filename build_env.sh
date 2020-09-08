@@ -47,6 +47,8 @@ image_exists(){
   fi
 }
 
+pushd $script_dir || exit
+
 # shellcheck disable=SC2046
 if [ $(image_exists $img_essentials) -eq 0 ]; then
   maybe_create $container $os
@@ -60,6 +62,7 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   buildah config --env LANGUAGE=en_US:en $container
   buildah config --entrypoint "/usr/bin/zsh" $container
 
+  buildah unshare ./buildah_run_in_chroot.sh $container ./assets/fakeroot_mknod.sh
   buildah unshare ./buildah_run_in_chroot.sh $container ./assets/essentials.sh
 
   buildah commit $container $img_essentials
@@ -149,4 +152,4 @@ fi
 #
 #CMD zsh
 
-#popd || exit # script_dir
+popd || exit # script_dir
