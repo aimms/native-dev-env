@@ -1,17 +1,10 @@
 #!/usr/bin/env bash
 
-set -e
 
-
-#if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" || ($# -eq 2 && "$2" != "--upload") || $# -gt 2 ]]; then
-#  echo "Usage: $0 <version>"
-#  exit 1
-#fi
-
-#version="$1"
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-pushd "$script_dir" || exit
+
+./buildah_run_in_chroot
 
 pfx=aimmspro/devenv
 img_essentials=$pfx-essentials
@@ -21,6 +14,9 @@ img_cloud_theming=$pfx-cloud-theming
 img_native=$pfx-native
 img_build=$pfx-build
 img_native_theming=$pfx-native-theming
+
+echo '[build] Creating container'
+buildah
 
 # essentials
 container=build
