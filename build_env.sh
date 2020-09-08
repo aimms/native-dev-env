@@ -31,7 +31,7 @@ maybe_create(){
   if [ -e $container_exists ]; then
     b_echo "(Re)creating container: $container from: $image"
     buildah rm $container > /dev/null 2>&1
-    container=$(buildah from --name $container $image > /dev/null 2>&1)
+    container=$(buildah from --name $container $image)
     container_exists=1
   else
     b_echo "Using existing container: $container"

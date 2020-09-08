@@ -11,7 +11,7 @@ sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
 
 curl https://pyenv.run | bash
 
-cp /assets/.zshrc ~/.zshrc
+cp /host/assets/.zshrc ~/.zshrc
 
 zsh -c 'source ~/.zshrc ; pyenv global system'
 
