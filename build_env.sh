@@ -58,6 +58,7 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   buildah config --env LANG=en_US.utf8 $container
   buildah config --env LC_ALL=en_US.UTF-8 $container
   buildah config --env LANGUAGE=en_US:en $container
+  buildah config --entrypoint "/usr/bin/zsh" $container
 
   buildah unshare ./buildah_run_in_chroot.sh $container ./assets/essentials.sh
 
@@ -67,9 +68,6 @@ fi
 # shellcheck disable=SC2046
 if [ $(image_exists $img_native) -eq 0 ]; then
   maybe_create $container $img_essentials
-
-  buildah config --entrypoint "/usr/bin/zsh" $container
-
   buildah unshare ./buildah_run_in_chroot.sh $container ./assets/native.sh
 fi
 
