@@ -67,9 +67,9 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
     zsh vim tmux wget curl fontconfig git zip unzip git ca-certificates \
     python-is-python3 python3-venv locales
 
-  b sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+  b bash -c 'sed -i -e "s/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/" /etc/locale.gen && \
     dpkg-reconfigure --frontend=noninteractive locales && \
-    update-locale LANG=en_US.UTF-8
+    update-locale LANG=en_US.UTF-8'
 
   b rm -rf /var/lib/apt/lists/*
 
@@ -127,11 +127,11 @@ if [ $(image_exists $img_build) -eq 0 ]; then
   b mkdir -p /var/run/sshd
   b echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config && ssh-keygen -A
   buildah config --port 22
-  b useradd -m -d /home/builderboy -s /bin/bash -G sudo builderboy && echo "builderboy:builderboy" | chpasswd
-  b sed -i /etc/sudoers -re 's/^%sudo.*/%sudo ALL=(ALL:ALL) NOPASSWD: ALL/g' && \
-    sed -i /etc/sudoers -re 's/^root.*/root ALL=(ALL:ALL) NOPASSWD: ALL/g' && \
-    sed -i /etc/sudoers -re 's/^#includedir.*/## **Removed the include directive** ##"/g' && \
-    echo "foo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+  b bash -c 'useradd -m -d /home/builderboy -s /bin/bash -G sudo builderboy && echo "builderboy:builderboy" | chpasswd'
+  b bash -c 'sed -i /etc/sudoers -re "s/^%sudo.*/%sudo ALL=(ALL:ALL) NOPASSWD: ALL/g" && \
+    sed -i /etc/sudoers -re "s/^root.*/root ALL=(ALL:ALL) NOPASSWD: ALL/g" && \
+    sed -i /etc/sudoers -re "s/^#includedir.*/## **Removed the include directive** ##/g" && \
+    echo "foo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers'
 
   buildah config --entrypoint "/usr/sbin/sshd -D" $container
   buildah commit $container $img_build
