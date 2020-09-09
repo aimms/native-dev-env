@@ -26,6 +26,8 @@ chmod 744 /var/run/sshd
 cp /root/.zshrc /home/$BUILD_USER
 chown $BUILD_USER /home/$BUILD_USER/.zshrc
 
+chmod -R 777 /usr/local/pyenv/shims
+
 chsh -s /bin/zsh $BUILD_USER
 
 apt autoremove -y && rm -rf /var/lib/apt/lists/*
