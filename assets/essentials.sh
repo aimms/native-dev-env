@@ -13,6 +13,11 @@ sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
 
 wget -O - https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash -
 
+mv ~/.pyenv /usr/local/pyenv
+export PYENV_ROOT="/usr/local/pyenv"
+export PATH="${PYENV_ROOT}/bin:${PATH}"
+eval "$(pyenv init -)"
+pyenv rehash
 cp /host/assets/.zshrc ~/.zshrc
 
 apt autoremove -y && rm -rf /var/lib/apt/lists/*

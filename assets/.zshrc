@@ -1,4 +1,5 @@
-export PATH="/root/.pyenv/bin:$PATH"
+export PYENV_ROOT="/usr/local/pyenv"
+export PATH="${PYENV_ROOT}/bin:${PATH}"
 
 alias vi-zshrc="vi ~/.zshrc"
 alias src-zshrc="source ~/.zshrc"

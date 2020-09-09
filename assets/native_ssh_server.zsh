@@ -23,11 +23,8 @@ echo "$BUILD_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 chown root /var/run/sshd
 chmod 744 /var/run/sshd
 
-mv /root/.pyenv /home/$BUILD_USER
-mv /root/.zshrc /home/$BUILD_USER
-
-chown -R $BUILD_USER /home/$BUILD_USER
-sed -i /home/$BUILD_USER/.zshrc -re "s/\/root/\/home\/$BUILD_USER/g"
+cp /root/.zshrc /home/$BUILD_USER
+chown $BUILD_USER /home/$BUILD_USER/.zshrc
 
 chsh -s /bin/zsh $BUILD_USER
 
