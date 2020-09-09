@@ -67,7 +67,6 @@ maybe_upload(){
   fi
 }
 
-
 pushd $script_dir || exit
 
 # shellcheck disable=SC2046
@@ -90,8 +89,6 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   buildah commit $container $img_essentials
 fi
 maybe_upload $img_essentials
-
-
 
 # shellcheck disable=SC2046
 if [ $(image_exists $img_native) -eq 0 ]; then
