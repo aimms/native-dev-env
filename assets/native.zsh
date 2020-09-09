@@ -34,7 +34,11 @@ pyenv global system
 c dev && pyenv global dev
 
 pip install cmake
-pip install conan
 pip install ninja
+pip install conan
+
+mkdir -p /root/.conan
+# allowing conan to use latest clang
+cp /host/assets/settings.yml /root/.conan
 
 apt autoremove -y && rm -rf /var/lib/apt/lists/*

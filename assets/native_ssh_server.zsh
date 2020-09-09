@@ -26,7 +26,12 @@ chmod 744 /var/run/sshd
 cp /root/.zshrc /home/$BUILD_USER
 chown $BUILD_USER /home/$BUILD_USER/.zshrc
 
+
 chmod -R 777 /usr/local/pyenv/shims
+
+mkdir -p /home/$BUILD_USER/.conan
+# allowing conan to use latest clang
+cp /host/assets/settings.yml /home/$BUILD_USER/.conan
 
 chsh -s /bin/zsh $BUILD_USER
 
