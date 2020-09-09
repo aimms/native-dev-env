@@ -7,6 +7,8 @@ fi
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
+version="$1"
+upload="$2"
 os=ubuntu:20.04
 container=build
 
@@ -51,6 +53,16 @@ image_exists(){
   fi
 }
 
+maybe_upload(){
+  if [[ ! -e $upload && $(image_exists $1) -eq 1 ]]; then
+    b_echo "Uploading $1"
+    buildah tag $1 $1:latest
+    buildah tag $1 $1:$version
+    buildah upload $1:$version
+    buildah upload $1:latest
+  fi
+}
+
 
 pushd $script_dir || exit
 
@@ -73,6 +85,9 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
 
   buildah commit $container $img_essentials
 fi
+maybe_upload $img_essentials
+
+
 
 # shellcheck disable=SC2046
 if [ $(image_exists $img_native) -eq 0 ]; then
@@ -82,6 +97,7 @@ if [ $(image_exists $img_native) -eq 0 ]; then
 
   buildah commit $container $img_native
 fi
+maybe_upload $img_native
 
 # shellcheck disable=SC2046
 if [ $(image_exists $img_native_ssh_server) -eq 0 ]; then
@@ -93,6 +109,7 @@ if [ $(image_exists $img_native_ssh_server) -eq 0 ]; then
 
   buildah commit $container $img_native_ssh_server
 fi
+maybe_upload $img_native_ssh_server
 
 
 ## shellcheck disable=SC2046
