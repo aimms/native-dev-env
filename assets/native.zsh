@@ -27,6 +27,7 @@ cp /host/assets/.zshrc $HOME/.zshrc
 
 chown root:root $HOME/.zshrc
 
+# shellcheck disable=SC1090
 source $HOME/.zshrc
 
 pyenv global system

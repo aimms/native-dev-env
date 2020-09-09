@@ -28,10 +28,12 @@ chown $BUILD_USER /home/$BUILD_USER/.zshrc
 
 
 chmod -R 777 /usr/local/pyenv/shims
+chmod -R 777 /usr/bin/cmake
 
 mkdir -p /home/$BUILD_USER/.conan
 # allowing conan to use latest clang
 cp /host/assets/settings.yml /home/$BUILD_USER/.conan
+chown -R $BUILD_USER /home/$BUILD_USER/.conan
 
 chsh -s /bin/zsh $BUILD_USER
 
