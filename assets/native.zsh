@@ -34,6 +34,9 @@ pyenv global system
 c dev && pyenv global dev
 
 pip install cmake
+
+ln -s /usr/local/pyenv/shims/cmake /usr/bin/cmake
+
 pip install ninja
 pip install conan
 

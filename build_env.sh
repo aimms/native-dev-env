@@ -1,14 +1,16 @@
 #!/usr/bin/env bash
 
-if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" || ( $# -eq 2 && "$2" != "--upload" ) || $# -gt 2  ]]; then
+if [[  "$1" == "-h" || "$1" == "--help" || $# -gt 1  ]]; then
     echo "Usage: $0 <version>"
     exit 1
 fi
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-version="$1"
-upload="$2"
+if [ "$1" != "" ]; then
+	version="$1"
+fi
+
 os=ubuntu:20.04
 container=build
 
@@ -26,6 +28,8 @@ b_echo(){
   # shellcheck disable=SC2145
   echo "[build_env] $@"
 }
+
+b_echo "Building devenv images"
 
 maybe_create(){
   container=$1
@@ -54,12 +58,12 @@ image_exists(){
 }
 
 maybe_upload(){
-  if [[ ! -e $upload && $(image_exists $1) -eq 1 ]]; then
+  if [[ "$version" != "" && $(image_exists $1) -eq 1 ]]; then
     b_echo "Uploading $1"
-    buildah tag $1 $1:latest
-    buildah tag $1 $1:$version
-    buildah upload $1:$version
-    buildah upload $1:latest
+    buildah tag $1 "$1:latest"
+    buildah tag $1 "$1:$version"
+    buildah push "$1:$version"
+    buildah push "$1:latest"
   fi
 }
 
