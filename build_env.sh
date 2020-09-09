@@ -34,8 +34,9 @@ b_echo "Building devenv images"
 maybe_create(){
   container=$1
   image=$2
+  image_from=$3
 
-  b_echo "Building image: $image"
+  b_echo "Building image: $image_from"
 
   if [ -e $container_exists ]; then
     b_echo "(Re)creating container: $container from: $image"
@@ -71,7 +72,7 @@ pushd $script_dir || exit
 
 # shellcheck disable=SC2046
 if [ $(image_exists $img_essentials) -eq 0 ]; then
-  maybe_create $container $os
+  maybe_create $container $os $img_essentials
 
   buildah config --author "AIMMS B.V. <developer@aimms.com>" $container
   buildah config --env DEBIAN_FRONTEND=noninteractive $container
@@ -92,7 +93,7 @@ maybe_upload $img_essentials
 
 # shellcheck disable=SC2046
 if [ $(image_exists $img_native) -eq 0 ]; then
-  maybe_create $container $img_essentials
+  maybe_create $container $img_essentials $img_native
 
   buildah unshare ./buildah_run_in_chroot.sh $container ./assets/native.zsh
 
@@ -102,7 +103,7 @@ maybe_upload $img_native
 
 # shellcheck disable=SC2046
 if [ $(image_exists $img_native_ssh_server) -eq 0 ]; then
-  maybe_create $container $img_native
+  maybe_create $container $img_native $img_native_ssh_server
 
   buildah config --entrypoint "/usr/sbin/sshd -D" $container
   buildah config --port 22 $container
