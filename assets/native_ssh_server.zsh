@@ -5,7 +5,7 @@ export DEBIAN_FRONTEND=noninteractive
 BUILD_USER=builderboy
 
 apt update
-apt install -y --no-install-recommends openssh-server gdb rsync sudo
+apt install -y --no-install-recommends openssh-server gdb rsync sudo gdbserver
 
 # configure SSH for communication with Visual Studio
 mkdir -p /var/run/sshd
