@@ -39,7 +39,6 @@ main_info() {
   info_for_app cmake
   info_for_app conan
   info_for_app ninja
-  info_for_app zs
   echo ""
 
   # clear color
