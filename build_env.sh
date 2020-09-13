@@ -7,6 +7,8 @@ fi
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
+pushd $script_dir || exit
+
 if [ "$1" != "" ]; then
 	version="$1"
 fi
@@ -21,7 +23,7 @@ img_native=$pfx-native
 #img_native_theming=$pfx-native-theming
 img_native_ssh_server=$pfx-native-ssh-server
 
-#img_cloud=$pfx-cloud
+img_cloud=$pfx-cloud
 #img_cloud_theming=$pfx-cloud-theming
 
 b_echo(){
@@ -68,7 +70,9 @@ maybe_upload(){
   fi
 }
 
-pushd $script_dir || exit
+run_stage(){
+    buildah unshare ./utils/buildah_run_in_chroot.sh $container ./stages/$1
+}
 
 # shellcheck disable=SC2046
 if [ $(image_exists $img_essentials) -eq 0 ]; then
@@ -84,8 +88,8 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   buildah config --env LANGUAGE=en_US:en $container
   buildah config --entrypoint "/usr/bin/zsh" $container
 
-  buildah unshare ./buildah_run_in_chroot.sh $container ./assets/fakeroot_mknod.sh
-  buildah unshare ./buildah_run_in_chroot.sh $container ./assets/essentials.sh
+  run_stage 00_fakeroot_mkmod.sh
+  run_stage 01_essentials.sh
 
   buildah commit $container $img_essentials
 fi
@@ -95,7 +99,7 @@ maybe_upload $img_essentials
 if [ $(image_exists $img_native) -eq 0 ]; then
   maybe_create $container $img_essentials $img_native
 
-  buildah unshare ./buildah_run_in_chroot.sh $container ./assets/native.zsh
+  run_stage 02_native.sh
 
   buildah commit $container $img_native
 fi
@@ -107,89 +111,22 @@ if [ $(image_exists $img_native_ssh_server) -eq 0 ]; then
 
   buildah config --entrypoint "/usr/sbin/sshd -D" $container
   buildah config --port 22 $container
-  buildah unshare ./buildah_run_in_chroot.sh $container ./assets/native_ssh_server.zsh
+
+  run_stage 03_native_ssh_server.sh
 
   buildah commit $container $img_native_ssh_server
 fi
 maybe_upload $img_native_ssh_server
 
 
-## shellcheck disable=SC2046
-#if [ $(image_exists $img_cloud) -eq 0 ]; then
-#  maybe_create $container $img_essentials
-#
-#  buildah copy --chown root $container $script_dir/assets/cloud.zsh /tmp/
-#  b /tmp/cloud.zsh && rm -f /tmp/cloud.zsh
-#  buildah commit $container $img_cloud
-#fi
-
-#
-#  b apt install -y --no-install-recommends doxygen graphviz ccache wget gnupg \
-#    lsb-release software-properties-common make autoconf automake
-#  b bash -c 'curl https://apt.llvm.org/llvm.sh | bash'
-#  b apt install -y --no-install-recommends libc++-dev libc++abi-dev clang-tidy-11
-#  b update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-11 100
-#  b update-alternatives --install /usr/bin/clang clang /usr/bin/clang-11 100
-#  b update-alternatives --install /usr/bin/clangd clangd /usr/bin/clangd-11 100
-#  b update-alternatives --install /usr/bin/cc cc /usr/bin/clang 100
-#  b update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
-#  b update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-11 100
-#
-#  b rm -rf /var/lib/apt/lists/*
-#  b apt remove -y software-properties-common
-#  b apt autoclean
-#
-#  buildah copy --chown root $container $script_dir/assets/native.zsh /tmp/
-#  b /tmp/native.zsh && rm -f /tmp/native.zsh
-#
-#  buildah commit $container $img_native
-#fi
-#
-## shellcheck disable=SC2046
-#if [ $(image_exists $img_build) -eq 0 ]; then
-#  maybe_create $container $img_native
-#
-#  b apt install -y --no-install-recommends openssh-server gdb rsync sudo
-#
-#  b mkdir -p /var/run/sshd
-#
-#  b bash -c 'echo "PasswordAuthentication yes" >> /etc/ssh/sshd_config && ssh-keygen -A'
-#  buildah config --port 22 $container
-#
-#  b bash -c 'useradd -m -d /home/builderboy -s /bin/bash -G sudo builderboy && echo "builderboy:builderboy" | chpasswd && \
-#          sed -i /etc/sudoers -re "s/^%sudo.*/%sudo ALL=(ALL:ALL) NOPASSWD: ALL/g" && \
-#          sed -i /etc/sudoers -re "s/^root.*/root ALL=(ALL:ALL) NOPASSWD: ALL/g" && \
-#          sed -i /etc/sudoers -re "s/^#includedir.*/## **Removed the include directive** ##/g" && \
-#          echo "foo ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers'
-#
-#  buildah config --entrypoint "/usr/sbin/sshd -D" $container
-#  buildah commit $container $img_build
-#fi
-
 # shellcheck disable=SC2046
-#if [ $(image_exists $img_cloud_theming) -eq 0 ]; then
-#  maybe_create $container $img_cloud
-#
-#  buildah copy --chown root $container $script_dir/assets /tmp
-#  b /tmp/theming.zsh && rm -f /tmp/*
-#  buildah commit $container $img_cloud_theming
-#fi
+if [ $(image_exists $img_cloud) -eq 0 ]; then
+  maybe_create $container $img_essentials
 
-#ARG BASE
-#FROM aimmspro/devenv-$BASE:latest
-#
-#ENV TERM=xterm-256color
-#ENV ENABLE_THEMING=YES
-#
-#COPY ../assets/logo.py /root/.logo.py
-#COPY MesloLGS* /usr/share/fonts/truetype/
-#RUN fc-cache -vf
-#COPY ../assets/.p10k.zsh /root/
-#COPY ../assets/theming.zsh /tmp/setup.zsh
-#RUN /tmp/setup.zsh && rm -f /tmp/setup.zsh
-#RUN zsh -c "source ~/.zshrc && info"
-#
-#CMD zsh
+  run_stage 04_cloud.sh
+
+  buildah commit $container $img_cloud
+fi
 
 buildah rm $container 2> /dev/null
 b_echo 'Done'

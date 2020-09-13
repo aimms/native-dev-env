@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -11,10 +11,10 @@ apt install -y --no-install-recommends openssh-server gdb rsync sudo gdbserver
 mkdir -p /var/run/sshd
 echo 'PasswordAuthentication yes' >> /etc/ssh/sshd_config && ssh-keygen -A
 
-# create our '$BUILD_USER' user
+# create our builderboy user
 useradd -m -d /home/$BUILD_USER -s /bin/bash -G sudo $BUILD_USER && echo "$BUILD_USER:$BUILD_USER" | chpasswd
 
-# let $BUILD_USER use sudo with requiring a password
+# let builderboy use sudo with requiring a password
 sed -i /etc/sudoers -re 's/^%sudo.*/%sudo ALL=(ALL:ALL) NOPASSWD: ALL/g'
 sed -i /etc/sudoers -re 's/^root.*/root ALL=(ALL:ALL) NOPASSWD: ALL/g'
 sed -i /etc/sudoers -re 's/^#includedir.*/## **Removed the include directive** ##"/g'
@@ -23,9 +23,8 @@ echo "$BUILD_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 chown root /var/run/sshd
 chmod 744 /var/run/sshd
 
-cp /root/.zshrc /home/$BUILD_USER
-chown $BUILD_USER /home/$BUILD_USER/.zshrc
-
+cp /root/.bashrc /home/$BUILD_USER
+chown $BUILD_USER /home/$BUILD_USER/.bashrc
 
 chmod -R 777 /usr/local/pyenv/shims
 chmod -R 777 /usr/bin/cmake

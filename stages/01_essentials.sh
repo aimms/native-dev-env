@@ -18,6 +18,8 @@ export PYENV_ROOT="/usr/local/pyenv"
 export PATH="${PYENV_ROOT}/bin:${PATH}"
 eval "$(pyenv init -)"
 pyenv rehash
-cp /host/assets/.zshrc ~/.zshrc
+
+cp /host/assets/bashrc.sh $HOME/.bashrc
+chown root:root $HOME/.bashrc
 
 apt autoremove -y && rm -rf /var/lib/apt/lists/*

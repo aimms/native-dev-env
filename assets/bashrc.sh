@@ -1,8 +1,13 @@
 export PYENV_ROOT="/usr/local/pyenv"
 export PATH="${PYENV_ROOT}/bin:${PATH}"
 
-alias vi-zshrc="vi ~/.zshrc"
-alias src-zshrc="source ~/.zshrc"
+if [ "$SHELL" == "/bin/zsh" ]; then
+  alias vi-zshrc="vi ~/.zshrc"
+  alias src-zshrc="source ~/.zshrc"
+else
+  alias vi-bashrc="vi ~/.bashrc"
+  alias src-bashrc="source ~/.bashrc"
+fi
 
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
@@ -32,7 +37,7 @@ function info_for_app() {
 main_info() {
   echo "${color_blue}Tools:"
 
-  info_for_app zsh
+  info_for_app $SHELL
   info_for_app python
   info_for_app pyenv
   info_for_app clang
