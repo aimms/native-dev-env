@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 export DEBIAN_FRONTEND=noninteractive
 
 BUILD_USER=builderboy

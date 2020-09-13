@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 export HOME=/root
 export DEBIAN_FRONTEND=noninteractive
 
@@ -23,12 +25,19 @@ apt update && apt install -y --no-install-recommends \
 
 /host/assets/update_alternatives.sh 11 100
 
-# shellcheck disable=SC1090
-source $HOME/.bashrc # pyenv & related
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+
+export PYENV_ROOT="/usr/local/pyenv"
+export PATH="${PYENV_ROOT}/bin:${PATH}"
 
 pyenv global system
 
-c dev && pyenv global dev
+pyenv virtualenv dev
+pyenv activate dev
+
+c dev
+pyenv global dev
 
 pip install cmake
 

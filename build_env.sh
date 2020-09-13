@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
+
+set -e
+
+
 if [[  "$1" == "-h" || "$1" == "--help" || $# -gt 1  ]]; then
     echo "Usage: $0 <version>"
     exit 1
 fi
+
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
@@ -42,7 +47,9 @@ maybe_create(){
 
   if [ -e $container_exists ]; then
     b_echo "(Re)creating container: $container from: $image"
+    set +e
     buildah rm $container 2> /dev/null
+    set -e
     container=$(buildah from --name $container $image)
     container_exists=1
   else
@@ -71,7 +78,7 @@ maybe_upload(){
 }
 
 run_stage(){
-    buildah unshare ./utils/buildah_run_in_chroot.sh $container ./stages/$1
+    buildah unshare ./utils/buildah_run_in_chroot.sh $container $script_dir ./stages/$1
 }
 
 # shellcheck disable=SC2046
@@ -88,7 +95,7 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   buildah config --env LANGUAGE=en_US:en $container
   buildah config --entrypoint "/usr/bin/zsh" $container
 
-  run_stage 00_fakeroot_mkmod.sh
+  run_stage 00_fakeroot_mknod.sh
   run_stage 01_essentials.sh
 
   buildah commit $container $img_essentials
@@ -128,6 +135,7 @@ if [ $(image_exists $img_cloud) -eq 0 ]; then
   buildah commit $container $img_cloud
 fi
 
+set +e
 buildah rm $container 2> /dev/null
 b_echo 'Done'
 

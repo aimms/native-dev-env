@@ -14,7 +14,12 @@ eval "$(pyenv virtualenv-init -)"
 
 alias a="pyenv activate"
 alias v="pyenv versions"
-alias c='(){ pyenv virtualenv $1 && pyenv activate $1 && pip install -U pip && pip install -U wheel && pip install -U setuptools ;}'
+function c()
+{ 
+	pyenv virtualenv $1 
+	pyenv activate $1 
+	pip install -U pip whell setuptools
+}
 
 if [[ "$ENABLE_THEMING" == "YES" ]]; then
     color_red="$fg[red]"

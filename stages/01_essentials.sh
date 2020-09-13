@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 export HOME=/root
 export DEBIAN_FRONTEND=noninteractive
 
