@@ -5,8 +5,8 @@ if [ "$SHELL" == "/bin/zsh" ]; then
   alias vi-zshrc="vi ~/.zshrc"
   alias src-zshrc="source ~/.zshrc"
 else
-  alias vi-bashrc="vi ~/.bashrc"
-  alias src-bashrc="source ~/.bashrc"
+  alias vi-bashrc="vi ~/.zshrc"
+  alias src-bashrc="source ~/.zshrc"
 fi
 
 eval "$(pyenv init -)"
@@ -14,11 +14,7 @@ eval "$(pyenv virtualenv-init -)"
 
 alias a="pyenv activate"
 alias v="pyenv versions"
-function c()
-{ 
-	pyenv virtualenv $1 
-	pyenv activate $1 
-	pip install -U pip whell setuptools
+alias c()='{pyenv virtualenv $1 && pyenv activate $1 && pip install -U pip && pip install - U whell setuptools ; }'
 }
 
 if [[ "$ENABLE_THEMING" == "YES" ]]; then

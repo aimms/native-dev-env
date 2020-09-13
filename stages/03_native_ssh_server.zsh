@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 set -e
 
@@ -25,8 +25,8 @@ echo "$BUILD_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 chown root /var/run/sshd
 chmod 744 /var/run/sshd
 
-cp /root/.bashrc /home/$BUILD_USER
-chown $BUILD_USER /home/$BUILD_USER/.bashrc
+cp /root/.zshrc /home/$BUILD_USER
+chown $BUILD_USER /home/$BUILD_USER/.zshrc
 
 chmod -R 777 /usr/local/pyenv/shims
 chmod -R 777 /usr/bin/cmake

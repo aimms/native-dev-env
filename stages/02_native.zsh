@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 set -e
 
@@ -25,26 +25,10 @@ apt update && apt install -y --no-install-recommends \
 
 /host/assets/update_alternatives.sh 11 100
 
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
-export PYENV_ROOT="/usr/local/pyenv"
-export PATH="${PYENV_ROOT}/bin:${PATH}"
-
-pyenv global system
-
-pyenv virtualenv dev
-pyenv activate dev
-
 c dev
 pyenv global dev
-
-pip install cmake
-
+pip install conan ninja cmake
 ln -s /usr/local/pyenv/shims/cmake /usr/bin/cmake
-
-pip install ninja
-pip install conan
 
 mkdir -p $HOME/.conan
 # allowing conan to use latest clang

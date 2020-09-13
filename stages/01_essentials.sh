@@ -7,7 +7,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 # install basic tools
 apt update && apt upgrade -y && apt install -y --no-install-recommends \
-    zsh zsh vim wget git zip unzip python-is-python3 python3-venv locales fakeroot
+    zsh vim wget git zip unzip python-is-python3 python3-venv locales fakeroot
 
 # generate locales
 sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -21,7 +21,7 @@ export PATH="${PYENV_ROOT}/bin:${PATH}"
 eval "$(pyenv init -)"
 pyenv rehash
 
-cp /host/assets/bashrc.sh $HOME/.bashrc
-chown root:root $HOME/.bashrc
+cp /host/assets/.zshrc $HOME/.zshrc
+chown root:root $HOME/.zshrc
 
 apt autoremove -y && rm -rf /var/lib/apt/lists/*

@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
 
 # shellcheck disable=SC1090
-source ~/.bashrc # pyenv & related
+source ~/.zshrc # pyenv & related
 
 pyenv global $PYTHON_VERSION && c az && pyenv global az
 pip install azure-cli
@@ -23,7 +23,6 @@ rm -f $terraform_zip
 popd || exit
 
 
-cp /host/assets/logo.py $HOME/.logo.py
-cat /host/assets/cloud_bashrc.sh >> $HOME/.bashrc
+cat /host/assets/.zshrc_cloud >> $HOME/.zshrc
 
 
