@@ -26,11 +26,11 @@ img_essentials=$pfx-essentials
 
 img_native_base=$pfx-native-base
 img_native=$pfx-native
-#img_native_theming=$pfx-native-theming
+img_native_theming=$pfx-native-theming
 img_native_ssh_server=$pfx-native-ssh-server
 
 img_cloud=$pfx-cloud
-#img_cloud_theming=$pfx-cloud-theming
+img_cloud_theming=$pfx-cloud-theming
 
 b_echo(){
   # shellcheck disable=SC2145
@@ -134,9 +134,22 @@ if [ $(image_exists $img_native) -eq 0 ]; then
 fi
 maybe_upload $img_native
 
+# shellcheck disable=SC2046
+if [ $(image_exists $img_native_theming) -eq 0 ]; then
+  maybe_create $container $img_native $img_native_theming
+
+  buildah config --env ENABLE_THEMING=yes $container
+  buildah config --entrypoint /bin/zsh $container
+
+  run_stage 06_theming.zsh
+
+  buildah commit $container $img_native_theming
+fi
+maybe_upload $img_native
+
 #shellcheck disable=SC2046
 if [ $(image_exists $img_native_ssh_server) -eq 0 ]; then
-  maybe_create $container $img_native $img_native_ssh_server
+  create $container $img_native $img_native_ssh_server
 
   buildah config --entrypoint "/usr/sbin/sshd -D" $container
   buildah config --port 22 $container
@@ -157,6 +170,15 @@ if [ $(image_exists $img_cloud) -eq 0 ]; then
 fi
 
 
+# shellcheck disable=SC2046
+if [ $(image_exists $img_cloud_theming) -eq 0 ]; then
+  maybe_create $container $img_cloud $img_cloud_theming
+
+  run_stage 06_theming.zsh
+
+  buildah commit $container $img_cloud_theming
+fi
+maybe_upload $img_cloud
 
 set +e
 buildah rm $container 2> /dev/null

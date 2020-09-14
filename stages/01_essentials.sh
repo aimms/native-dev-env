@@ -2,7 +2,6 @@
 
 set -e
 
-export HOME=/root
 export DEBIAN_FRONTEND=noninteractive
 
 # install basic tools

@@ -10,10 +10,10 @@ cloud_info() {
     python3 $HOME/.logo.py
   fi
 
-  echo " ${color_red}OS: ${color_blue}`uname -a`"
+  echo " ${color_red}OS: ${color_blue}$(uname -a)"
   echo "${color_blue}Welcome to ${color_red}AIMMS ${color_blue}development environment. Tools installed:"
   info_for_app curl
-  echo " ${color_red}vim:\n  ${color_blue} `vim --version | head -1`"
+  echo " ${color_red}vim:\n  ${color_blue} $(vim --version | head -1)"
   info_for_app git
   info_for_app tmux -V
   info_for_app ssh -V
@@ -34,20 +34,10 @@ alias_info() {
   echo "${color_red}v:${color_blue} lists installed virtual envs and Python versions"
 }
 
-print_help_msg(){
-  echo "\n${color_blue}Type ${color_red}'info' ${color_blue}for the image information."
-
-  # clear color_blue
-  echo -e "\033[0m"
-}
-
 info(){
   cloud_info
   native_info
   alias_info
-  print_help_msg
 }
-
-#print_help_msg
 
 

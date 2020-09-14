@@ -2,7 +2,6 @@
 
 set -e
 
-export HOME=/root
 export DEBIAN_FRONTEND=noninteractive
 
 apt update && apt upgrade -y

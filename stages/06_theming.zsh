@@ -1,12 +1,17 @@
 #!/bin/zsh
 
+echo "!!!!HOME=$HOME"
+
+cp $HOME/.bashrc $HOME/.zshrc
+cp /host/assets/.p10k.zsh $HOME/
+
 # shellcheck disable=SC1090
-source $HOME/.bashrc
+source $HOME/.zshrc
 pip install sty
 
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+sh -c "ZSH=$HOME/.oh-my-zsh $(wget -O - https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh) --unattended"
 powerlevel="powerlevel10k\\/powerlevel10k"
-sed -i "s/robbyrussell/$powerlevel/g" $HOME/.bashrc
+sed -i "s/robbyrussell/$powerlevel/g" $HOME/.zshrc
 
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 
@@ -20,15 +25,14 @@ fi
 
 EOF
 
-cat << EOF > $HOME/.bashrc
+cat << EOF > $HOME/.zshrc
 
 $header
-$(<$HOME/.bashrc)
+$(<$HOME/.zshrc)
 
-$(<$HOME/.bashrc.pre-oh-my-zsh)
 EOF
 
-cat << 'EOF' >> $HOME/.bashrc
+cat << 'EOF' >> $HOME/.zshrc
 # zsh plugins
 plugins=(
   git
@@ -44,14 +48,12 @@ plugins=(
   tmux
 )
 
-# To customize prompt, run `p10k configure` or edit $HOME/.p10k.zsh.
+# To customize prompt, run 'p10k configure' or edit $HOME/.p10k.zsh.
 [[ ! -f $HOME/.p10k.zsh ]] || source $HOME/.p10k.zsh
 EOF
 
-rm -f $HOME/.bashrc.pre-oh-my-zsh
 
-# shellcheck disable=SC1090
-source $HOME/.bashrc
+source $HOME/.zshrc
 
 pushd /root/.oh-my-zsh/custom/themes/powerlevel10k/gitstatus || exit
 

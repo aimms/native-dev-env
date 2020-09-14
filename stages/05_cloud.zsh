@@ -2,8 +2,6 @@
 
 set -e
 
-export HOME=/root
-
 # shellcheck disable=SC1090
 source $HOME/.bashrc
 
@@ -28,6 +26,5 @@ popd || exit
 
 
 cat /host/assets/.bashrc_cloud >> $HOME/.bashrc
-cat /host/assets/.bashrc_cloud >> $HOME/.zshrc
 
 

@@ -27,14 +27,14 @@ _Docker_: https://www.docker.com
 
 ### Basic
 ~~~~
-docker run -v`pwd`:/code -it aimmspro/devenv-native
+docker run -v$(pwd):/code -it aimmspro/devenv-native
 ~~~~
 ### With zsh plugins and coloring
 
 Using https://github.com/ohmyzsh/ohmyzsh
 
 ~~~~
-docker run -v`pwd`:/code -it aimmspro/devenv-native-ohmyzsh
+docker run -v$(pwd):/code -it aimmspro/devenv-native-ohmyzsh
 ~~~~
 
 ## Building locally

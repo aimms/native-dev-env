@@ -2,8 +2,6 @@
 
 set -e
 
-export HOME=/root
-
 # shellcheck disable=SC1090
 source $HOME/.bashrc
 

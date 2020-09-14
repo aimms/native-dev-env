@@ -23,6 +23,6 @@ cp /etc/resolv.conf $mnt/etc/
 mkdir -p $mnt/host
 mount --bind $script_dir $mnt/host
 
-chroot $mnt /host/$payload "$@"
+chroot $mnt bash -c "HOME=/root ; /host/$payload $@"
 umount $mnt/host
 buildah unmount $container

@@ -52,15 +52,14 @@ main_info() {
   fi
 }
 
-print_help_msg(){
-  echo "\n${color_blue}Type ${color_red}'info' ${color_blue}for the image information."
-
-  # clear color_blue
-  if [[ "$ENABLE_THEMING" == "YES" ]]; then
-    echo -e "\033[0m"
-  fi
-}
-
 info(){
     main_info
 }
+
+echo "\n${color_blue}Type ${color_red}'info' ${color_blue}for the image information."
+
+# clear color_blue
+if [[ "$ENABLE_THEMING" == "YES" ]]; then
+  echo -e "\033[0m"
+fi
+
