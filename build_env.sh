@@ -138,7 +138,8 @@ maybe_upload $img_native
 if [ $(image_exists $img_native_theming) -eq 0 ]; then
   maybe_create $container $img_native $img_native_theming
 
-  buildah config --env ENABLE_THEMING=yes $container
+  buildah config --env ENABLE_THEMING=YES $container
+  buildah config --env TERM=xterm-256color $container
   buildah config --entrypoint /bin/zsh $container
 
   run_stage 06_theming.zsh
@@ -173,6 +174,10 @@ fi
 # shellcheck disable=SC2046
 if [ $(image_exists $img_cloud_theming) -eq 0 ]; then
   maybe_create $container $img_cloud $img_cloud_theming
+
+  buildah config --env ENABLE_THEMING=YES $container
+  buildah config --env TERM=xterm-256color $container
+  buildah config --entrypoint /bin/zsh $container
 
   run_stage 06_theming.zsh
 
