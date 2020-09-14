@@ -17,14 +17,6 @@ fakeroot -- mknod -m 666 /dev/tty c 5 0
 fakeroot -- mknod -m 444 /dev/random c 1 8
 fakeroot -- mknod -m 444 /dev/urandom c 1 9
 
-fakeroot -- ln -sv /proc/self/fd /dev/fd
-fakeroot -- ln -sv /proc/self/fd/0 /dev/stdin
-fakeroot -- ln -sv /proc/self/fd/1 /dev/stdout
-fakeroot -- ln -sv /proc/self/fd/2 /dev/stderr
-fakeroot -- ln -sv /proc/kcore /dev/core
-fakeroot -- mkdir -v /dev/pts
-fakeroot -- mkdir -v /dev/shm
-
 # install basic tools
 apt upgrade -y && apt install -y --no-install-recommends \
     zsh vim wget curl git zip unzip python-is-python3 python3-venv locales fakeroot

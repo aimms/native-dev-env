@@ -1,5 +1,13 @@
 #!/usr/bin/env zsh
 
+set -e
+
+# shellcheck disable=SC1090
+source $HOME/.bashrc
+
+a dev
+pip install sty
+
 curl -sfL git.io/antibody | sh -s - -b /usr/local/bin
 
 cat << 'EOF' >> $HOME/.zshrc
@@ -21,8 +29,3 @@ chown root:root $HOME/.p10k.zsh
 chown -R root:root /usr/share/fonts
 
 fc-cache -vf
-
-# shellcheck disable=SC1090
-source $HOME/.zshrc
-
-pip install sty
