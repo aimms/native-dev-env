@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-
 set -e
-
 
 if [[  "$1" == "-h" || "$1" == "--help" || $# -gt 1  ]]; then
     echo "Usage: $0 <version>"
@@ -106,8 +104,7 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   buildah config --env LANGUAGE=en_US:en $container
   buildah config --entrypoint /bin/bash $container
 
-  run_stage 00_fakeroot_mknod.sh
-  run_stage 01_essentials.sh
+  run_stage 00_essentials.sh
 
   buildah commit $container $img_essentials
 fi
@@ -117,7 +114,7 @@ maybe_upload $img_essentials
 if [ $(image_exists $img_native_base) -eq 0 ]; then
   maybe_create $container $img_essentials
 
-  run_stage 02_native_base.sh
+  run_stage 01_native_base.sh
 
   buildah commit $container $img_native_base
 fi
@@ -128,34 +125,35 @@ maybe_upload $img_native_base
 if [ $(image_exists $img_native) -eq 0 ]; then
   maybe_create $container $img_native_base $img_native
 
-  run_stage 03_native.zsh
+  run_stage 02_native.zsh
 
   buildah commit $container $img_native
 fi
 maybe_upload $img_native
 
-# shellcheck disable=SC2046
-if [ $(image_exists $img_native_theming) -eq 0 ]; then
-  maybe_create $container $img_native $img_native_theming
-
-  buildah config --env ENABLE_THEMING=YES $container
-  buildah config --env TERM=xterm-256color $container
-  buildah config --entrypoint /bin/zsh $container
-
-  run_stage 06_theming.zsh
-
-  buildah commit $container $img_native_theming
-fi
-maybe_upload $img_native
+## shellcheck disable=SC2046
+#if [ $(image_exists $img_native_theming) -eq 0 ]; then
+#  maybe_create $container $img_native $img_native_theming
+#
+#  buildah config --env DEVENV_THEMING=1 $container
+#  buildah config --env TERM=xterm-256color $container
+#  buildah config --entrypoint /bin/zsh $container
+#
+#  run_stage 05_theming.zsh
+#
+#  buildah commit $container $img_native_theming
+#fi
+#maybe_upload $img_native
 
 #shellcheck disable=SC2046
 if [ $(image_exists $img_native_ssh_server) -eq 0 ]; then
   create $container $img_native $img_native_ssh_server
 
+  buildah config --env DEVENV_SSH_SERVER=1 $container
   buildah config --entrypoint "/usr/sbin/sshd -D" $container
   buildah config --port 22 $container
 
-  run_stage 04_native_ssh_server.zsh
+  run_stage 03_native_ssh_server.zsh
 
   buildah commit $container $img_native_ssh_server
 fi
@@ -165,25 +163,25 @@ maybe_upload $img_native_ssh_server
 if [ $(image_exists $img_cloud) -eq 0 ]; then
   create $container $img_essentials
 
-  run_stage 05_cloud.zsh
+  run_stage 04_cloud.zsh
 
   buildah commit $container $img_cloud
 fi
 
 
-# shellcheck disable=SC2046
-if [ $(image_exists $img_cloud_theming) -eq 0 ]; then
-  maybe_create $container $img_cloud $img_cloud_theming
-
-  buildah config --env ENABLE_THEMING=YES $container
-  buildah config --env TERM=xterm-256color $container
-  buildah config --entrypoint /bin/zsh $container
-
-  run_stage 06_theming.zsh
-
-  buildah commit $container $img_cloud_theming
-fi
-maybe_upload $img_cloud
+## shellcheck disable=SC2046
+#if [ $(image_exists $img_cloud_theming) -eq 0 ]; then
+#  maybe_create $container $img_cloud $img_cloud_theming
+#
+#  buildah config --env DEVENV_THEMING=YES $container
+#  buildah config --env TERM=xterm-256color $container
+#  buildah config --entrypoint /bin/zsh $container
+#
+#  run_stage 06_theming.zsh
+#
+#  buildah commit $container $img_cloud_theming
+#fi
+#maybe_upload $img_cloud
 
 set +e
 buildah rm $container 2> /dev/null

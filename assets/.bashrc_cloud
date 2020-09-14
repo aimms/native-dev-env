@@ -6,7 +6,7 @@ source <(kubectl completion zsh)
 
 
 cloud_info() {
-  if [[ "$ENABLE_THEMING" == "YES" ]]; then
+  if [ ! -e $DEVENV_THEMING ]; then
     python3 $HOME/.logo.py
   fi
 
@@ -24,7 +24,7 @@ cloud_info() {
 }
 
 alias_info() {
-  echo "\nAlias Information:\n"
+  echo "Alias Information:\n"
 
   echo "${color_red}vi-zshrc:${color_blue} vi $HOME/.bashrc "
   echo "${color_red}src-zshrc:${color_blue} source $HOME/.bashrc "
@@ -39,5 +39,3 @@ info(){
   native_info
   alias_info
 }
-
-

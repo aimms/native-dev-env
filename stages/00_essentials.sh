@@ -4,8 +4,16 @@ set -e
 
 export DEBIAN_FRONTEND=noninteractive
 
+apt update
+apt install -y --no-install-recommends fakeroot
+
+fakeroot -- mknod /dev/null c 1 3
+fakeroot -- mknod /dev/zero c 1 5
+fakeroot -- mknod /dev/random c 1 8
+fakeroot -- mknod /dev/urandom c 1 9
+
 # install basic tools
-apt update && apt upgrade -y && apt install -y --no-install-recommends \
+apt upgrade -y && apt install -y --no-install-recommends \
     zsh vim wget git zip unzip python-is-python3 python3-venv locales fakeroot
 
 chsh -s /bin/bash

@@ -24,7 +24,6 @@ unzip $terraform_zip
 rm -f $terraform_zip
 popd || exit
 
-
 cat /host/assets/.bashrc_cloud >> $HOME/.bashrc
 
 
