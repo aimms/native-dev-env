@@ -1,12 +1,13 @@
 #!/usr/bin/env zsh
 
-# shellcheck disable=SC1090
-source ~/.zshrc # pyenv & related
+export HOME=/root
 
-pyenv global $PYTHON_VERSION && c az && pyenv global az
-pip install azure-cli
-pip install jmespath
-pip install typed-argument-parser
+# shellcheck disable=SC1090
+source $HOME/.bashrc
+
+c az
+pyenv global az
+pip install azure-cli jmespath typed-argument-parser
 
 # shellcheck disable=SC2046
 curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl && \
@@ -23,6 +24,7 @@ rm -f $terraform_zip
 popd || exit
 
 
-cat /host/assets/.zshrc_cloud >> $HOME/.zshrc
+cat /host/assets/.bashrc_cloud >> $HOME/.bashrc
+cat /host/assets/.bashrc_cloud >> $HOME/.zshrc
 
 

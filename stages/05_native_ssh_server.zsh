@@ -25,8 +25,8 @@ echo "$BUILD_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 chown root /var/run/sshd
 chmod 744 /var/run/sshd
 
-cp /root/.zshrc /home/$BUILD_USER
-chown $BUILD_USER /home/$BUILD_USER/.zshrc
+cp /root/.bashrc /home/$BUILD_USER
+chown $BUILD_USER /home/$BUILD_USER/.bashrc
 
 chmod -R 777 /usr/local/pyenv/shims
 chmod -R 777 /usr/bin/cmake
@@ -35,7 +35,5 @@ mkdir -p /home/$BUILD_USER/.conan
 # allowing conan to use latest clang
 cp /host/assets/settings.yml /home/$BUILD_USER/.conan
 chown -R $BUILD_USER /home/$BUILD_USER/.conan
-
-chsh -s /bin/zsh $BUILD_USER
 
 apt autoremove -y && rm -rf /var/lib/apt/lists/*

@@ -23,7 +23,7 @@
   emulate -L zsh -o extended_glob
 
   # Unset all configuration options. This allows you to apply configuration changes without
-  # restarting zsh. Edit ~/.p10k.zsh and type `source ~/.p10k.zsh`.
+  # restarting zsh. Edit $HOME/.p10k.zsh and type `source $HOME/.p10k.zsh`.
   unset -m '(POWERLEVEL9K_*|DEFAULT_USER)~POWERLEVEL9K_GITSTATUS_DIR'
 
   # Zsh >= 5.1 is required.
@@ -298,11 +298,11 @@
   # For example, given these settings:
   #
   #   typeset -g POWERLEVEL9K_DIR_CLASSES=(
-  #     '~/work(|/*)'  WORK     ''
+  #     '$HOME/work(|/*)'  WORK     ''
   #     '~(|/*)'       HOME     ''
   #     '*'            DEFAULT  '')
   #
-  # Whenever the current directory is ~/work or a subdirectory of ~/work, it gets styled with class
+  # Whenever the current directory is $HOME/work or a subdirectory of $HOME/work, it gets styled with class
   # WORK or WORK_NOT_WRITABLE.
   #
   # Simply assigning classes to directories don't have any visible effects. It merely gives you an
@@ -1106,7 +1106,7 @@
   #
   #   shell:  version is set by STACK_YAML
   #   local:  version is set by stack.yaml up the directory tree
-  #   global: version is set by the implicit global project (~/.stack/global-project/stack.yaml)
+  #   global: version is set by the implicit global project ($HOME/.stack/global-project/stack.yaml)
   typeset -g POWERLEVEL9K_HASKELL_STACK_SOURCES=(shell local)
   # If set to false, hide haskell version if it's the same as in the implicit global project.
   typeset -g POWERLEVEL9K_HASKELL_STACK_ALWAYS_SHOW=true

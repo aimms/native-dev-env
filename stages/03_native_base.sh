@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/usr/bin/env bash
 
 set -e
 
@@ -24,14 +24,3 @@ apt update && apt install -y --no-install-recommends \
       libc++1-11 libc++abi-11-dev libc++abi1-11 libclang1-11 lld-11 llvm-11-runtime llvm-11
 
 /host/assets/update_alternatives.sh 11 100
-
-c dev
-pyenv global dev
-pip install conan ninja cmake
-ln -s /usr/local/pyenv/shims/cmake /usr/bin/cmake
-
-mkdir -p $HOME/.conan
-# allowing conan to use latest clang
-cp /host/assets/conan_settings.yml $HOME/.conan/settings.yml
-
-apt autoremove -y && rm -rf /var/lib/apt/lists/*

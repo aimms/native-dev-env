@@ -7,7 +7,7 @@ source <(kubectl completion zsh)
 
 cloud_info() {
   if [[ "$ENABLE_THEMING" == "YES" ]]; then
-    python3 ~/.logo.py
+    python3 $HOME/.logo.py
   fi
 
   echo " ${color_red}OS: ${color_blue}`uname -a`"
@@ -26,9 +26,9 @@ cloud_info() {
 alias_info() {
   echo "\nAlias Information:\n"
 
-  echo "${color_red}vi-zshrc:${color_blue} vi ~/.zshrc "
-  echo "${color_red}src-zshrc:${color_blue} source ~/.zshrc "
-  echo "${color_red}vi-zshrc:${color_blue} vi ~/.zshrc "
+  echo "${color_red}vi-zshrc:${color_blue} vi $HOME/.bashrc "
+  echo "${color_red}src-zshrc:${color_blue} source $HOME/.bashrc "
+  echo "${color_red}vi-zshrc:${color_blue} vi $HOME/.bashrc "
   echo "${color_red}c <env>:${color_blue} creates and activates new virtualenv with the name <env>"
   echo "${color_red}a <env>:${color_blue} activates virtualenv with the name <env>"
   echo "${color_red}v:${color_blue} lists installed virtual envs and Python versions"

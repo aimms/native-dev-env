@@ -24,6 +24,7 @@ container=build
 pfx=aimmspro/devenv
 img_essentials=$pfx-essentials
 
+img_native_base=$pfx-native-base
 img_native=$pfx-native
 #img_native_theming=$pfx-native-theming
 img_native_ssh_server=$pfx-native-ssh-server
@@ -39,9 +40,9 @@ b_echo(){
 b_echo "Building devenv images"
 
 maybe_create(){
-  container=$1
-  image=$2
-  image_from=$3
+  local container=$1
+  local image=$2
+  local image_from=$3
 
   b_echo "Building image: $image_from"
 
@@ -59,12 +60,17 @@ maybe_create(){
 }
 
 image_exists(){
-  image=$1
-  if [ "$(buildah images --format '{{.Name}}' | grep $1)" != "" ]; then
-    echo 1
-  else
-    echo 0
-  fi
+  local image=$1
+
+  for img in $(buildah images --format "{{.Name}}")
+  do
+    if [[ "$img" == "localhost/$image" ]]; then
+      echo 1
+      return
+    fi
+  done
+
+  echo 0
 }
 
 maybe_upload(){
@@ -103,37 +109,48 @@ fi
 maybe_upload $img_essentials
 
 # shellcheck disable=SC2046
-if [ $(image_exists $img_native) -eq 0 ]; then
-  maybe_create $container $img_essentials $img_native
+if [ $(image_exists $img_cloud) -eq 0 ]; then
+  maybe_create $container $img_essentials
 
-  run_stage 02_native.zsh
+  run_stage 02_cloud.sh
+
+  buildah commit $container $img_cloud
+fi
+
+# shellcheck disable=SC2046
+if [ $(image_exists $img_native_base) -eq 0 ]; then
+  maybe_create $container $img_essentials $img_native_base
+
+  run_stage 03_native_base.sh
+
+  buildah commit $container $img_native_base
+fi
+maybe_upload $img_native_base
+
+
+# shellcheck disable=SC2046
+if [ $(image_exists $img_native) -eq 0 ]; then
+  maybe_create $container $img_native_base $img_native
+
+  run_stage 04_native.zsh
 
   buildah commit $container $img_native
 fi
 maybe_upload $img_native
 
-# shellcheck disable=SC2046
-#if [ $(image_exists $img_native_ssh_server) -eq 0 ]; then
-#  maybe_create $container $img_native $img_native_ssh_server
-#
-#  buildah config --entrypoint "/usr/sbin/sshd -D" $container
-#  buildah config --port 22 $container
-#
-#  run_stage 03_native_ssh_server.sh
-#
-#  buildah commit $container $img_native_ssh_server
-#fi
-#maybe_upload $img_native_ssh_server
-#
-#
-## shellcheck disable=SC2046
-#if [ $(image_exists $img_cloud) -eq 0 ]; then
-#  maybe_create $container $img_essentials
-#
-#  run_stage 04_cloud.sh
-#
-#  buildah commit $container $img_cloud
-#fi
+#shellcheck disable=SC2046
+if [ $(image_exists $img_native_ssh_server) -eq 0 ]; then
+  maybe_create $container $img_native $img_native_ssh_server
+
+  buildah config --entrypoint "/usr/sbin/sshd -D" $container
+  buildah config --port 22 $container
+
+  run_stage 05_native_ssh_server.sh
+
+  buildah commit $container $img_native_ssh_server
+fi
+maybe_upload $img_native_ssh_server
+
 
 set +e
 buildah rm $container 2> /dev/null
