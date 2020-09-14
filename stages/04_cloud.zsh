@@ -9,12 +9,8 @@ c az
 pyenv global az
 pip install azure-cli jmespath typed-argument-parser
 
-# shellcheck disable=SC2046
-release=$(wget -O - https://storage.googleapis.com/kubernetes-release/release/stable.txt | cat -)
-wget https://storage.googleapis.com/kubernetes-release/release/$release/bin/linux/amd64/kubectl && \
-    chmod +x ./kubectl && \
-    mv ./kubectl /usr/bin/kubectl && \
-    echo "kubectl version: $(kubectl version --client)"
+apt update && apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+apt install -y kubectl
 
 pushd /usr/bin || exit
 tf_version=0.12.28

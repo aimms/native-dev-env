@@ -102,6 +102,7 @@ if [ $(image_exists $img_essentials) -eq 0 ]; then
   buildah config --env LANG=en_US.utf8 $container
   buildah config --env LC_ALL=en_US.UTF-8 $container
   buildah config --env LANGUAGE=en_US:en $container
+  buildah config --env TERM=xterm-256color $container
   buildah config --entrypoint /bin/bash $container
 
   run_stage 00_essentials.sh
@@ -131,19 +132,18 @@ if [ $(image_exists $img_native) -eq 0 ]; then
 fi
 maybe_upload $img_native
 
-## shellcheck disable=SC2046
-#if [ $(image_exists $img_native_theming) -eq 0 ]; then
-#  maybe_create $container $img_native $img_native_theming
-#
-#  buildah config --env DEVENV_THEMING=1 $container
-#  buildah config --env TERM=xterm-256color $container
-#  buildah config --entrypoint /bin/zsh $container
-#
-#  run_stage 05_theming.zsh
-#
-#  buildah commit $container $img_native_theming
-#fi
-#maybe_upload $img_native
+# shellcheck disable=SC2046
+if [ $(image_exists $img_native_theming) -eq 0 ]; then
+  maybe_create $container $img_native $img_native_theming
+
+  buildah config --env DEVENV_THEMING=1 $container
+  buildah config --entrypoint /bin/zsh $container
+
+  run_stage 05_theming.zsh
+
+  buildah commit $container $img_native_theming
+fi
+maybe_upload $img_native
 
 #shellcheck disable=SC2046
 if [ $(image_exists $img_native_ssh_server) -eq 0 ]; then

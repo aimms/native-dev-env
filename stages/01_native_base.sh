@@ -5,16 +5,12 @@ set -e
 export DEBIAN_FRONTEND=noninteractive
 
 apt update && apt upgrade -y
-apt install -y --no-install-recommends gnupg ca-certificates wget fakeroot
+apt install -y --no-install-recommends gnupg ca-certificates software-properties-common
 
 # add latest clang / llvm repo
-fakeroot --  mknod -m 666 /dev/null c 1 3
 wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
 
-cat << EOF >> /etc/apt/sources.list
-deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main
-deb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main
-EOF
+apt-add-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main"
 
 # installing dev tools
 apt update && apt install -y --no-install-recommends \
