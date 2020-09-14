@@ -33,7 +33,7 @@ chmod -R 777 /usr/bin/cmake
 
 mkdir -p /home/$BUILD_USER/.conan
 # allowing conan to use latest clang
-cp /host/assets/settings.yml /home/$BUILD_USER/.conan
+cp /host/assets/conan_settings.yml /home/$BUILD_USER/.conan/settings.yml
 chown -R $BUILD_USER /home/$BUILD_USER/.conan
 
 apt autoremove -y && rm -rf /var/lib/apt/lists/*

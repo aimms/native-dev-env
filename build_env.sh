@@ -39,20 +39,26 @@ b_echo(){
 
 b_echo "Building devenv images"
 
+create(){
+  local container=$1
+  local image=$2
+
+  b_echo "Creating container: $container from: $image"
+  set +e
+  buildah rm $container 2> /dev/null
+  set -e
+  container=$(buildah from --name $container $image)
+  container_exists=1
+}
+
 maybe_create(){
   local container=$1
   local image=$2
-  local image_from=$3
 
-  b_echo "Building image: $image_from"
+  b_echo "Building image: $image"
 
   if [ -e $container_exists ]; then
-    b_echo "(Re)creating container: $container from: $image"
-    set +e
-    buildah rm $container 2> /dev/null
-    set -e
-    container=$(buildah from --name $container $image)
-    container_exists=1
+    create $container $image $image
   else
     b_echo "Using existing container: $container"
   fi
@@ -89,17 +95,16 @@ run_stage(){
 
 # shellcheck disable=SC2046
 if [ $(image_exists $img_essentials) -eq 0 ]; then
-  maybe_create $container $os $img_essentials
+  create $container $os $img_essentials
 
   buildah config --author "AIMMS B.V. <developer@aimms.com>" $container
   buildah config --env DEBIAN_FRONTEND=noninteractive $container
   buildah config --env GIT_EDITOR=vim $container
   buildah config --env PYENV_VIRTUALENV_DISABLE_PROMPT=1 $container
-  buildah config --entrypoint /bin/zsh $container
   buildah config --env LANG=en_US.utf8 $container
   buildah config --env LC_ALL=en_US.UTF-8 $container
   buildah config --env LANGUAGE=en_US:en $container
-  buildah config --entrypoint "/usr/bin/zsh" $container
+  buildah config --entrypoint /bin/bash $container
 
   run_stage 00_fakeroot_mknod.sh
   run_stage 01_essentials.sh
@@ -109,19 +114,10 @@ fi
 maybe_upload $img_essentials
 
 # shellcheck disable=SC2046
-if [ $(image_exists $img_cloud) -eq 0 ]; then
+if [ $(image_exists $img_native_base) -eq 0 ]; then
   maybe_create $container $img_essentials
 
-  run_stage 02_cloud.sh
-
-  buildah commit $container $img_cloud
-fi
-
-# shellcheck disable=SC2046
-if [ $(image_exists $img_native_base) -eq 0 ]; then
-  maybe_create $container $img_essentials $img_native_base
-
-  run_stage 03_native_base.sh
+  run_stage 02_native_base.sh
 
   buildah commit $container $img_native_base
 fi
@@ -132,7 +128,7 @@ maybe_upload $img_native_base
 if [ $(image_exists $img_native) -eq 0 ]; then
   maybe_create $container $img_native_base $img_native
 
-  run_stage 04_native.zsh
+  run_stage 03_native.zsh
 
   buildah commit $container $img_native
 fi
@@ -145,11 +141,21 @@ if [ $(image_exists $img_native_ssh_server) -eq 0 ]; then
   buildah config --entrypoint "/usr/sbin/sshd -D" $container
   buildah config --port 22 $container
 
-  run_stage 05_native_ssh_server.sh
+  run_stage 04_native_ssh_server.zsh
 
   buildah commit $container $img_native_ssh_server
 fi
 maybe_upload $img_native_ssh_server
+
+# shellcheck disable=SC2046
+if [ $(image_exists $img_cloud) -eq 0 ]; then
+  create $container $img_essentials
+
+  run_stage 05_cloud.zsh
+
+  buildah commit $container $img_cloud
+fi
+
 
 
 set +e
