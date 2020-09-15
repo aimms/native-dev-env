@@ -5,12 +5,14 @@ set -e
 # shellcheck disable=SC1090
 source $HOME/.bashrc
 
+apt update
+apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+apt install -y kubectl
+
 c az
 pyenv global az
 pip install azure-cli jmespath typed-argument-parser
 
-apt update && apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
-apt install -y kubectl
 
 pushd /usr/bin || exit
 tf_version=0.12.28

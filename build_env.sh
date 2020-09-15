@@ -133,40 +133,40 @@ fi
 maybe_upload $img_native
 
 # shellcheck disable=SC2046
-if [ $(image_exists $img_native_theming) -eq 0 ]; then
-  maybe_create $container $img_native $img_native_theming
-
-  buildah config --env DEVENV_THEMING=1 $container
-
-  run_stage 05_theming.zsh
-
-  buildah config --entrypoint /bin/zsh $container
-  buildah commit $container $img_native_theming
-fi
-maybe_upload $img_native_theming
+#if [ $(image_exists $img_native_theming) -eq 0 ]; then
+#  maybe_create $container $img_native $img_native_theming
+#
+#  buildah config --env DEVENV_THEMING=1 $container
+#
+#  run_stage 05_theming.zsh
+#
+#  buildah config --entrypoint /bin/zsh $container
+#  buildah commit $container $img_native_theming
+#fi
+#maybe_upload $img_native_theming
 
 #shellcheck disable=SC2046
-#if [ $(image_exists $img_native_ssh_server) -eq 0 ]; then
-#  create $container $img_native $img_native_ssh_server
-#
-#  buildah config --env DEVENV_SSH_SERVER=1 $container
-#  buildah config --entrypoint "/usr/sbin/sshd -D" $container
-#  buildah config --port 22 $container
-#
-#  run_stage 03_native_ssh_server.zsh
-#
-#  buildah commit $container $img_native_ssh_server
-#fi
-#maybe_upload $img_native_ssh_server
+if [ $(image_exists $img_native_ssh_server) -eq 0 ]; then
+  create $container $img_native $img_native_ssh_server
 
-# shellcheck disable=SC2046
-#if [ $(image_exists $img_cloud) -eq 0 ]; then
-#  create $container $img_essentials
-#
-#  run_stage 04_cloud.zsh
-#
-#  buildah commit $container $img_cloud
-#fi
+  buildah config --env DEVENV_SSH_SERVER=1 $container
+  buildah config --entrypoint "/usr/sbin/sshd -D" $container
+  buildah config --port 22 $container
+
+  run_stage 03_native_ssh_server.zsh
+
+  buildah commit $container $img_native_ssh_server
+fi
+maybe_upload $img_native_ssh_server
+
+#shellcheck disable=SC2046
+if [ $(image_exists $img_cloud) -eq 0 ]; then
+  create $container $img_essentials
+
+  run_stage 04_cloud.zsh
+
+  buildah commit $container $img_cloud
+fi
 
 
 ## shellcheck disable=SC2046
