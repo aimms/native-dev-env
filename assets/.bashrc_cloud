@@ -39,3 +39,12 @@ info(){
   native_info
   alias_info
 }
+
+if [ -e $DEVENV_SSH_SERVER ]; then
+    echo "${color_blue}Type ${color_red}'info' ${color_blue}for the image information."
+fi
+
+# clear color_blue
+if [ ! -e $DEVENV_THEMING ]; then
+  echo -e "\033[0m"
+fi

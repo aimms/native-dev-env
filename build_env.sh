@@ -19,7 +19,7 @@ fi
 os=ubuntu:20.04
 container=build
 
-pfx=aimmspro/devenv
+pfx=aimmspro/devenv]
 img_essentials=$pfx-essentials
 
 img_native_base=$pfx-native-base

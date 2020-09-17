@@ -38,7 +38,7 @@ info(){
     main_info
 }
 
-if [ ! -e $DEVENV_SSH_SERVER ]; then
+if [ -e $DEVENV_SSH_SERVER ]; then
     echo "${color_blue}Type ${color_red}'info' ${color_blue}for the image information."
 fi
 
