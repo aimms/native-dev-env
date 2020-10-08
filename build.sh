@@ -24,8 +24,6 @@ b_echo(){
   echo "[build_env] $@"
 }
 
-b_echo "Building devenv images"
-
 image_exists(){
   local image=$1
 
@@ -42,13 +40,15 @@ image_exists(){
 
 run_stage(){
     img_name="$1"
+    b_echo "Checking $img_name..."
     # shellcheck disable=SC2046
     if [ $(image_exists "$img_name") -eq 0 ]; then
+     b_echo "Building $img_name..."
      buildah bud --isolation $isolation -v "$script_dir:/assets:ro,Z" -f "./stages/$img_name.dockerfile"
     fi
 
     if [[ "$version" != "latest" && $(image_exists $1) -eq 1 ]]; then
-      b_echo "Uploading $img_name"
+      b_echo "Uploading $img_name..."
       buildah tag "$img_name" "$img_name:latest"
       buildah tag "$img_name" "$img_name:$version"
       buildah push "$img_name:$version"
