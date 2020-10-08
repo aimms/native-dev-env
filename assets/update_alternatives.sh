@@ -44,4 +44,4 @@ function register_clang_version {
         --slave   /usr/bin/clang-tidy            clang-tidy            /usr/bin/clang-tidy-${version}
 }
 
-register_clang_version $1 $2
+register_clang_version "$1" "$2"
