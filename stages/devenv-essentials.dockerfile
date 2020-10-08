@@ -12,7 +12,7 @@ ENV TERM=xterm-256color
 
 # install basic tools
 RUN apt update && apt upgrade -y && apt install -y --no-install-recommends \
-    zsh vim wget curl git zip unzip python3 python-is-python3 python3-venv locales
+    vim wget curl git zip unzip python3 python-is-python3 python3-venv locales
 
 # generate locales
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -20,8 +20,12 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
 
 # pyenv
 RUN curl https://pyenv.run | bash
+
 RUN cp /assets/.bashrc /root/.bashrc && \
     chown root:root /root/.bashrc
+
+RUN bash -c 'source /root/.bashrc && c default && pyenv global default'
+
 RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
 
 ENTRYPOINT ["/bin/bash"]

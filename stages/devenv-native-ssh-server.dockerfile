@@ -18,7 +18,8 @@ RUN useradd -m -d /home/$BUILD_USER -s /bin/bash -G sudo $BUILD_USER && echo "$B
     echo "$BUILD_USER ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 RUN chown root /var/run/sshd && \
-    chmod 744 /var/run/sshd && \
+    chmod 744 /var/run/sshd &&
+
 RUN cp /root/.bashrc /home/$BUILD_USER && \
     chown $BUILD_USER /home/$BUILD_USER/.bashrc
 
@@ -35,7 +36,3 @@ RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
 # expose sshd port
 EXPOSE 22
 ENTRYPOINT ["/usr/sbin/sshd -D"]
-
-
-
-

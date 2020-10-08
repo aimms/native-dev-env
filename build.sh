@@ -2,27 +2,34 @@
 
 set -e
 
-if [[  "$1" == "-h" || "$1" == "--help" || $# -gt 1  ]]; then
-    echo "Usage: $0 <version>"
+if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" || $# -gt 2 ]]; then
+    echo "Usage: $0 <version> [--upload]"
     exit 1
+fi
+
+b_echo(){
+  # shellcheck disable=SC2145
+  echo "[build_env] $@"
+}
+
+upload="$2"
+if [[ "$upload" != "" && "$upload" != "--upload" ]];then
+  b_echo "ERROR: invalid argument: $upload"
+  exit 1
 fi
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 pushd "$script_dir" || exit
 
-if [ "$1" != "" ]; then
-	version="$1"
+
+
 else
   version="latest"
 fi
 
 isolation=chroot # TODO: take from input
 
-b_echo(){
-  # shellcheck disable=SC2145
-  echo "[build_env] $@"
-}
 
 image_exists(){
   local image=$1
@@ -44,10 +51,10 @@ run_stage(){
     # shellcheck disable=SC2046
     if [ $(image_exists "$img_name") -eq 0 ]; then
      b_echo "Building $img_name..."
-     buildah bud --isolation $isolation -v "$script_dir:/assets:ro,Z" -f "./stages/$img_name.dockerfile"
+     buildah bud --isolation $isolation -v "$script_dir:/assets:ro,Z" --build-arg VERSION="$version" -f "./stages/$img_name.dockerfile"
     fi
 
-    if [[ "$version" != "latest" && $(image_exists $1) -eq 1 ]]; then
+    if [[ "$upload" != "" && $(image_exists "$img_name") -eq 1 ]]; then
       b_echo "Uploading $img_name..."
       buildah tag "$img_name" "$img_name:latest"
       buildah tag "$img_name" "$img_name:$version"

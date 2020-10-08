@@ -21,3 +21,4 @@ RUN cd /usr/bin && \
 RUN cat /assets/.bashrc_cloud >> /root/.bashrc
 
 
+
