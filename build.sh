@@ -7,28 +7,28 @@ if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" || $# -gt 2 ]]; then
     exit 1
 fi
 
+
 b_echo(){
   # shellcheck disable=SC2145
   echo "[build_env] $@"
 }
 
+version="$1"
 upload="$2"
+isolation=chroot # TODO
+
 if [[ "$upload" != "" && "$upload" != "--upload" ]];then
   b_echo "ERROR: invalid argument: $upload"
   exit 1
+else
+  b_echo "Upload requested"
 fi
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-pushd "$script_dir" || exit
+pushd "$script_dir"
 
 
-
-else
-  version="latest"
-fi
-
-isolation=chroot # TODO: take from input
 
 
 image_exists(){
@@ -51,7 +51,7 @@ run_stage(){
     # shellcheck disable=SC2046
     if [ $(image_exists "$img_name") -eq 0 ]; then
      b_echo "Building $img_name..."
-     buildah bud --isolation $isolation -v "$script_dir:/assets:ro,Z" --build-arg VERSION="$version" -f "./stages/$img_name.dockerfile"
+     buildah bud --isolation "$isolation" -v "$script_dir/assets:/assets:ro,Z" --build-arg VERSION="$version" -f "./stages/$img_name.dockerfile"
     fi
 
     if [[ "$upload" != "" && $(image_exists "$img_name") -eq 1 ]]; then
