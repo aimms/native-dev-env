@@ -1,14 +1,12 @@
 ARG VERSION=latest
 FROM aimmspro/devenv-essentials:$VERSION
 
-RUN update && apt install -y --no-install-recommends gnupg ca-certificates
+RUN apt update && apt install -y --no-install-recommends gnupg ca-certificates
 
 # add latest clang / llvm repo
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-RUN sh -c 'cat << EOF >> /etc/apt/sources.list \n\
-deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main \n\
-deb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main \n\
-EOF
+RUN echo 'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main' >> /etc/apt/sources.list && \
+    echo 'deb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-11 main' >> /etc/apt/sources.list
 
 # installing dev tools
 RUN apt update && apt install -y --no-install-recommends \

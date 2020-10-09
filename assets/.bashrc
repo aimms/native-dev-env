@@ -1,3 +1,6 @@
+export PYENV_ROOT="/usr/local/pyenv"
+export PATH="${PYENV_ROOT}/bin:${PATH}"
+
 if [[ "$SHELL" == "/bin/zsh" ]]; then
   alias vi-rc="vi $HOME/.zshrc"
   alias s-rc="source $HOME/.zshrc"
