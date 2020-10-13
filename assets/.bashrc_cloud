@@ -1,24 +1,9 @@
-
 alias k=kubectl
 
 # shellcheck disable=SC1090
 source <(kubectl completion zsh)
 
-
-cloud_info() {
-  if [ ! -e $DEVENV_THEMING ]; then
-    python3 $HOME/.logo.py
-  fi
-
-  echo " ${color_red}OS: ${color_blue}$(uname -a)"
-  echo "${color_blue}Welcome to ${color_red}AIMMS ${color_blue}development environment. Tools installed:"
-  info_for_app curl
-  echo " ${color_red}vim:\n  ${color_blue} $(vim --version | head -1)"
-  info_for_app git
-  info_for_app tmux -V
-  info_for_app ssh -V
-  info_for_app zsh
-  info_for_app pyenv
+cloud_info(){
   echo " ${color_red}az:\n  ${color_blue} type 'a az && az --version' for version information"
   info_for_app terraform
 
@@ -28,30 +13,11 @@ cloud_info() {
   fi
 }
 
-alias_info() {
-  echo "Alias Information:\n"
-
-  echo "${color_red}vi-rc:${color_blue} vi $HOME/.bashrc # or vi $HOME/.zshrc"
-  echo "${color_red}src-zshrc:${color_blue} source $HOME/.bashrc # or source $HOME/.zshrc"
-  echo "${color_red}c <env>:${color_blue} creates and activates new virtualenv with the name <env>"
-  echo "${color_red}a <env>:${color_blue} activates virtualenv with the name <env>"
-  echo "${color_red}v:${color_blue} lists installed virtual envs and Python versions"
-
-  # clear color_blue
-  if [ ! -e $DEVENV_THEMING ]; then
-    echo -e "\033[0m"
-  fi
-}
-
 info(){
+  main_info
   cloud_info
   alias_info
-  echo ""
 }
-
-if [ -e $DEVENV_SSH_SERVER ]; then
-    echo "${color_blue}Type ${color_red}'info' ${color_blue}for the image information."
-fi
 
 # clear color_blue
 if [ ! -e $DEVENV_THEMING ]; then
