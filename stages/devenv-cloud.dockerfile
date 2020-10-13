@@ -16,7 +16,5 @@ RUN cd /usr/bin && \
     wget "https://releases.hashicorp.com/terraform/$TERRAFORM_VERSION/$TERRAFORM_ZIP" && \
     unzip "$TERRAFORM_ZIP" && rm -f "$TERRAFORM_ZIP"
 
-RUN cat /assets/.bashrc_native >> /root/.bashrc
+RUN cat /assets/.bashrc_utils >> /root/.bashrc
 RUN cat /assets/.bashrc_cloud >> /root/.bashrc
-
-

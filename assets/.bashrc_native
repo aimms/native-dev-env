@@ -1,51 +1,13 @@
-if [ ! -e $DEVENV_THEMING ]; then
-    color_red="$fg[red]"
-    color_blue="$fg[blue]"
-fi
-
-function info_for_app() {
-  # https://stackoverflow.com/questions/1251999/how-can-i-replace-a-newline-n-using-sed
-  # https://www.cyberciti.biz/faq/using-sed-to-delete-empty-lines/
-  if [ -e $2 ]; then
-    local ver_arg="--version"
-  else
-    local ver_arg=$2
-  fi
-
-  local ver=$($1 ${ver_arg} 2>&1 | sed -r '/^\s*$/d' | sed ':a;N;$!ba;s/\n/\n   /g')
-  echo "${color_red} $1:  ${color_blue} ${ver}"
-
-  # clear color_blue
-  if [ ! -e $DEVENV_THEMING ]; then
-    echo -e "\033[0m"
-  fi
-}
-
-alias_info() {
-  echo "Alias Information:\n"
-
-  echo "${color_red}vi-rc:${color_blue} vi $HOME/.bashrc # or vi $HOME/.zshrc"
-  echo "${color_red}s-rc:${color_blue} source $HOME/.bashrc # or source $HOME/.zshrc"
-  echo "${color_red}c <env>:${color_blue} creates and activates new virtualenv with the name <env>"
-  echo "${color_red}a <env>:${color_blue} activates virtualenv with the name <env>"
-  echo "${color_red}v:${color_blue} lists installed virtual envs and Python versions"
-
-  # clear color_blue
-  if [ ! -e $DEVENV_THEMING ]; then
-    echo -e "\033[0m"
-  fi
-}
-
 main_info() {
-  if [ ! -e $DEVENV_THEMING ]; then
+  if [[ -e $ENABLE_THEMING  && "$SHELL" == "/bin/zsh" ]]; then
     python3 $HOME/.logo.py
   fi
 
-  echo " ${color_red}OS: ${color_blue}$(uname -a)"
-  echo "${color_blue}Welcome to ${color_red}AIMMS ${color_blue}development environment. Tools installed:"
+  echo " ${bold}OS: ${normal}$(uname -a)"
+  echo "${normal}Welcome to ${bold}AIMMS ${normal}development environment. Tools installed:"
   info_for_app $SHELL
   info_for_app curl
-  echo " ${color_red}vim:\n  ${color_blue} $(vim --version | head -1)"
+  echo " ${bold}vim:\n  ${normal} $(vim --version | head -1)"
   info_for_app git
   info_for_app tmux -V
   info_for_app ssh -V
@@ -64,11 +26,8 @@ info(){
 }
 
 if [ -e $DEVENV_SSH_SERVER ]; then
-    echo "${color_blue}Type ${color_red}'info' ${color_blue}for the image information."
+    echo "${normal}Type ${bold}'info' ${normal}for the image information."
 fi
 
-# clear color_blue
-if [ ! -e $DEVENV_THEMING ]; then
-  echo -e "\033[0m"
-fi
-
+# clear normal
+echo -e "\033[0m"

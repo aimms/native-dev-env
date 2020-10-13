@@ -14,7 +14,7 @@ b_echo() {
 
 version="$1"
 upload="$2"
-isolation=chroot # TODO
+isolation=chroot # TODO: expose
 prefix="aimmspro"
 
 if [ "$upload" != "" ] ; then

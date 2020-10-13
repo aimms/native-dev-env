@@ -1,14 +1,44 @@
 alias k=kubectl
 
-# shellcheck disable=SC1090
-source <(kubectl completion zsh)
+if [[ "$SHELL" == "/bin/zsh" ]]; then
+  # shellcheck disable=SC1090
+  source <(kubectl completion zsh)
+else
+  source <(kubectl completion bash)
+fi
+
+main_info() {
+  if [[ -e $ENABLE_THEMING  && "$SHELL" == "/bin/zsh" ]]; then
+    python3 $HOME/.logo.py
+  fi
+
+  echo " ${bold}OS: ${normal}$(uname -a)"
+  echo "${normal}Welcome to ${bold}AIMMS ${normal}development environment. Tools installed:"
+  info_for_app $SHELL
+  info_for_app curl
+  echo " ${bold}vim:\n  ${normal} $(vim --version | head -1)"
+  info_for_app git
+  info_for_app tmux -V
+  info_for_app ssh -V
+  info_for_app python
+  info_for_app pyenv
+  info_for_app gcc
+  info_for_app terraform
+}
+
+info(){
+    main_info
+    alias_info
+}
+
+
 
 cloud_info(){
-  echo " ${color_red}az:\n  ${color_blue} type 'a az && az --version' for version information"
+  echo " ${bold}az:\n  ${normal} type 'a az && az --version' for version information"
   info_for_app terraform
 
-  # clear color_blue
-  if [ ! -e $DEVENV_THEMING ]; then
+  # clear normal
+  if [[ -e $ENABLE_THEMING  && "$SHELL" == "/bin/zsh" ]]; then
     echo -e "\033[0m"
   fi
 }
@@ -19,7 +49,7 @@ info(){
   alias_info
 }
 
-# clear color_blue
-if [ ! -e $DEVENV_THEMING ]; then
-  echo -e "\033[0m"
-fi
+echo "${normal}Type ${bold}'info' ${normal}for the image information."
+
+# clear normal
+echo -e "\033[0m"

@@ -15,5 +15,4 @@ RUN apt update && apt install -y --no-install-recommends \
       libc++1-11 libc++abi-11-dev libc++abi1-11 libclang1-11 lld-11 llvm-11-runtime llvm-11 && \
       /assets/update_alternatives.sh 11 100
 
-RUN cat /assets/.bashrc_native >> /root/.bashrc
 RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
