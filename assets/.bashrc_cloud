@@ -7,23 +7,6 @@ else
   source <(kubectl completion bash)
 fi
 
-main_info() {
-  if [[ -e $ENABLE_THEMING  && "$SHELL" == "/bin/zsh" ]]; then
-    python3 $HOME/.logo.py
-  fi
-  echo -e "${normal}Welcome to ${bold}AIMMS ${normal}development environment. Tools installed:\n"
-  echo -e "${bold}OS:\n ${normal}$(uname -a)\033[0m"
-  info_for_app $SHELL
-  info_for_app curl
-  echo -e "${bold}vim:\n  ${normal} $(vim --version | head -1)\033[0m"
-  info_for_app git
-  info_for_app tmux -V
-  info_for_app python
-  info_for_app pyenv
-  info_for_app gcc
-  info_for_app terraform
-}
-
 cloud_info(){
   info_for_app az
   info_for_app terraform
@@ -32,9 +15,10 @@ cloud_info(){
 info(){
   main_info
   cloud_info
-  alias_info
-  # clear normal
+  # clear color
   echo -e "\033[0m"
 }
 
-echo "${normal}Type ${bold}'info' ${normal}for the image information.\033[0m"
+echo "${normal}Type ${bold}'info' ${normal}for the image information."
+# clear color
+echo -e "\033[0m"

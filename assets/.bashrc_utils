@@ -32,7 +32,9 @@ main_info() {
     python3 $HOME/.logo.py
   fi
 
-  echo -e "${normal}Welcome to ${bold}AIMMS ${normal}development environment. Tools installed:\n"
+  echo -e "${normal}Welcome to ${bold}AIMMS ${normal}development environment. Alias information:\n"
+  alias_info
+  echo -e "Tools installed:\n"
   echo -e "${bold}OS:\n ${normal}$(uname -a)\n"
   info_for_app curl
   info_for_app vim
@@ -41,5 +43,4 @@ main_info() {
   info_for_app python
   info_for_app pyenv
   info_for_app gcc
-  echo -e "\n"
 }

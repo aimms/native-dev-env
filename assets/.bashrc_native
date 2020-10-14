@@ -8,11 +8,12 @@ native_info(){
 info(){
   main_info
   native_info
-  alias_info
-  # clear normal
+  # clear color
   echo -e "\033[0m"
 }
 
 if [ -e $DEVENV_SSH_SERVER ]; then
   echo "${normal}Type ${bold}'info' ${normal}for the image information."
+  # clear color
+  echo -e "\033[0m"
 fi
