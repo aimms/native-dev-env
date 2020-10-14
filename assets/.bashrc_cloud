@@ -11,45 +11,30 @@ main_info() {
   if [[ -e $ENABLE_THEMING  && "$SHELL" == "/bin/zsh" ]]; then
     python3 $HOME/.logo.py
   fi
-
-  echo " ${bold}OS: ${normal}$(uname -a)"
-  echo "${normal}Welcome to ${bold}AIMMS ${normal}development environment. Tools installed:"
+  echo -e "${normal}Welcome to ${bold}AIMMS ${normal}development environment. Tools installed:\n"
+  echo -e "${bold}OS:\n ${normal}$(uname -a)\033[0m"
   info_for_app $SHELL
   info_for_app curl
-  echo " ${bold}vim:\n  ${normal} $(vim --version | head -1)"
+  echo -e "${bold}vim:\n  ${normal} $(vim --version | head -1)\033[0m"
   info_for_app git
   info_for_app tmux -V
-  info_for_app ssh -V
   info_for_app python
   info_for_app pyenv
   info_for_app gcc
   info_for_app terraform
 }
 
-info(){
-    main_info
-    alias_info
-}
-
-
-
 cloud_info(){
-  echo " ${bold}az:\n  ${normal} type 'a az && az --version' for version information"
+  info_for_app az
   info_for_app terraform
-
-  # clear normal
-  if [[ -e $ENABLE_THEMING  && "$SHELL" == "/bin/zsh" ]]; then
-    echo -e "\033[0m"
-  fi
 }
 
 info(){
   main_info
   cloud_info
   alias_info
+  # clear normal
+  echo -e "\033[0m"
 }
 
-echo "${normal}Type ${bold}'info' ${normal}for the image information."
-
-# clear normal
-echo -e "\033[0m"
+echo "${normal}Type ${bold}'info' ${normal}for the image information.\033[0m"

@@ -1,19 +1,4 @@
-main_info() {
-  if [[ -e $ENABLE_THEMING  && "$SHELL" == "/bin/zsh" ]]; then
-    python3 $HOME/.logo.py
-  fi
-
-  echo " ${bold}OS: ${normal}$(uname -a)"
-  echo "${normal}Welcome to ${bold}AIMMS ${normal}development environment. Tools installed:"
-  info_for_app $SHELL
-  info_for_app curl
-  echo " ${bold}vim:\n  ${normal} $(vim --version | head -1)"
-  info_for_app git
-  info_for_app tmux -V
-  info_for_app ssh -V
-  info_for_app python
-  info_for_app pyenv
-  info_for_app gcc
+native_info(){
   info_for_app clang
   info_for_app cmake
   info_for_app conan
@@ -21,13 +6,13 @@ main_info() {
 }
 
 info(){
-    main_info
-    alias_info
+  main_info
+  native_info
+  alias_info
+  # clear normal
+  echo -e "\033[0m"
 }
 
 if [ -e $DEVENV_SSH_SERVER ]; then
-    echo "${normal}Type ${bold}'info' ${normal}for the image information."
+  echo "${normal}Type ${bold}'info' ${normal}for the image information."
 fi
-
-# clear normal
-echo -e "\033[0m"

@@ -6,31 +6,40 @@ elif [ "$SHELL" == "/bin/bash" ]; then
     normal="$(tput sgr0)"
 fi
 
-function info_for_app() {
-  # https://stackoverflow.com/questions/1251999/how-can-i-replace-a-newline-n-using-sed
-  # https://www.cyberciti.biz/faq/using-sed-to-delete-empty-lines/
-  if [ -e $2 ]; then
-    local ver_arg="--version"
-  else
-    local ver_arg=$2
+info_for_app(){
+  name="$1"
+  version_arg="$2"
+
+  if [ "$version_arg" == "" ]; then
+    version_arg="--version"
   fi
 
-  local ver=$($1 ${ver_arg} 2>&1 | sed -r '/^\s*$/d' | sed ':a;N;$!ba;s/\n/\n   /g')
-  echo "${bold} $1:  ${normal} ${ver}"
-
-  # clear normal
-  echo -e "\033[0m"
+  echo -e "${bold}$name:${normal}" $(${name} ${version_arg} | grep -oP  "[0-9]+[a-zA-Z]?\.[0-9]+(?:[\.][0-9]+[a-zA-Z]?){0,4}" | head -n 1)
 }
 
-alias_info() {
-  echo "Alias Information:\n"
+alias_info(){
+  echo -e "Alias Information:\n"
 
-  echo "${bold}vi-rc:${normal} vi $HOME/.bashrc # or vi $HOME/.zshrc"
-  echo "${bold}s-rc:${normal} source $HOME/.bashrc # or source $HOME/.zshrc"
-  echo "${bold}c <env>:${normal} creates and activates new virtualenv with the name <env>"
-  echo "${bold}a <env>:${normal} activates virtualenv with the name <env>"
-  echo "${bold}v:${normal} lists installed virtual envs and Python versions"
+  echo -e "${bold}vi-rc:${normal} vi $HOME/.bashrc # or vi $HOME/.zshrc"
+  echo -e "${bold}s-rc:${normal} source $HOME/.bashrc # or source $HOME/.zshrc"
+  echo -e "${bold}c <env>:${normal} creates and activates new virtualenv with the name <env>"
+  echo -e "${bold}a <env>:${normal} activates virtualenv with the name <env>"
+  echo -e "${bold}v:${normal} lists installed virtual envs and Python versions\n"
+}
 
-  # clear normal
-  echo -e "\033[0m"
+main_info() {
+  if [[ -e $ENABLE_THEMING  && "$SHELL" == "/bin/zsh" ]]; then
+    python3 $HOME/.logo.py
+  fi
+
+  echo -e "${normal}Welcome to ${bold}AIMMS ${normal}development environment. Tools installed:\n"
+  echo -e "${bold}OS:\n ${normal}$(uname -a)\n"
+  info_for_app curl
+  info_for_app vim
+  info_for_app git
+  info_for_app tmux -V
+  info_for_app python
+  info_for_app pyenv
+  info_for_app gcc
+  echo -e "\n"
 }
