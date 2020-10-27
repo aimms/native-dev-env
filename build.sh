@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" || $# -gt 2 ]]; then
+if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" || $# -gt 3 ]]; then
   echo "Usage: $0 <version> [--rootless] [--upload]"
   exit 1
 fi
