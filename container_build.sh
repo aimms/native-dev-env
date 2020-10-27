@@ -10,4 +10,4 @@ fi
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 mkdir -p ~/.local/share/containers
-docker run --security-opt label=disable --security-opt seccomp=unconfined --device /dev/fuse:rw -v ~/.local/share/containers:/var/lib/containers:Z  -v "$script_dir":/code -it quay.io/buildah/stable /bin/bash -c "cd /code/ && ./build.sh $1 $2"
+docker run --security-opt label=disable --security-opt seccomp=unconfined --device /dev/fuse:rw -v ~/.local/share/containers:/var/lib/containers:Z  -v "$script_dir":/code  quay.io/buildah/stable /bin/bash -c "cd /code/ && ./build.sh $1 $2"
