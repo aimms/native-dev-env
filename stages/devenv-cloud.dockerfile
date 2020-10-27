@@ -1,5 +1,5 @@
 ARG VERSION=latest
-FROM aimmspro/devenv-shell-tools:$VERSION
+FROM aimmspro/devenv-ext-shell:$VERSION
 ENV TERRAFORM_VERSION="0.12.28"
 
 # shellcheck disable=SC2046
