@@ -14,7 +14,6 @@ b_echo() {
 
 version="$1"
 upload="$2"
-#isolation=rootless # TODO: expose as parameter
 isolation=chroot
 prefix="aimmspro"
 

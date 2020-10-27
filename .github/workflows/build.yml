@@ -13,6 +13,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: buld
+    - name: build
       run: docker run --privileged -v ~/.local/share/containers:/var/lib/containers -v $(pwd):/code  quay.io/buildah/stable /bin/bash -c 'cd /code && ./build.sh test'
 
