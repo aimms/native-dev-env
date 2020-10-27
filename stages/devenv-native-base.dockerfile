@@ -1,5 +1,5 @@
 ARG VERSION=latest
-FROM aimmspro/devenv-shell-tools:$VERSION
+FROM aimmspro/devenv-ext-shell:$VERSION
 
 RUN apt update && apt install -y --no-install-recommends gnupg ca-certificates
 
