@@ -35,4 +35,4 @@ RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
 
 # expose sshd port
 EXPOSE 22
-ENTRYPOINT ["/usr/sbin/sshd -D"]
+ENTRYPOINT ["/usr/sbin/sshd", "-D"]
