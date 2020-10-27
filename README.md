@@ -1,40 +1,60 @@
-# Development Environment for native code
+## Development Environment for native code
 
 
-## Using
+### Using
 
-### Native Image
+#### Native Image
 
-~~~~
+~~~
 docker run -v$(pwd):/code -it aimmspro/devenv-native
 info
 v
-~~~~
+~~~
 
-### Cloud Image
+#### Cloud Image
 
-~~~~
+~~~
 docker run -v$(pwd):/code -it aimmspro/devenv-cloud
 info
 v
-~~~~
+~~~
 
-## Building locally 
+### Building locally 
 
-### Using Buildah https://buildah.io
+#### Using Buildah
+
+Make sure buildah is installed https://buildah.io
  
-~~~~
+~~~
 ./build_env.sh <version> [--upload]
-~~~~
+~~~
+e.g.
+~~~
+./build_env.sh 1.6
+~~~
 
-### Container build using Docker or Podman https://podman.io
+#### Rootless build using fuse-overlayfs
 
-~~~~
+Resulting images will be available from host. Make sure `fuse-overlayfs` is installed on host
+and `/dev/fuse` device is available
+
+~~~
+./container_build.sh <version> [--upload]
+~~~
+e.g.
+~~~
+./container_build.sh 1.6
+~~~
+
+#### Rootless build without sharing host /dev/fuse
+
+~~~
 mkdir -p ~/.local/share/containers
-docker run --privileged -v ~/.local/share/containers:/var/lib/containers -v $(pwd):/code  quay.io/buildah/stable /bin/bash -c 'cd /code && ./build.sh test'
-~~~~
+docker run --privileged -v ~/.local/share/containers:/var/lib/containers -v $(pwd):/code  quay.io/buildah/stable /bin/bash -c 'cd /code && ./build.sh <version>'
+# e.g.: docker run --privileged -v ~/.local/share/containers:/var/lib/containers -v $(pwd):/code  quay.io/buildah/stable /bin/bash -c 'cd /code && ./build.sh 1.6'
+~~~
 
-### Windows Build using Docker
+#### Windows Build using Docker
 
-TODO: unsupported for now; needs Windows 10 + WSL to be configured properly 
-TODO: or falling back to Docker build (over buildah) should be implemented
+
+TODO: WIP. unsupported for now; needs Windows 10 + WSL to be configured properly OR falling back to Docker build should be implemented
