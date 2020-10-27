@@ -32,4 +32,4 @@ RUN zsh -c 'source ~/.zshrc && pyenv global system'
 
 RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
 
-ENTRYPOINT ["/bin/zsh"]
+CMD /bin/zsh

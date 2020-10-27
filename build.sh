@@ -3,7 +3,7 @@
 set -e
 
 if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" || $# -gt 2 ]]; then
-  echo "Usage: $0 <version> [--upload]"
+  echo "Usage: $0 <version> [--rootless] [--upload]"
   exit 1
 fi
 
@@ -13,15 +13,19 @@ b_echo() {
 }
 
 version="$1"
-upload="$2"
-isolation=chroot
+
+if [[ "$2" == "--rootless" || "$3" == "--rootless" ]]; then
+    isolation=rootless
+else
+    isolation=chroot
+fi
+
+b_echo "Using isolation: $isolation"
+
 prefix="aimmspro"
 
-if [ "$upload" != "" ] ; then
-  if [ "$upload" != "--upload" ]; then
-    b_echo "ERROR: invalid argument: $upload"
-    exit 1
-  fi
+if [[ "$2" == "--upload" || "$3" == "--upload" ]]; then
+  upload=1
   b_echo "Upload requested"
 fi
 
