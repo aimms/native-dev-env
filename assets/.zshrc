@@ -5,6 +5,10 @@ export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
 alias vi-rc="vi ~/.zshrc"
 
+if [ "$TERM" != "xterm-256color" ]; then
+    alias src="source ~/.zshrc"
+fi
+
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
