@@ -20,7 +20,7 @@ RUN useradd -m -d /home/$BUILD_USER -s /bin/bash -G sudo $BUILD_USER && echo "$B
 RUN chown root /var/run/sshd && \
     chmod 744 /var/run/sshd
 
-RUN cp /root/.zshrc_simple /home/$BUILD_USER/.zshrc && \
+RUN cp /root/.zshrc /home/$BUILD_USER/.zshrc && \
     chown $BUILD_USER /home/$BUILD_USER/.zshrc
 
 RUN chmod -R 777 /usr/local/pyenv/shims && \

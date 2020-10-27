@@ -11,3 +11,6 @@ eval "$(pyenv virtualenv-init -)"
 alias v='pyenv versions'
 a() { pyenv activate "$1"; }
 c() { pyenv virtualenv "$1" && pyenv activate "$1" && pip install -U pip wheel; }
+
+# PROMPT='%(?.%F{green}❯.%F{red}?%?)%f %B%F{240}%1~%f%b %# '
+PROMPT='%(?.%F{green}>.%F{red}?%?)%f %B%F{240}%1~%f%b %# '
