@@ -36,8 +36,8 @@ pushd "$script_dir"
 image_exists() {
   local pfx_img_name="localhost/$1"
 
-  for img in $(buildah images --format "{{.Name}}"); do
-    if [ "$img" == "$pfx_img_name" ]; then
+  for img in $(buildah images --format "{{.Name}}:{{.Tag}}"); do
+    if [ "$img" == "$pfx_img_name:$version" ]; then
       echo 1
       return
     fi

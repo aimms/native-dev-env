@@ -1,5 +1,8 @@
-bold="$(tput bold)"
-normal="$(tput sgr0)"
+autoload -U colors && colors
+# shellcheck disable=SC2154
+bold="${fg_bold[white]}"
+# shellcheck disable=SC2154
+normal="${reset_color}"
 
 info_for_app(){
   local name="$1"
