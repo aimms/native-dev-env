@@ -71,13 +71,10 @@ run_stage() {
 }
 
 run_stage "devenv-essentials"
-run_stage "devenv-ext-shell"
-run_stage "devenv-cloud-ext-shell"
-run_stage "devenv-cloud"
-run_stage "devenv-native-base"
-run_stage "devenv-native-ext-shell"
-run_stage "devenv-native"
-run_stage "devenv-native-ssh-server"
+#run_stage "devenv-cloud"
+#run_stage "devenv-native-base"
+#run_stage "devenv-native"
+#run_stage "devenv-native-ssh-server"
 
 b_echo "Done"
 popd # script_dir

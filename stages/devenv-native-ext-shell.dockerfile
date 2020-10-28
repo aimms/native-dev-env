@@ -1,15 +1,12 @@
 ARG VERSION=latest
 FROM aimmspro/devenv-native-base:$VERSION
 
-RUN cat /assets/.zshrc-native.zsh >> /root/.zshrc
+RUN pipx install conan && \
+    pipx install ninja && \
+    pipx install cmake
 
-RUN zsh -c 'source ~/.zshrc && \
-             c dev && pyenv global dev && \
-             pip install --use-feature=2020-resolver \
-                conan \
-                ninja \
-                cmake && \
-             ln -s /usr/local/pyenv/shims/cmake /usr/bin/cmake'
+RUN cat /assets/.zshrc-info.zsh >> /root/.zshrc
+RUN cat /assets/.zshrc-native.zsh >> /root/.zshrc
 
 # allowing conan to use latest clang
 RUN mkdir -p /root/.conan && \
