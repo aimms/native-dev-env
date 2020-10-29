@@ -15,7 +15,9 @@ ENV TERRAFORM_VERSION="0.12.28"
 
 RUN zsh -c "source ~/.zshrc && \
             pipz instal --cmd az azure-cli && \
-            pipz instal --cmd kube kube-cli
+            pipz instal --cmd kube kube-cli && \
+
+
 
 RUN mkdir ~/.dev && python3 -m venv ~/.dev && source ~/.dev/bin/activate && \
         echo 'source ~/.dev/bin/activate' >> /root/.zshrc && \
@@ -29,4 +31,4 @@ RUN mkdir ~/.dev && python3 -m venv ~/.dev && source ~/.dev/bin/activate && \
                 py-flags
 
 
-RUN cat /assets/.zshrc-cloud.zsh >> /root/.zshrc
+RUN cat /install/.zshrc-cloud.zsh >> /root/.zshrc

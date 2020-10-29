@@ -23,12 +23,12 @@ RUN chown root /var/run/sshd && \
 RUN curl -L git.io/antigen > /home/$BUILD_USER/.antigen.zsh
 RUN /usr/local/fzf/install --no-bash --no-zsh --no-fish
 
-RUN cat /assets/.zshrc > /home/$BUILD_USER/.zshrc &&
+RUN cat /install/.zshrc > /home/$BUILD_USER/.zshrc &&
         chown $BUILD_USER:$BUILD_USER /home/$BUILD_USER/.zshrc &&
 
 # allowing conan to use latest clang
 RUN mkdir -p /home/$BUILD_USER/.conan && \
-    cp /assets/conan_settings.yml /home/$BUILD_USER/.conan/settings.yml && \
+    cp /install/conan_settings.yml /home/$BUILD_USER/.conan/settings.yml && \
     chown -R $BUILD_USER /home/$BUILD_USER/.conan
 
 RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*

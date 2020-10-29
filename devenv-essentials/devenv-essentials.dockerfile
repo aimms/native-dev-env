@@ -17,8 +17,12 @@ RUN chsh -s /bin/zsh
 
 RUN ln -s /bin/fdfind /bin/fd
 
-#fzf
-RUN touch /root/.zshrc && git clone --depth 1 https://github.com/junegunn/fzf.git /usr/local/fzf && /usr/local/fzf/install
+# install .zshrc stuff
+COPY .* /root/
+
+#fzf; config is embedded into .zshrc.zsh
+RUN git clone --depth 1 https://github.com/junegunn/fzf.git /usr/local/fzf && \
+        /usr/local/fzf/install --no-bash --no-fish --no-zsh
 
 # generate locales
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -26,9 +30,12 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
 
 # antigen
 RUN curl -L git.io/antigen > /root/.antigen.zsh
-RUN cat /assets/.zshrc.zsh >> /root/.zshrc
+RUN cat /install/.zshrc.zsh >> /root/.zshrc
 
 RUN zsh -c 'source ~/.zshrc'
+
+# ensure theme support is installed
+RUN zsh -c 'source ~/.antigen.zsh && antigen theme jackharrisonsherlock/common && antigen apply'
 
 RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
 

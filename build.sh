@@ -45,7 +45,7 @@ image_exists() {
   echo 0
 }
 
-run_stage() {
+build_image() {
   img_name="$1"
   pfx_img_name="$prefix/$img_name"
 
@@ -53,9 +53,9 @@ run_stage() {
   if [ "$(image_exists "$pfx_img_name")" == "0" ]; then
     b_echo "Building $pfx_img_name..."
     buildah bud --runtime crun --isolation "$isolation" \
-                -v "$script_dir/assets:/assets:ro,Z" \
+                -v "$script_dir:/install:ro,Z" \
                 --build-arg VERSION="$version" \
-                -t "$pfx_img_name" -f "./stages/$img_name.dockerfile"
+                -t "$pfx_img_name" -f "$img_name"
 
     buildah tag "$pfx_img_name:latest" "$pfx_img_name:$version"
   else
@@ -70,11 +70,11 @@ run_stage() {
   fi
 }
 
-run_stage "devenv-essentials"
-#run_stage "devenv-cloud"
-#run_stage "devenv-native-base"
-#run_stage "devenv-native"
-#run_stage "devenv-native-ssh-server"
+build_image "devenv-essentials/devenv-essentials.dockerfile"
+#build_image "devenv-cloud"
+#build_image "devenv-native-base"
+#build_image "devenv-native"
+#build_image "devenv-native-ssh-server"
 
 b_echo "Done"
 popd # script_dir

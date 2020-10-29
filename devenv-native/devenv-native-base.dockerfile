@@ -13,6 +13,6 @@ RUN apt update && apt install -y --no-install-recommends \
       make autoconf automake doxygen graphviz ccache \
       llvm-11 clang-format-11 clang-tidy-11 clang-tools-11 clang-11 clangd-11 libc++-11-dev \
       libc++1-11 libc++abi-11-dev libc++abi1-11 libclang1-11 lld-11 llvm-11-runtime llvm-11 && \
-      /assets/update_alternatives.sh 11 100
+      /install/update_alternatives.sh 11 100
 
 RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
