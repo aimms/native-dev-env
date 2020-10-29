@@ -18,9 +18,9 @@ RUN chsh -s /bin/zsh
 RUN ln -s /bin/fdfind /bin/fd
 
 # install .zshrc stuff
-COPY .* /root/
+RUN zsh -c 'autoload -U zmv && noglob zmv -W -C /install/.* /root/.*'
 
-#fzf; config is embedded into .zshrc.zsh
+#fzf; config is embedded into .zshrc
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /usr/local/fzf && \
         /usr/local/fzf/install --no-bash --no-fish --no-zsh
 
@@ -30,7 +30,6 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
 
 # antigen
 RUN curl -L git.io/antigen > /root/.antigen.zsh
-RUN cat /install/.zshrc.zsh >> /root/.zshrc
 
 RUN zsh -c 'source ~/.zshrc'
 

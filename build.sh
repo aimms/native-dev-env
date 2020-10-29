@@ -53,9 +53,9 @@ build_image() {
   if [ "$(image_exists "$pfx_img_name")" == "0" ]; then
     b_echo "Building $pfx_img_name..."
     buildah bud --runtime crun --isolation "$isolation" \
-                -v "$script_dir:/install:ro,Z" \
+                -v "$script_dir/$img_name:/install:ro,Z" \
                 --build-arg VERSION="$version" \
-                -t "$pfx_img_name" -f "$img_name"
+                -t "$pfx_img_name" -f "$img_name/Dockerfile"
 
     buildah tag "$pfx_img_name:latest" "$pfx_img_name:$version"
   else
@@ -70,7 +70,7 @@ build_image() {
   fi
 }
 
-build_image "devenv-essentials/devenv-essentials.dockerfile"
+build_image "devenv-essentials"
 #build_image "devenv-cloud"
 #build_image "devenv-native-base"
 #build_image "devenv-native"
