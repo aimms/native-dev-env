@@ -1,4 +1,4 @@
-export FZF_BASE=/usr/local/fzf/bin
+export FZF_BASE=/usr/local/fzf
 export FZF_DEFAULT_COMMAND='fd --type f'
 
 # Setup fzf

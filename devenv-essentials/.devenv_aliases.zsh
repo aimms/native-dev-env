@@ -39,6 +39,5 @@ main_info() {
   info_for_app tmux -V
   info_for_app python
   info_for_app pip
-  info_for_app pipx
   info_for_app gcc
 }

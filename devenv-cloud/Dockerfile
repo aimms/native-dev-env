@@ -16,6 +16,7 @@ ENV TERRAFORM_VERSION="0.12.28"
 RUN zsh -c "source ~/.zshrc && \
             pipz instal --cmd az azure-cli && \
             pipz instal --cmd kube kube-cli && \
+            
 
 
 
