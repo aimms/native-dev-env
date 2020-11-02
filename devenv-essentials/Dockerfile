@@ -34,7 +34,7 @@ RUN curl -L git.io/antigen > /root/.antigen.zsh
 RUN zsh -c 'source ~/.zshrc'
 
 # ensure theme support is installed; set pipx
-RUN zsh -c 'source ~/.antigen.zsh && antigen theme jackharrisonsherlock/common && antigen apply"
+RUN zsh -c 'source ~/.antigen.zsh && antigen theme jackharrisonsherlock/common && antigen apply'
 
 RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
 
