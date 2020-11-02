@@ -29,12 +29,15 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
   dpkg-reconfigure --frontend=noninteractive locales && update-locale LANG=en_US.UTF-8
 
 # antigen
-RUN curl -L git.io/antigen > /root/.antigen.zsh
+#RUN curl -L git.io/antigen > /root/.antigen.zsh
+
+# antibody
+RUN curl -sfL git.io/antibody | sh -s - -b /usr/local/bin
 
 RUN zsh -c 'source ~/.zshrc'
 
 # ensure theme support is installed; set pipx
-RUN zsh -c 'source ~/.antigen.zsh && antigen theme jackharrisonsherlock/common && antigen apply'
+# RUN zsh -c 'source ~/.antigen.zsh && antigen theme jackharrisonsherlock/common && antigen apply'
 
 RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
 
