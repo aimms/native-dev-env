@@ -13,23 +13,17 @@ ENV TERRAFORM_VERSION="0.12.28"
 #    wget "https://releases.hashicorp.com/terraform/$TERRAFORM_VERSION/$TERRAFORM_ZIP" && \
 #    unzip "$TERRAFORM_ZIP" && rm -f "$TERRAFORM_ZIP"
 
-RUN zsh -c "source ~/.zshrc && \
-            pipz instal --cmd az azure-cli && \
-            pipz instal --cmd kube kube-cli && \
-            
+# install .zshrc stuff
+RUN zsh -c 'autoload -U zmv && noglob zmv -W -C /install/.* /root/.*'
 
+# Install apps
+RUN pip install -U pip wheel && pip install pipx && \
+    pipx install azure-cli && \
+    pipx install kube-cli
 
-
-RUN mkdir ~/.dev && python3 -m venv ~/.dev && source ~/.dev/bin/activate && \
-        echo 'source ~/.dev/bin/activate' >> /root/.zshrc && \
-        pip install -U pip wheel && pip install \
-                typed-argument-parser \
-                azure-mgmt-dns \
-                azure-identity \
-                psycopg2cffi \
-                pony \
-                requests \
-                py-flags
-
+RUN mkdir ~/.dev && \
+    python3 -m venv ~/.dev && \
+    source ~/.dev/bin/activate && \
+    pip install -r /install/requirements.txt
 
 RUN cat /install/.zshrc-cloud.zsh >> /root/.zshrc

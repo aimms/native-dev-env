@@ -1,0 +1,7 @@
+typed-argument-parser
+azure-mgmt-dns
+azure-identity
+psycopg2cffi
+pony
+requests
+py-flags

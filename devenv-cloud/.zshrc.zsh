@@ -15,3 +15,6 @@ info(){
 
 # shellcheck disable=SC2154
 echo "${normal}Type ${bold}'info' ${normal}for the image information."
+
+# shellcheck disable=SC1090
+source ~/.dev/bin/activate
