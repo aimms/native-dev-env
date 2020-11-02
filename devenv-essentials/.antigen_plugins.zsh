@@ -22,7 +22,6 @@ antigen bundle python
 antigen bundle pip
 antigen bundle history
 antigen bundle history-substring-search
-antigen bundle andydecleyre/zpy # Python zsh aliases
 
 # PROMPT='%(?.%F{green}❯.%F{red}?%?)%f %B%F{240}%1~%f%b %# '
 # shellcheck disable=SC2034
