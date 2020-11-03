@@ -9,7 +9,7 @@ ENV TERM=xterm
 
 # install basic tools
 RUN apt update && apt upgrade -y && \
-    apt --no-install-recommends install -y git highlight pcre2-utils zsh sudo \
+    apt --no-install-recommends install -y git highlight pcre2-utils zsh \
     python3 python3-venv python3-dev python3-pip libpython3-dev python-is-python3 \
     build-essential tmux vim wget curl zip unzip locales libpq-dev neofetch fd-find
 
@@ -31,11 +31,8 @@ RUN curl -L git.io/antigen > /root/.antigen.zsh
 # install .zshrc stuff
 RUN zsh -c 'autoload -U zmv && noglob zmv -W -C /install/.* /root/.*'
 
-# init; ensure theme support is installed; install pipx
+# init; ensure theme support is installed;
 RUN zsh -c 'TERM=xterm-256color source ~/.zshrc'
-
-# pipx
-RUN sudo pip3 install -U pip wheel setuptools && pip3 install pipx
 
 RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
 

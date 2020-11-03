@@ -5,7 +5,6 @@ source <(kubectl completion zsh)
 
 cloud_info(){
   info_for_app az
-  info_for_app kubectl
   info_for_app kube
   info_for_app terraform
 }
@@ -19,5 +18,4 @@ info(){
 echo "${normal}Type ${bold}'info' ${normal}for the image information."
 
 # shellcheck disable=SC1090
-source ~/.venv/dev/bin/activate
-
+cd ~/.venvs/dev && envin
