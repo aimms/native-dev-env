@@ -17,10 +17,10 @@ RUN cd /usr/bin && \
 # 1. Install azure-cli and kube-cli as standalone applications
 # 2. install python deps from requirements.txt
 
-#pip install -U pip wheel setuptools && \
-#            pipz install --cmd az azure-cli && \
-#            pipz install --cmd kube kube-cli && \
 RUN zsh -c 'source ~/.zshrc && mkdir -p ~/.venvs/apps && cd ~/.venvs/apps && envin && \
+            pip install -U pip wheel setuptools && \
+            pipz install --cmd az azure-cli && \
+            pipz install --cmd kube kube-cli && \
             mkdir -p ~/.venvs/dev && cd ~/.venvs/dev && envin && \
             pip install -U pip wheel setuptools && \
             pip install -r /install/requirements.txt'
