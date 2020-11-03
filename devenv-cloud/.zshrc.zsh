@@ -4,7 +4,9 @@ alias k=kubectl
 source <(kubectl completion zsh)
 
 cloud_info(){
-  a az && info_for_app az && a dev
+  info_for_app az
+  info_for_app kubectl
+  info_for_app kube
   info_for_app terraform
 }
 
@@ -17,4 +19,5 @@ info(){
 echo "${normal}Type ${bold}'info' ${normal}for the image information."
 
 # shellcheck disable=SC1090
-source ~/.dev/bin/activate
+source ~/.venv/dev/bin/activate
+
