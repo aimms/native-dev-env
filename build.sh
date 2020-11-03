@@ -51,7 +51,7 @@ build_image() {
 
   # shellcheck disable=SC2046
   if [ "$(image_exists "$pfx_img_name")" == "0" ]; then
-    b_echo "Building $pfx_img_name..."
+    b_echo "Building $pfx_img_name...git"
     buildah bud --runtime crun --isolation "$isolation" \
                 -v "$script_dir/$img_name:/install:ro,Z" \
                 --build-arg VERSION="$version" \
