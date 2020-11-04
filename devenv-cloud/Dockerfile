@@ -14,17 +14,19 @@ ENV TERRAFORM_VERSION="0.12.28"
 #    unzip "$TERRAFORM_ZIP" && rm -f "$TERRAFORM_ZIP"
 
 
+
+
 # 1. Install azure-cli and kube-cli as standalone applications
 # 2. install python deps from requirements.txt
-RUN cat /install/.zshrc.zsh >> /root/.zshrc
-
 RUN zsh -c 'source ~/.zshrc && \
-            activate && \
-            pip install -U pip wheel setuptools typed-argument-parser pipx && \
-            pipx ensurepath && \
+            cd /root && activate && \
+            pip install -U typed-argument-parser && \
             pipx install azure-cli && \
             pipx install kube-cli && \
             deactivate && \
-            mkdir -p ~/.dev && cd ~/.dev && activate && \
+            mkdir -p /root/.venvs/dev && cd /root/.venvs/dev && \
+            touch SHOULD_BE_EMPTY && activate && \
             pip install -U pip wheel setuptools && \
             pip install -r /install/requirements.txt'
+
+RUN cat /install/.zshrc.zsh >> /root/.zshrc

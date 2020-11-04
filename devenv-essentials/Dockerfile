@@ -31,8 +31,11 @@ RUN curl -L git.io/antigen > /root/.antigen.zsh
 # install .zshrc stuff
 RUN zsh -c 'autoload -U zmv && noglob zmv -W -C /install/.* /root/.*'
 
-# init; ensure theme support is installed;
-RUN zsh -c 'TERM=xterm-256color source ~/.zshrc'
+# init; ensure theme support is installed; prepare root python venv
+RUN zsh -c 'TERM=xterm-256color source ~/.zshrc && \
+            cd /root && activate && \
+            pip install -U pip wheel setuptools pipx && \
+            pipx ensurepath'
 
 RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
 
