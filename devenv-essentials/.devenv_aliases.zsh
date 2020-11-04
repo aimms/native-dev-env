@@ -6,7 +6,7 @@ bold="${fg_bold[white]}"
 # shellcheck disable=SC2154
 normal="${reset_color}"
 
-info_for_app(){
+info_for_app() {
   local name="$1"
   local version_arg="$2"
 
@@ -16,10 +16,10 @@ info_for_app(){
 
   # shellcheck disable=SC2046
   echo -e "${bold}$name:${normal}" \
-    $("$name" $version_arg | grep -oP  "[0-9]+[a-zA-Z]?\.[0-9]+(?:[\.][0-9]+[a-zA-Z]?){0,4}" | head -n 1)
+    $("$name" $version_arg | grep -oP "[0-9]+[a-zA-Z]?\.[0-9]+(?:[\.][0-9]+[a-zA-Z]?){0,4}" | head -n 1)
 }
 
-alias_info(){
+alias_info() {
   echo -e "Alias Information:\n"
 
   echo -e "${bold}vi-rc:${normal} vi $HOME/.zshrc"

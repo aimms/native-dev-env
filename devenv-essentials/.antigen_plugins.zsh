@@ -30,7 +30,7 @@ PROMPT='%(?.%F{green}>.%F{red}?%?)%f %B%F{240}%1~%f%b %# ' # overridden by antig
 
 # shellcheck disable=SC2086
 if [[ ! -e $TERM && "$TERM" == "xterm-256color" ]]; then
-    antigen theme jackharrisonsherlock/common
+  antigen theme jackharrisonsherlock/common
 fi
 
 antigen apply
