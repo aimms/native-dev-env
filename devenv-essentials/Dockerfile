@@ -33,8 +33,7 @@ RUN zsh -c 'autoload -U zmv && noglob zmv -W -C /install/.* /root/.*'
 
 # init; ensure theme support is installed; prepare python env
 RUN TERM=xterm-256color pip3 install --user pip && \
-    mkdir /venv && chmod a+rw /venv && python -m venv /venv && \
-    echo 'source /venv/bin/activate' >> ~/.zshrc
+    mkdir /venv && python -m venv /venv
 
 RUN zsh -c 'source ~/.zshrc && pip install -U pip wheel setuptools'
 

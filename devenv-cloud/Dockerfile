@@ -17,9 +17,10 @@ RUN python -m venv ~/.cli
 
 RUN zsh -c 'source ~/.cli/bin/activate && \
     pip install -U pip wheel && \
-    pip install typed-argument-parser azure-cli kube-cli && \
+    pip install typed-argument-parser azure-cli kube-cli'
 
 RUN zsh -c 'source /venv/bin/activate && \
-    pip install -r /install/requirements.txt'
+    pip install -r /install/requirements.txt && \
+    chmod -R a+rw /venv'
 
 RUN cat /install/.zshrc.zsh >> /root/.zshrc
