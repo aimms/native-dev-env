@@ -1,3 +1,5 @@
+export PATH="$PATH:/venv/bin"
+
 native_info(){
   info_for_app clang
   info_for_app cmake
