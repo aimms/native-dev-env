@@ -17,5 +17,3 @@ info() {
 # shellcheck disable=SC2154
 echo "${normal}Type ${bold}'info' ${normal}for the image information."
 
-# activate default python env
-source /venv/bin/activate
