@@ -1,14 +1,13 @@
-alias k=kubectl
+export PATH="$PATH:$HOME/.cli/bin"
 
-alias az="/root/.cli/bin/az"
-alias kube="/root/.cli/bin/az"
+alias k=kubectl
 
 # shellcheck disable=SC1090
 source <(kubectl completion zsh)
 
 cloud_info() {
-  info_for_app /root/.cli/bin/az
-  info_for_app /root/.cli/bin/kube
+  info_for_app az
+  info_for_app kube
   info_for_app terraform
 }
 

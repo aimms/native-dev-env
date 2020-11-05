@@ -9,4 +9,4 @@ source ~/.antigen_plugins.zsh
 
 source ~/.devenv_aliases.zsh
 
-echo 'source /venv/bin/activate' >> ~/.zshrc
+source /venv/bin/activate
