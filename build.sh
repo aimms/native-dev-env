@@ -71,7 +71,7 @@ build_image() {
 }
 
 build_image "devenv-essentials"
-build_image "devenv-cloud"
+#build_image "devenv-cloud"
 #build_image "devenv-native-base"
 #build_image "devenv-native"
 #build_image "devenv-native-ssh-server"

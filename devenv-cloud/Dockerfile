@@ -19,14 +19,12 @@ ENV TERRAFORM_VERSION="0.12.28"
 # 1. Install azure-cli and kube-cli as standalone applications
 # 2. install python deps from requirements.txt
 RUN zsh -c 'source ~/.zshrc && \
-            cd /root && activate && \
-            pip install -U typed-argument-parser && \
-            pipx install azure-cli && \
-            pipx install kube-cli && \
-            deactivate && \
-            mkdir -p /root/.venvs/dev && cd /root/.venvs/dev && \
-            touch SHOULD_BE_EMPTY && activate && \
-            pip install -U pip wheel setuptools && \
-            pip install -r /install/requirements.txt'
+            pip install -r /install/requirements.txt && \
+            python -m venv ~/.cli && source ~/.cli/bin/activate && \
+            pip install -U pip wheel && \
+            pip install typed-argument-parser azure-cli kube-cli && \
+            echo "alias az=$(which az)" >> ~/.zshrc && \
+            echo "alias kube=$(which kube)"'
+
 
 RUN cat /install/.zshrc.zsh >> /root/.zshrc
