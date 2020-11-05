@@ -13,15 +13,13 @@ RUN cd /usr/bin && \
     wget "https://releases.hashicorp.com/terraform/$TERRAFORM_VERSION/$TERRAFORM_ZIP" && \
     unzip "$TERRAFORM_ZIP" && rm -f "$TERRAFORM_ZIP"
 
-# 1. Install azure-cli and kube-cli as standalone applications
-# 2. install python deps from requirements.txt
+RUN python -m venv ~/.cli
+
+RUN zsh -c 'source ~/.cli/bin/activate && \
+    pip install -U pip wheel && \
+    pip install typed-argument-parser azure-cli kube-cli && \
+
 RUN zsh -c 'source /venv/bin/activate && \
-            pip install -r /install/requirements.txt && \
-            deactivate && \
-            python -m venv ~/.cli && source ~/.cli/bin/activate && \
-            pip install -U pip wheel && \
-            pip install typed-argument-parser azure-cli kube-cli && \
-            echo "alias az=$(which az)" >> ~/.zshrc && \
-            echo "alias kube=$(which kube)" >> ~/.zshrc'
+    pip install -r /install/requirements.txt'
 
 RUN cat /install/.zshrc.zsh >> /root/.zshrc
