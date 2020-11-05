@@ -39,4 +39,4 @@ RUN zsh -c 'TERM=xterm-256color source ~/.zshrc && pip install -U pip wheel setu
 
 RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
 
-CMD ['/bin/zsh']
+CMD zsh
