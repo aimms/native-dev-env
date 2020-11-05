@@ -21,7 +21,7 @@ ENV TERRAFORM_VERSION="0.12.28"
 RUN zsh -c 'source ~/.zshrc && \
             pip install -r /install/requirements.txt && \
             python -m venv ~/.cli && source ~/.cli/bin/activate && \
-            pip install -U pip wheel && \
+            pip install -U pip wheel setuptools && \
             pip install typed-argument-parser azure-cli kube-cli && \
             echo "alias az=$(which az)" >> ~/.zshrc && \
             echo "alias kube=$(which kube)"'

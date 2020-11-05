@@ -17,7 +17,5 @@ info() {
 # shellcheck disable=SC2154
 echo "${normal}Type ${bold}'info' ${normal}for the image information."
 
-pushd "$HOME"/.venvs/dev || exit
-# shellcheck disable=SC1090
-activate # activate dev virtual env
-popd || exit
+# activate default python env
+source /venv/bin/activate
