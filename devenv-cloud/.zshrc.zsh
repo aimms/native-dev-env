@@ -1,4 +1,4 @@
-export PATH="$PATH:$HOME/.cli/bin"
+export PATH="$PATH:$HOME/.local/bin"
 
 alias k=kubectl
 
@@ -18,3 +18,4 @@ info() {
 # shellcheck disable=SC2154
 echo "${normal}Type ${bold}'info' ${normal}for the image information."
 
+source /pylibs/bin/activate

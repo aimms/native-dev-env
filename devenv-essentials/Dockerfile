@@ -33,9 +33,10 @@ RUN zsh -c 'autoload -U zmv && noglob zmv -W -C /install/.* /root/.*'
 
 # init; ensure theme support is installed; prepare python env
 RUN pip3 install --user pip && \
-    mkdir /venv && python -m venv /venv
+    mkdir /tools && python -m venv /tools && \
+    pip install -U pip wheel setuptools
 
-RUN zsh -c 'TERM=xterm-256color source ~/.zshrc && pip install -U pip wheel setuptools'
+RUN zsh -c 'TERM=xterm-256color source ~/.zshrc'
 
 RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
 

@@ -13,14 +13,12 @@ RUN cd /usr/bin && \
     wget "https://releases.hashicorp.com/terraform/$TERRAFORM_VERSION/$TERRAFORM_ZIP" && \
     unzip "$TERRAFORM_ZIP" && rm -f "$TERRAFORM_ZIP"
 
-RUN python -m venv ~/.cli
-
-RUN zsh -c 'source ~/.cli/bin/activate && \
-    pip install -U pip wheel && \
+RUN zsh -c 'source /tools/bin/activate && \
     pip install typed-argument-parser azure-cli kube-cli'
 
-RUN zsh -c 'source /venv/bin/activate && \
-    pip install -r /install/requirements.txt && \
-    chmod -R a+rw /venv'
+RUN python -m venv /pylibs
+
+RUN zsh -c 'source /pylibs/bin/activate && \
+    pip install -r /install/requirements.txt'
 
 RUN cat /install/.zshrc.zsh >> /root/.zshrc

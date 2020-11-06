@@ -6,5 +6,5 @@ ENV TERM="xterm"
 # install .zshrc stuff
 RUN zsh -c 'autoload -U zmv && noglob zmv -W -C /install/.* /root/.*'
 
-RUN zsh -c 'source ~/.zshrc && \
-            pip install conan ninja cmake'
+RUN zsh -c 'source /tools/bin/activate && \
+            pip install conan ninja cmake && chmod -R a+rw /tools'
