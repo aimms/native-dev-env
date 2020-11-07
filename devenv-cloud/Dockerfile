@@ -14,11 +14,11 @@ RUN cd /usr/bin && \
     unzip "$TERRAFORM_ZIP" && rm -f "$TERRAFORM_ZIP"
 
 RUN zsh -c 'source /tools/bin/activate && \
-    pip install typed-argument-parser azure-cli kube-cli'
+            pip install typed-argument-parser azure-cli kube-cli'
 
 RUN python -m venv /pylibs
 
 RUN zsh -c 'source /pylibs/bin/activate && \
-    pip install -r /install/requirements.txt'
+            pip install -r /install/requirements.txt'
 
 RUN cat /install/.zshrc.zsh >> /root/.zshrc
