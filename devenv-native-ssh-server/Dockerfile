@@ -3,7 +3,11 @@ FROM aimmspro/devenv-native:$VERSION
 ENV BUILD_USER=builderboy
 ENV DEVENV_SSH_SERVER=1
 
-RUN apt update && apt install -y --no-install-recommends openssh-server gdb rsync sudo gdbserver
+RUN chmod -R a+rw /tools && \
+    chmod -R a+rw /usr/local/bin
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openssh-server gdb rsync sudo gdbserver
 
 # configure SSH for communication with Visual Studio
 RUN mkdir -p /var/run/sshd && \
