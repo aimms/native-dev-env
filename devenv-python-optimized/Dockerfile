@@ -22,6 +22,8 @@ RUN  update-alternatives --install /usr/local/bin/python python /usr/local/bin/p
 RUN  update-alternatives --install /usr/local/bin/pip3 pip3 /usr/local/bin/pip$PYTHON_VERSION_MAJOR 100
 RUN  update-alternatives --install /usr/local/bin/pip pip /usr/local/bin/pip$PYTHON_VERSION_MAJOR 100
 
+RUN ldconfig
+
 RUN pip install -U pip wheel setuptools
 
 RUN rm -rf /usr/src/* && \
