@@ -35,7 +35,7 @@ RUN mkdir -p /home/$BUILD_USER/.conan && \
     cp /install/conan_settings.yml /home/$BUILD_USER/.conan/settings.yml && \
     chown -R $BUILD_USER /home/$BUILD_USER/.conan
 
-RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
+RUN apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
 # expose sshd port
 EXPOSE 22

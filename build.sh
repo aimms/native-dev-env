@@ -80,7 +80,7 @@ build_image() {
   fi
 }
 build_image "devenv-python-optimized"
-build_image "devenv-essentials"
+build_image "devenv-shell"
 build_image "devenv-cloud"
 build_image "devenv-native-base"
 build_image "devenv-native"

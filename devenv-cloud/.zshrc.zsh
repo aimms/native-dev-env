@@ -1,4 +1,4 @@
-export PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:$HOME/.venv/bin"
 
 alias k=kubectl
 

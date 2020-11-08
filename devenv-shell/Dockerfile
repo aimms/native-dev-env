@@ -10,15 +10,11 @@ ENV TERM=xterm
 
 # install basic tools
 RUN apt-get update && apt-get --no-install-recommends install -y \
-    git highlight pcre2-utils zsh tmux vim curl zip unzip locales libpq-dev neofetch fd-find
+    git highlight pcre2-utils zsh tmux vim curl zip unzip libpq-dev neofetch fd-find
 
 RUN chsh -s /bin/zsh
 
 RUN ln -s /bin/fdfind /bin/fd
-
-# generate locales
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-  dpkg-reconfigure --frontend=noninteractive locales && update-locale LANG=en_US.UTF-8
 
 #fzf; config is embedded into .zshrc
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /usr/local/fzf && \
@@ -34,10 +30,6 @@ RUN zsh -c 'autoload -U zmv && noglob zmv -W -C /install/.* /root/.*'
 # 2. prepare 'tools python env for cli tool
 RUN zsh -c 'TERM=xterm-256color source ~/.zshrc'
 
-RUN zsh -c 'mkdir /tools && python -m venv /tools && \
-            source /tools/bin/activate && \
-            pip install -U pip wheel setuptools'
-
-RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
+RUN apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
 CMD zsh

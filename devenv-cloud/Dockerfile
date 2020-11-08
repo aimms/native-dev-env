@@ -1,5 +1,5 @@
 ARG VERSION=latest
-FROM aimmspro/devenv-essentials:$VERSION
+FROM aimmspro/devenv-shell:$VERSION
 ENV TERRAFORM_VERSION="0.12.28"
 
 # shellcheck disable=SC2046npx
@@ -13,12 +13,11 @@ RUN cd /usr/bin && \
     wget "https://releases.hashicorp.com/terraform/$TERRAFORM_VERSION/$TERRAFORM_ZIP" && \
     unzip "$TERRAFORM_ZIP" && rm -f "$TERRAFORM_ZIP"
 
-RUN zsh -c 'source /tools/bin/activate && \
-            pip install typed-argument-parser azure-cli kube-cli'
+RUN pip install -U azure-cli kube-cli
 
-RUN python -m venv /pylibs
+RUN python -m venv /root/.venv
 
-RUN zsh -c 'source /pylibs/bin/activate && \
+RUN zsh -c 'source /root/.venv/bin/activate && \
             pip install -r /install/requirements.txt'
 
 RUN cat /install/.zshrc.zsh >> /root/.zshrc
