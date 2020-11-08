@@ -29,7 +29,7 @@ RUN cat /root/.zshrc > /home/$BUILD_USER/.zshrc && \
 # allowing conan to use latest clang
 RUN mkdir -p /home/$BUILD_USER/.conan && \
     cp /root/.conan/settings.yml /home/$BUILD_USER/.conan/settings.yml && \
-    chown /home/$BUILD_USER/.conan/settings.yml
+    chown $BUILD_USER:$BUILD_USER /home/$BUILD_USER/.conan/settings.yml
 
 RUN apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 

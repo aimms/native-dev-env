@@ -19,8 +19,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       /install/update_alternatives.sh $LLVM_VERSION 100
 
 # install .zshrc stuff
-RUN zsh -c 'autoload -U zmv && noglob zmv -W -C /install/.* /root/.*'
-COPY conan_settings.yml /root/.conan/
+RUN cat /install/.zshrc.zsh >> /root/.zshrc
+RUN mkdir -p /root/.conan && cp /install/conan_settings.yml /root/.conan/settings.yml
 
 RUN pip install -U pip wheel setuptools && \
     pip install conan ninja cmake
