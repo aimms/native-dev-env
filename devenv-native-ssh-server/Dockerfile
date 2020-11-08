@@ -3,9 +3,6 @@ FROM aimmspro/devenv-native:$VERSION
 ENV BUILD_USER=builderboy
 ENV DEVENV_SSH_SERVER=1
 
-RUN chmod -R a+rw /tools && \
-    chmod -R a+rw /usr/local/bin
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
     openssh-server gdb rsync sudo gdbserver
 
@@ -25,15 +22,14 @@ RUN chown root /var/run/sshd && \
     chmod 744 /var/run/sshd
 
 RUN curl -L git.io/antigen > /home/$BUILD_USER/.antigen.zsh
-RUN /usr/local/fzf/install --no-bash --no-zsh --no-fish
 
-RUN cat /install/.zshrc > /home/$BUILD_USER/.zshrc &&
-        chown $BUILD_USER:$BUILD_USER /home/$BUILD_USER/.zshrc &&
+RUN cat /root/.zshrc > /home/$BUILD_USER/.zshrc && \
+    chown $BUILD_USER:$BUILD_USER /home/$BUILD_USER/.zshrc
 
 # allowing conan to use latest clang
 RUN mkdir -p /home/$BUILD_USER/.conan && \
-    cp /install/conan_settings.yml /home/$BUILD_USER/.conan/settings.yml && \
-    chown -R $BUILD_USER /home/$BUILD_USER/.conan
+    cp /root/.conan/settings.yml /home/$BUILD_USER/.conan/settings.yml && \
+    chown /home/$BUILD_USER/.conan/settings.yml
 
 RUN apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 

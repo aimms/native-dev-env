@@ -6,8 +6,8 @@ ENV LLVM_VERSION=11
 
 # add latest clang / llvm repo
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
-RUN echo 'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-$LLVM_VERSION main' >> /etc/apt/sources.list && \
-    echo 'deb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-$LLVM_VERSION main' >> /etc/apt/sources.list
+RUN echo "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-$LLVM_VERSION main" >> /etc/apt/sources.list && \
+    echo "deb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-$LLVM_VERSION main" >> /etc/apt/sources.list
 
 # installing dev tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -20,6 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # install .zshrc stuff
 RUN zsh -c 'autoload -U zmv && noglob zmv -W -C /install/.* /root/.*'
+COPY conan_settings.yml /root/.conan/
 
 RUN pip install -U pip wheel setuptools && \
     pip install conan ninja cmake
