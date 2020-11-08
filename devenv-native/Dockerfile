@@ -1,9 +1,27 @@
 ARG VERSION=latest
-FROM aimmspro/devenv-native-base:$VERSION
+FROM aimmspro/devenv-essentials:$VERSION
 
 ENV TERM="xterm"
+ENV LLVM_VERSION=11
+
+# add latest clang / llvm repo
+RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+RUN echo 'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-$LLVM_VERSION main' >> /etc/apt/sources.list && \
+    echo 'deb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-$LLVM_VERSION main' >> /etc/apt/sources.list
+
+# installing dev tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      autoconf automake doxygen graphviz ccache \
+      llvm-$LLVM_VERSION clang-format-$LLVM_VERSION clang-tidy-$LLVM_VERSION \
+      clang-tools-$LLVM_VERSION clang-$LLVM_VERSION clangd-$LLVM_VERSION libc++-$LLVM_VERSION-dev \
+      libc++1-$LLVM_VERSION libc++abi-$LLVM_VERSION-dev libc++abi1-$LLVM_VERSION libclang1-$LLVM_VERSION \
+      lld-$LLVM_VERSION llvm-$LLVM_VERSION-runtime llvm-$LLVM_VERSION && \
+      /install/update_alternatives.sh $LLVM_VERSION 100
 
 # install .zshrc stuff
 RUN zsh -c 'autoload -U zmv && noglob zmv -W -C /install/.* /root/.*'
 
-RUN pip install conan ninja cmake
+RUN pip install -U pip wheel setuptools && \
+    pip install conan ninja cmake
+
+RUN apt-get autoremove -y && rm -rf /var/lib/apt/lists/*

@@ -1,5 +1,5 @@
 ARG VERSION=latest
-FROM aimmspro/devenv-shell:$VERSION
+FROM aimmspro/devenv-essentials:$VERSION
 ENV TERRAFORM_VERSION="0.12.28"
 
 # shellcheck disable=SC2046npx
@@ -13,11 +13,11 @@ RUN cd /usr/bin && \
     wget "https://releases.hashicorp.com/terraform/$TERRAFORM_VERSION/$TERRAFORM_ZIP" && \
     unzip "$TERRAFORM_ZIP" && rm -f "$TERRAFORM_ZIP"
 
-RUN pip install -U azure-cli kube-cli
-
-RUN python -m venv /root/.venv
-
-RUN zsh -c 'source /root/.venv/bin/activate && \
-            pip install -r /install/requirements.txt'
+RUN MAKE_OPTS=-j$(nproc --all) pip install azure-cli kube-cli
 
 RUN cat /install/.zshrc.zsh >> /root/.zshrc
+
+RUN python -m venv /devenv
+RUN zsh -c 'source /devenv/bin/activate && \
+            pip install -U pip wheel setuptools && \
+            MAKE_OPTS=-j$(nproc --all) pip install -r /install/requirements.txt'

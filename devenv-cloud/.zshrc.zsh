@@ -1,4 +1,4 @@
-export PATH="$PATH:$HOME/.venv/bin"
+export PATH="$PATH:/devenv/bin"
 
 alias k=kubectl
 
@@ -18,4 +18,5 @@ info() {
 # shellcheck disable=SC2154
 echo "${normal}Type ${bold}'info' ${normal}for the image information."
 
-source /pylibs/bin/activate
+# shellcheck disable=SC1090
+source /devenv/bin/activate
