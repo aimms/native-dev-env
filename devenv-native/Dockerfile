@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN cat /install/.zshrc.zsh >> /root/.zshrc
 RUN mkdir -p /root/.conan && cp /install/conan_settings.yml /root/.conan/settings.yml
 
-RUN zsh -c 'source ~/.zshrc && pip install -r /install/native.txt'
+RUN zsh -c 'source ~/.zshrc && \
+            pip install -r /install/native.txt'
 
 RUN apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
