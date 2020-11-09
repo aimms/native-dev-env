@@ -1,4 +1,4 @@
-export PATH="$PATH:/devenv/bin"
+export PATH="$PATH:/tools/bin"
 
 alias k=kubectl
 

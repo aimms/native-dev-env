@@ -4,8 +4,11 @@ FROM aimmspro/devenv-essentials:$VERSION
 ENV TERM="xterm"
 ENV LLVM_VERSION=11
 
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates gnupg
+
 # add latest clang / llvm repo
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+
 RUN echo "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-$LLVM_VERSION main" >> /etc/apt/sources.list && \
     echo "deb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-$LLVM_VERSION main" >> /etc/apt/sources.list
 
@@ -22,7 +25,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN cat /install/.zshrc.zsh >> /root/.zshrc
 RUN mkdir -p /root/.conan && cp /install/conan_settings.yml /root/.conan/settings.yml
 
-RUN pip install -U pip wheel setuptools && \
-    pip install conan ninja cmake
+RUN zsh -c 'source ~/.zshrc && pip install -r /install/native.txt'
 
 RUN apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
