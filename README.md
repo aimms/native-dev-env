@@ -1,5 +1,7 @@
 ## Development Environment for native code
 
+TODO: make the README.md more verbose
+
 
 ### Using
 
@@ -17,6 +19,15 @@ v
 docker run -v$(pwd):/code -it aimmspro/devenv-cloud
 info
 v
+~~~
+
+#### Extended colors support
+
+set `TERM` to `TERM=xterm-256color`.
+e.g.:
+
+~~~
+ docker run --rm -e TERM=xterm-256color  -it aimmspro/devenv-native
 ~~~
 
 ### Building locally 

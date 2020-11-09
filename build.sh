@@ -2,8 +2,8 @@
 
 set -e
 
-if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" || $# -gt 3 ]]; then
-  echo "Usage: $0 <version> [--rootless] [--upload]"
+if [[ $# -lt 1 || "$1" == "-h" || "$1" == "--help" || $# -gt 4 ]]; then
+  echo "Usage: $0 <version> [--rootless] [--upload] [--use_cache]"
   exit 1
 fi
 
@@ -13,21 +13,31 @@ b_echo() {
 }
 
 version="$1"
+shift
 
-if [[ "$2" == "--rootless" || "$3" == "--rootless" ]]; then
+layers="false"
+
+for var in "$@"
+do
+  if [ "$var" == "--rootless" ]; then
     isolation=rootless
-else
+  else
     isolation=chroot
-fi
+  fi
+
+  if [ "$var" == "--upload" ]; then
+    upload=1
+    b_echo "Upload requested"
+  fi
+
+  if [ "$var" == "--use_cache" ]; then
+    layers="true"
+    b_echo "Using cached layers if exist"
+  fi
+done
 
 b_echo "Using isolation: $isolation"
-
 prefix="aimmspro"
-
-if [[ "$2" == "--upload" || "$3" == "--upload" ]]; then
-  upload=1
-  b_echo "Upload requested"
-fi
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
@@ -51,8 +61,8 @@ build_image() {
 
   # shellcheck disable=SC2046
   if [ "$(image_exists "$pfx_img_name")" == "0" ]; then
-    b_echo "Building $pfx_img_name..."
-    buildah bud --runtime crun --isolation "$isolation" \
+    b_echo "Building $pfx_img_name...git"
+    buildah bud --layers=$layers --runtime crun --isolation "$isolation" \
                 -v "$script_dir/$img_name:/install:ro,Z" \
                 --build-arg VERSION="$version" \
                 -t "$pfx_img_name" -f "$img_name/Dockerfile"
@@ -69,12 +79,10 @@ build_image() {
     buildah push "$pfx_img_name:latest"
   fi
 }
-
 build_image "devenv-essentials"
-#build_image "devenv-cloud"
-#build_image "devenv-native-base"
-#build_image "devenv-native"
-#build_image "devenv-native-ssh-server"
+build_image "devenv-cloud"
+build_image "devenv-native"
+build_image "devenv-native-ssh-server"
 
 b_echo "Done"
 popd # script_dir

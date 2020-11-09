@@ -1,3 +1,5 @@
+export PATH="$PATH:$HOME/.local/bin"
+
 # shellcheck disable=SC1090
 source ~/.fzf.zsh
 
