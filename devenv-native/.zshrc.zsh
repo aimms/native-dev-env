@@ -11,7 +11,7 @@ info(){
 }
 
 # shellcheck disable=SC2086
-if [ -e $DEVENV_SSH_SERVER ]; then
+if [[ -e $DEVENV_SSH_SERVER && -e DEVENV_LIGHTWEIGHT ]]; then
   # shellcheck disable=SC2154
   echo "${normal}Type ${bold}'info' ${normal}for the image information."
 fi
