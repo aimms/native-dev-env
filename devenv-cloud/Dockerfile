@@ -22,7 +22,7 @@ RUN zsh -c 'source /tools/bin/activate && \
             pip install -U pip wheel setuptools && \
             pip install -r /install/tools.txt && \
             deactivate && \
-            source ~/.zshrc && \
+            source /devenv/bin/activate && \
             pip install -U pip wheel setuptools && \
             pip install -r /install/devenv.txt'
 
