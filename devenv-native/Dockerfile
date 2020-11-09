@@ -14,7 +14,7 @@ RUN echo "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-$LLVM_VERSION main
 
 # installing dev tools
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      autoconf automake doxygen graphviz ccache \
+      autoconf automake doxygen graphviz ccache gdb \
       llvm-$LLVM_VERSION clang-format-$LLVM_VERSION clang-tidy-$LLVM_VERSION \
       clang-tools-$LLVM_VERSION clang-$LLVM_VERSION clangd-$LLVM_VERSION libc++-$LLVM_VERSION-dev \
       libc++1-$LLVM_VERSION libc++abi-$LLVM_VERSION-dev libc++abi1-$LLVM_VERSION libclang1-$LLVM_VERSION \

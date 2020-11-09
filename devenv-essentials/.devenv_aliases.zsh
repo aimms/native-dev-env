@@ -33,11 +33,20 @@ main_info() {
   alias_info
 
   echo -e "Tools installed:\n"
+  info_for_app zsh --version
+  info_for_app tmux -V
   info_for_app curl
+  info_for_app wget
   info_for_app vim
   info_for_app git
-  info_for_app tmux -V
+  info_for_app zip
+  info_for_app neofetch
+  info_for_app fd
   info_for_app python
   info_for_app pip
   info_for_app gcc
+}
+
+info() {
+  main_info
 }

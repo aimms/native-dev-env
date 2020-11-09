@@ -17,9 +17,3 @@ info() {
 
 # shellcheck disable=SC1090
 source /devenv/bin/activate
-
-# shellcheck disable=SC2086
-if [ -e $DEVENV_LIGHTWEIGHT ]; then # declared in devenv-cloud
-  # shellcheck disable=SC2154
-  echo "${normal}Type ${bold}'info' ${normal}for the image information."
-fi
