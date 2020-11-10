@@ -8,7 +8,7 @@ ENV LANGUAGE=en_US:en
 ENV TERM=xterm
 
 # install basic tools
-RUN apt update && apt upgrade -y && \
+RUN apt-get update && apt-get upgrade -y && \
     apt --no-install-recommends install -y git highlight pcre2-utils zsh \
     python3 python3-venv python3-dev python3-pip libpython3-dev python-is-python3 \
     build-essential tmux vim wget curl zip unzip locales libpq-dev neofetch fd-find
@@ -35,6 +35,6 @@ RUN zsh -c 'autoload -U zmv && noglob zmv -W -C /install/.* /root/.*'
 RUN zsh -c 'TERM=xterm-256color source ~/.zshrc && \
             pip3 install --user -U pip wheel setuptools'
 
-RUN apt autoremove -y && rm -rf /var/lib/apt/lists/*
+RUN apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
 CMD zsh
