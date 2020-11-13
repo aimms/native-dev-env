@@ -32,8 +32,8 @@ RUN curl -L git.io/antigen > /root/.antigen.zsh
 RUN zsh -c 'autoload -U zmv && noglob zmv -W -C /install/.* /root/.*'
 
 # init; ensure theme support is installed; prepare python env
-RUN zsh -c 'TERM=xterm-256color source ~/.zshrc && \
-            pip3 install --user -U pip wheel setuptools'
+RUN zsh -c 'TERM=xterm-256color source ~/.zshrc'
+RUN pip3 install -U pip wheel setuptools
 
 RUN apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 
