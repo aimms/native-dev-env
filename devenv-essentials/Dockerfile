@@ -11,7 +11,8 @@ ENV TERM=xterm
 RUN apt-get update && apt-get upgrade -y && \
     apt --no-install-recommends install -y git highlight pcre2-utils zsh \
     python3 python3-venv python3-dev python3-pip libpython3-dev python-is-python3 \
-    build-essential tmux vim wget curl zip unzip locales libpq-dev neofetch fd-find dos2unix
+    build-essential tmux vim wget curl zip unzip locales libpq-dev neofetch fd-find dos2unix \
+    iputils-ping traceroute
 
 RUN chsh -s /bin/zsh
 
