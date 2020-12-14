@@ -4,7 +4,7 @@ ENV BUILD_USER=builderboy
 ENV DEVENV_SSH_SERVER=1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    openssh-server rsync sudo gdbserver
+    openssh-server rsync gdbserver
 
 # configure SSH for communication with Visual Studio
 RUN mkdir -p /var/run/sshd && \

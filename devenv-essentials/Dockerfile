@@ -1,6 +1,7 @@
 FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ="Europe/Amsterdam"
 ENV GIT_EDITOR=vim
 ENV LANG=en_US.utf8
 ENV LC_ALL=en_US.UTF-8
@@ -9,12 +10,15 @@ ENV TERM=xterm
 
 # install basic tools
 RUN apt-get update && apt-get upgrade -y && \
-    apt --no-install-recommends install -y git highlight pcre2-utils zsh \
+    DEBIAN_FRONTEND=noninteractive apt --no-install-recommends install -y git highlight pcre2-utils zsh \
     python3 python3-venv python3-dev python3-pip libpython3-dev python-is-python3 \
     build-essential tmux vim wget curl zip unzip locales libpq-dev neofetch fd-find dos2unix \
-    iputils-ping traceroute
+    iputils-ping traceroute net-tools openssh-client
+
 
 RUN chsh -s /bin/zsh
+
+RUN apt-get install -y sudo
 
 RUN ln -s /bin/fdfind /bin/fd
 
@@ -25,6 +29,7 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
 #fzf; config is embedded into .zshrc
 RUN git clone --depth 1 https://github.com/junegunn/fzf.git /usr/local/fzf && \
         /usr/local/fzf/install --no-bash --no-fish --no-zsh
+
 
 # antigen
 RUN curl -L git.io/antigen > /root/.antigen.zsh
