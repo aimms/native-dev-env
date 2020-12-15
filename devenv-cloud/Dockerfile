@@ -15,15 +15,9 @@ RUN cd /usr/bin && \
 
 RUN cat /install/.zshrc.zsh >> /root/.zshrc
 
-RUN python -m venv /tools
-RUN python -m venv /devenv
-
-RUN zsh -c 'source /tools/bin/activate && \
-            pip install -U pip wheel setuptools && \
+RUN zsh -ci 'activate /tools && update_pip && \
             pip install -r /install/tools.txt && \
-            deactivate && \
-            source /devenv/bin/activate && \
-            pip install -U pip wheel setuptools && \
+            activate /devenv && update_pip &&  \
             pip install -r /install/devenv.txt'
 
 

@@ -19,12 +19,20 @@ info_for_app() {
     $("$name" $version_arg | grep -oP "[0-9]+[a-zA-Z]?\.[0-9]+(?:[\.][0-9]+[a-zA-Z]?){0,4}" | head -n 1)
 }
 
+# TODO: this is temporary implementation until 20.3.2 gets fixed
+update_pip() {
+  if pip3 install -U "pip<20.3.2" wheel setuptools ; then
+    pip install -U "pip>20.3.2" 2> /dev/null
+  fi
+}
+
 alias_info() {
   echo -e "Alias Information:\n"
 
   echo -e "${bold}vi-rc:${normal} vi $HOME/.zshrc"
   echo -e "${bold}src:${normal} source $HOME/.zshrc\n"
-  echo -e "${bold}zpy${normal} alias information can be found here: https://github.com/andydecleyre/zpy"
+  echo -e "${bold}zpy:${normal} alias information can be found here: https://github.com/andydecleyre/zpy"
+  echo -e "${bold}update_pip:${normal} in the current env: updates pip, setuptools and wheel"
 }
 
 main_info() {
