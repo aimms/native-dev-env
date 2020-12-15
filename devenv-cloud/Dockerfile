@@ -20,10 +20,10 @@ RUN python -m venv /devenv
 
 RUN zsh -c 'source /tools/bin/activate && \
             pip install -U pip wheel setuptools && \
-            pip install --use-feature=2020-resolver -r /install/tools.txt && \
+            pip install -r /install/tools.txt && \
             deactivate && \
             source /devenv/bin/activate && \
             pip install -U pip wheel setuptools && \
-            pip install --use-feature=2020-resolver -r /install/devenv.txt'
+            pip install -r /install/devenv.txt'
 
 
