@@ -19,11 +19,22 @@ info_for_app() {
     $("$name" $version_arg | grep -oP "[0-9]+[a-zA-Z]?\.[0-9]+(?:[\.][0-9]+[a-zA-Z]?){0,4}" | head -n 1)
 }
 
-# TODO: this is temporary implementation until 20.3.2 gets fixed
-update_pip() {
-  if pip3 install -U "pip<20.3.2" wheel setuptools ; then
-    pip install -U "pip>20.3.2" 2> /dev/null
-  fi
+upgrade_pip() {
+	pip install -U pip setuptools wheel
+}
+
+_venv() {
+	source "$1/bin/activate"
+}
+
+venv() {
+	if [ ! -d "$1" ]; then
+		python -m venv "$1"
+		_venv "$1"
+		upgrade_pip
+	fi
+	_venv "$1"
+
 }
 
 alias_info() {
@@ -31,8 +42,10 @@ alias_info() {
 
   echo -e "${bold}vi-rc:${normal} vi $HOME/.zshrc"
   echo -e "${bold}src:${normal} source $HOME/.zshrc\n"
-  echo -e "${bold}zpy:${normal} alias information can be found here: https://github.com/andydecleyre/zpy"
-  echo -e "${bold}update_pip:${normal} in the current env: updates pip, setuptools and wheel"
+  echo -e "${bold}upgrade_pip:${normal} in the current env: upgrades pip, setuptools and wheel"
+  echo -e "${bold}venv <path>:${normal} creates (if not created yet) venv with <path> and activates it"
+
+  echo -e "More info about plugins installed can be found in ${bold}~/.antigen_plugins.zsh${normal}"
 }
 
 main_info() {

@@ -15,9 +15,7 @@ RUN cd /usr/bin && \
 
 RUN cat /install/.zshrc.zsh >> /root/.zshrc
 
-RUN zsh -ci 'activate /tools && update_pip && \
-            pip install -r /install/tools.txt && \
-            activate /devenv && update_pip &&  \
-            pip install -r /install/devenv.txt'
+RUN zsh -ci 'venv /tools && pip install -r /install/tools.txt && \
+             venv /devenv && pip install -r /install/devenv.txt"
 
 
