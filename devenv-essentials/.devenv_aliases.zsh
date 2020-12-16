@@ -43,9 +43,9 @@ alias_info() {
   echo -e "${bold}vi-rc:${normal} vi $HOME/.zshrc"
   echo -e "${bold}src:${normal} source $HOME/.zshrc\n"
   echo -e "${bold}upgrade_pip:${normal} in the current env: upgrades pip, setuptools and wheel"
-  echo -e "${bold}venv <path>:${normal} creates (if not created yet) venv with <path> and activates it"
+  echo -e "${bold}venv <path>:${normal} creates (if not created yet) virtual env with <path> and activates it"
 
-  echo -e "More info about plugins installed can be found in ${bold}~/.antigen_plugins.zsh${normal}"
+  echo -e "\nMore info about plugins installed can be found in ${bold}~/.antigen_plugins.zsh${normal}\n"
 }
 
 main_info() {
