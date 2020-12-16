@@ -47,7 +47,8 @@ info
 
 ### Cloud Image
 
-Based on _Essentials_ image. Azure and Kubernetes Focused image. Contains (as of _v1.7.1_)
+Based on _Essentials_ image. Tuned for internal use.
+Azure and Kubernetes Focused image. Contains (as of _v1.7.1_)
 
 - _az: 2.14.2_
 - _terraform: 0.12.28_
