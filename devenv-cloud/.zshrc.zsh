@@ -17,3 +17,4 @@ info() {
 
 # shellcheck disable=SC1090
 source /devenv/bin/activate
+
