@@ -23,7 +23,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # install .zshrc.zsh stuff
 RUN cat /install/.zshrc.zsh >> /root/.zshrc
-RUN mkdir -p /root/.conan && cp /install/conan_settings.yml /root/.conan/settings.yml
 
 RUN pip install -r /install/native.txt
 
