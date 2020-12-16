@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       lld-$LLVM_VERSION llvm-$LLVM_VERSION-runtime llvm-$LLVM_VERSION && \
       /install/update_alternatives.sh $LLVM_VERSION 100
 
-# install .zshrc stuff
+# install .zshrc.zsh stuff
 RUN cat /install/.zshrc.zsh >> /root/.zshrc
 RUN mkdir -p /root/.conan && cp /install/conan_settings.yml /root/.conan/settings.yml
 

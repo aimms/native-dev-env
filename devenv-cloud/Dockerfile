@@ -1,5 +1,6 @@
 ARG VERSION=latest
 FROM aimmspro/devenv-essentials:$VERSION
+# TODO: update (might break things)
 ENV TERRAFORM_VERSION="0.12.28"
 
 # shellcheck disable=SC2046npx
@@ -13,9 +14,8 @@ RUN cd /usr/bin && \
     wget "https://releases.hashicorp.com/terraform/$TERRAFORM_VERSION/$TERRAFORM_ZIP" && \
     unzip "$TERRAFORM_ZIP" && rm -f "$TERRAFORM_ZIP"
 
-RUN cat /install/.zshrc.zsh >> /root/.zshrc
-
 RUN zsh -ci 'venv /tools && pip install -r /install/tools.txt && \
-             venv /devenv && pip install -r /install/devenv.txt"
+             venv /devenv && pip install -r /install/devenv.txt'
 
+RUN cat /install/.zshrc.zsh >> /root/.zshrc
 
