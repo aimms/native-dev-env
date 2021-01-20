@@ -1,4 +1,2 @@
-typed-argument-parser
-jmespath
 azure-cli
 kube-cli

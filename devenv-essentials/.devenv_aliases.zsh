@@ -34,7 +34,6 @@ venv() {
 		upgrade_pip
 	fi
 	_venv "$1"
-
 }
 
 alias_info() {

@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:20.10
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Europe/Amsterdam"
@@ -11,10 +11,11 @@ ENV TERM=xterm
 # install basic tools
 RUN apt-get update && apt-get upgrade -y && \
     DEBIAN_FRONTEND=noninteractive apt --no-install-recommends install -y git highlight pcre2-utils zsh \
-    python3 python3-venv python3-dev python3-pip libpython3-dev python-is-python3 \
+    python3.9 python3.9-venv python3.9-dev \
     build-essential tmux vim wget curl zip unzip locales libpq-dev neofetch fd-find dos2unix \
-    iputils-ping traceroute net-tools openssh-client sudo
-
+    iputils-ping traceroute net-tools openssh-client sudo && \
+    update-alternatives  --install /usr/bin/python3 python3 /usr/bin/python3.9 1 && \
+    update-alternatives  --install /usr/bin/python python /usr/bin/python3.9 1
 
 RUN chsh -s /bin/zsh
 
@@ -34,8 +35,8 @@ RUN curl -L git.io/antigen > /root/.antigen.zsh
 # install .zshrc.zsh stuff
 RUN zsh -c 'autoload -U zmv && noglob zmv -W -C /install/.* /root/.*' && cd /root && mv .zshrc.zsh .zshrc
 
-# init; ensure theme support is installed; prepare python env
-RUN TERM=xterm-256color zsh -ci 'pip3 install -U pip wheel setuptools'
+# init; ensure theme support is installed;
+RUN TERM=xterm-256color zsh -ci echo Ensuring Theme support is Installed
 
 RUN apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 

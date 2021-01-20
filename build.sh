@@ -81,8 +81,8 @@ build_image() {
 }
 build_image "devenv-essentials"
 build_image "devenv-cloud"
-build_image "devenv-native"
-build_image "devenv-native-ssh-server"
+#build_image "devenv-native"
+#build_image "devenv-native-ssh-server"
 
 b_echo "Done"
 popd # script_dir
