@@ -129,13 +129,15 @@ docker run -e DEVENV_LIGHTWEIGHT=1 -v $(pwd):/code -it aimmspro/devenv-<image na
 ### Build
 
 #### Prerequisites
-latest `Docker` with integrated `buildkit` support:
+
+This project as of v1.8 release uses `buildkit` as integrated `docker` tool
+for super fast image builds. It requires _latest_ `Docker` with integrated `buildkit` support for your platform:
   - `Dockerfile` `v1.2`
   - `cache mounts`
   - `bind mounts` to mount directories from host
 
 #### BuildKit Cache
-`buildkit cache` is extensively used during build as it significantly speeds up process. But, if something goes wrong,
+`buildkit cache` is one of the core features meant to significantly speed up builds. But, if something goes wrong,
 cache should be manually dropped:
 
 ```
@@ -143,5 +145,13 @@ docker builder prune -af
 ```
 optionally, faulty images may be deleted with `docker rmi -f`, as usual.
 
-####
+#### Script
+
+Use this script to build the images. On `windows` change `$ver` to `%ver%`
+
+```
+ver=1.8 # current release version
+
+
+
 
