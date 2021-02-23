@@ -1,21 +1,27 @@
 ## Development Images
 
-### Essentials
+Based on Ubuntu 20.10. Using:
 
-Based on Ubuntu 20.04 LTS. Contains (as of _v1.7.1_):
+- `zsh` as shell
+- `antigen` as `zsh` plugin manager with plugins:
 
-- _zsh: 5.8_
-- _tmux: 3.0_
-- _curl: 7.68.0_
-- _wget: 1.20.3_
-- _vim: 8.1_
-- _git: 2.25.1_
-- _zip: 3.0_
-- _neofetch: 7.0.0_
-- _fd: 7.4.0_
-- _python: 3.8.5_
-- _pip: 20.2.4_
-- _gcc: 9.3.0_
+    - `zsh-users/zsh-syntax-highlighting`
+    - `zsh-users/zsh-completions`
+    - `zsh-users/zsh-autosuggestions`
+    
+    - `copybuffer`
+    - `copyfile`
+    - `encode64`
+    - `zsh_reload`
+    - `fzf`
+    - `fd`
+    - `zsh-interactive-cd`
+    - `tmux`
+    - `sudo`
+    - `python`
+    - `pip`
+    - `history`
+    - `history-substring-search` 
 
 #### Usage
 
