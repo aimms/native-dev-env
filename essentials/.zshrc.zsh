@@ -14,7 +14,7 @@ fi
 source ~/.devenv_aliases.zsh
 
 # shellcheck disable=SC2086
-if [ -e $DEVENV_LIGHTWEIGHT ]; then # declared in devenv-cloud
+if [ -e $DEVENV_LIGHTWEIGHT ]; then # declared in cloud
   # shellcheck disable=SC2154
   echo "${normal}Type ${bold}'info' ${normal}for the image information."
 fi
