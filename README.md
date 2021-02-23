@@ -1,14 +1,36 @@
 ## Development Images
 
-Based on Ubuntu 20.10. Using:
+Release v1.8
+
+### Essentials
+ 
+There is base layer for all the images called `essentials`.
+
+It's based on `Ubuntu 20.10` and contains the following tools:
 
 - `zsh` as shell
-- `antigen` as `zsh` plugin manager with plugins:
+- `git`
+- `python 3.9+` + `venv` + `pip`
+- `Ubuntu `build-essential` package (includes `gcc-10`)
+- `tmux` 
+- `vim` 
+- `wget` 
+- `curl`
+- `zip / unzip` 
+- `neofetch` 
+- `fd-find` 
 
+
+#### Extra
+
+These tools are always built as the part of `essentials` phase, but they can be
+switched off in runtime using `DEVENV_LIGHTWEIGH=1` var definition (see `Usage` section).
+
+- `fzf`
+- `antigen` as `zsh` plugin manager with plugins:
     - `zsh-users/zsh-syntax-highlighting`
     - `zsh-users/zsh-completions`
     - `zsh-users/zsh-autosuggestions`
-    
     - `copybuffer`
     - `copyfile`
     - `encode64`
@@ -22,130 +44,104 @@ Based on Ubuntu 20.10. Using:
     - `pip`
     - `history`
     - `history-substring-search` 
+    - theme: `jackharrisonsherlock/common`
+
+### Development Images
+
+#### devenv-cloud
+based on `essentials`.
+
+Contains:
+- `azure-cli`
+- `kube-cli`
+
+#### devenv-native
+based on `essentials` (configurable to `cloud`).
+
+Contains:
+
+- `cmake`
+- `conan`
+- `ninja`
+- `clang-format`
+- `clang-tidy`
+- `gdb`
+
+#### devenv-native-ssh-server
+based on `devenv-native` image.
+
+Contains:
+
+- `openssh-server`
+- `rsync`
+- `gdbserver`
+
+
+#### devenv-go
+based on `essentials`. Contains `golang` compiler
+
+#### devenv-rust
+based on `essentials`. Contains `rustc` compiler and `cargo`
+
+### Bundled images
+
+There are also way of bundling images together. See 
+
+- based on `essentials`
+  - `devenv-go-bundle` image is `devenv-native` plus `devenv-go`
+  - `devenv-ultimate-bundle` image is `devenv-native` plus `devenv-go` and `devenv-rust`
+
+- based on `cloud`
+  - `devenv-cloud-go-bundle` image is `devenv-native` plus `devenv-go`
+  - `devenv-cloud-ultimate-bundle` image is `devenv-native` plus `devenv-go` and `devenv-rust`
+
 
 #### Usage
 
-~~~
-docker run -v$(pwd):/code -it aimmspro/devenv-essentials
+All the images are hosted at `Docker Hub` and can be run directly:
+
+```
+docker run -v $(pwd):/code -it aimmspro/devenv-<image name>
+```
+
+Run inside the container
+
+```
 info
-~~~
- 
-### Native Development Environment
+```
 
-Based on _Essentials_ image. C++ development tools. Contains (as of _v1.7.1_):
+##### Visuals
 
-- _doxygen: 1.8.17_
-- _ccache: 3.7.7_
-- _clang: 11.0.1_
-- _clang-tidy: 11.0.1_
-- _clang-format: 11.0.1_
-- _gdb: 9.2_
-- _cmake: 3.18.2_
-- _conan: 1.31.0_
-- _ninja: 1.10.0_
+To enable maximum visual features use `TERM=xterm-256color` var definition:
+```
+docker run -e TERM=xterm-256color -v $(pwd):/code -it aimmspro/devenv-<image name>
+```
 
-#### Usage
+##### Lightweight Mode
 
-~~~
-docker run -v$(pwd):/code -it aimmspro/devenv-native
-info
-~~~
+`antigen` plugins for `zsh` as well as `zsh` theme takes time to load. To disable this
+when not needed use `DEVENV_LIGHTWEIGHT=1` var definition:
 
-### Cloud Image
+```
+docker run -e DEVENV_LIGHTWEIGHT=1 -v $(pwd):/code -it aimmspro/devenv-<image name>
+```
 
-Based on _Essentials_ image. Tuned for internal use.
-Azure and Kubernetes Focused image. Contains (as of _v1.7.1_)
+### Build
 
-- _az: 2.14.2_
-- _terraform: 0.12.28_
-- _kubectl_
-- _kube_ (_pip install kube-cli_)
+#### Prerequisites
+latest `Docker` with integrated `buildkit` support:
+  - `Dockerfile` `v1.2`
+  - `cache mounts`
+  - `bind mounts` to mount directories from host
 
-#### Usage
- 
-~~~
-docker run -v$(pwd):/code -it aimmspro/devenv-cloud
-info
-~~~
+#### BuildKit Cache
+`buildkit cache` is extensively used during build as it significantly speeds up process. But, if something goes wrong,
+cache should be manually dropped:
 
-### Extras
+```
+docker builder prune -af
+```
+optionally, faulty images may be deleted with `docker rmi -f`, as usual.
 
-##### Extended colors support
+####
 
-set `TERM=xterm-256color`
-e.g.:
-
-~~~
- docker run --rm -e TERM=xterm-256color  -it aimmspro/devenv-native
-~~~
-
-##### Disable zsh plugins
-
-set `DEVENV_LIGHTWEIGHT=1`
-e.g.:
-
-~~~
- docker run --rm -e DEVENV_LIGHTWEIGHT=1  -it aimmspro/devenv-native
-~~~
-
-## Building images
-
-#### Using Buildah
-
-Make sure _buildah_ is installed: https://buildah.io
-
-~~~
-./build_env.sh <version> [--upload] [--rootless] [--use_cache]
-~~~
-
-e.g.:
-
-~~~
-./build_env.sh 1.7.1 --rootless
-~~~
-
-##### CLI Options
-###### --rootless
-
-By default `build_env.sh` builds using _buildah_ `chroot` isolation.
-However, `--rootless` switches to rootless isolation. e.g.:
-
-###### --upload
-Tries to upload the image to container registry. e.g.:
-
-###### --use_cache
-
-Debug option. Enables layered builds
-
- 
-
-#### Container build
-
-Using Fedora _buildah_ image. The process will run _buildah_ from inside a container
-
-Resulting images will be available from host. Make sure `fuse-overlayfs` is installed on host
-and `/dev/fuse` device is available
-
-~~~
-./container_build.sh <version> [--upload]
-~~~
-e.g.
-~~~
-./container_build.sh 1.7.1
-~~~
-
-#### Container build without sharing host /dev/fuse
-
-~~~
-mkdir -p ~/.local/share/containers
-docker run --privileged -v ~/.local/share/containers:/var/lib/containers -v $(pwd):/code  quay.io/buildah/stable /bin/bash -c 'cd /code && ./build.sh <version>'
-# e.g.: docker run --privileged -v ~/.local/share/containers:/var/lib/containers -v $(pwd):/code  quay.io/buildah/stable /bin/bash -c 'cd /code && ./build.sh 1.6'
-~~~
-
-#### Podman / Docker
-
-Not supported. TODO: implement compatibility
-
-#### Windows Build using Docker
-
-TODO: WIP. unsupported for now; needs Windows 10 + WSL to be configured properly OR falling back to Docker build should be implemented

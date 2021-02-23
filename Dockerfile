@@ -1,7 +1,12 @@
 # syntax=docker/dockerfile:1.2
 
+###
 # essentials
+###
 FROM ubuntu:20.10 as essentials
+
+ARG NATIVE_BASE=essentials
+ARG BUNDLE_BASE=native
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Europe/Amsterdam"
@@ -15,11 +20,10 @@ ENV TERM=xterm
 RUN rm -f /etc/apt/apt.conf.d/docker-clean
 
 RUN --mount=type=cache,target=/var/cache/apt \
-    apt-get update && apt-get upgrade && apt-get --no-install-recommends install -y \
+    apt-get update && apt-get upgrade -y && apt-get --no-install-recommends install -y \
         git highlight pcre2-utils zsh \
         python3.9 python3.9-venv python3.9-dev python3-pip libpython3.9-dev  \
         build-essential tmux vim wget curl zip unzip locales libpq-dev neofetch fd-find && \
-    apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
 RUN update-alternatives --install /usr/bin/python3  python3 /usr/bin/python3.9 1 && \
@@ -49,13 +53,14 @@ RUN --mount=type=cache,target=/root/.cache TERM=xterm-256color zsh -ci 'pip inst
 
 CMD zsh
 
+###
 # cloud image
+###
 FROM essentials as cloud
 
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && apt-get --no-install-recommends install -y \
         iputils-ping traceroute net-tools openssh-client dos2unix && \
-    apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
 # shellcheck disable=SC2046npx
@@ -71,7 +76,7 @@ RUN --mount=type=bind,target=/tmp \
 RUN --mount=type=bind,target=/tmp cat /tmp/cloud/.zshrc.zsh >> /root/.zshrc
 
 # native image
-FROM essentials as native
+FROM $NATIVE_BASE as native
 
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && apt-get --no-install-recommends install -y \
@@ -81,14 +86,15 @@ RUN --mount=type=cache,target=/var/cache/apt \
 RUN --mount=type=cache,target=/root/.cache --mount=type=bind,target=/tmp \
     pip install -r /tmp/native/native.txt
 
+###
 # native-server
+###
 FROM native as native-server
 ENV BUILD_USER=builderboy
 
 RUN --mount=type=cache,target=/var/cache/apt \
        apt-get update && apt-get install -y --no-install-recommends \
        openssh-server rsync gdbserver sudo && \
-       apt-get autoremove -y && \
        rm -rf /var/lib/apt/lists/*
 
 # configure SSH for communication with Visual Studio
@@ -113,3 +119,18 @@ RUN chown -R $BUILD_USER:$BUILD_USER /home/$BUILD_USER/*
 EXPOSE 22
 ENTRYPOINT ["/usr/sbin/sshd", "-D"]
 
+###
+# go
+###
+FROM $BUNDLE_BASE as go
+
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/root/go \
+       apt-get update && apt-get install -y --no-install-recommends golang
+
+###
+# rust
+###
+FROM $BUNDLE_BASE as rust
+
+RUN --mount=type=cache,target=/root/.cargo \
+    sh -c $(curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs) -y
