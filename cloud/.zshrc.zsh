@@ -7,7 +7,6 @@ source <(kubectl completion zsh)
 
 cloud_info() {
   info_for_app az
-  info_for_app terraform
   venv /tools
   # shellcheck disable=SC2154
   # shellcheck disable=SC2046

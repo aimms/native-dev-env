@@ -2,6 +2,7 @@
 
 # essentials
 FROM ubuntu:20.10 as essentials
+LABEL stage=essentials
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Europe/Amsterdam"
@@ -32,12 +33,11 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
   dpkg-reconfigure --frontend=noninteractive locales && update-locale LANG=en_US.UTF-8
 
 #fzf; config is embedded into .zshrc.zsh
-RUN --mount=type=cache,target=/usr/local/fzf \
-    git clone --depth 1 https://github.com/junegunn/fzf.git /usr/local/fzf && \
-        /usr/local/fzf/install --no-bash --no-fish --no-zsh
+RUN git clone --depth=1 https://github.com/junegunn/fzf.git /usr/local/fzf && \
+    /usr/local/fzf/install --no-bash --no-fish --no-zsh
 
 # antigen
-RUN --mount=type=cache,target=/root/.antigen.zsh curl -L git.io/antigen > /root/.antigen.zsh
+RUN curl -L git.io/antigen > /root/.antigen.zsh
 
 # host mount using new BuildKit feture
 # install .zshrc.zsh stuff
@@ -51,19 +51,28 @@ CMD zsh
 
 # cloud
 FROM essentials as cloud
+LABEL stage=cloud
 
 # shellcheck disable=SC2046npx
-RUN --mount=type=cache,target=/usr/bin/kubectl \
-    release=$(wget -O - https://storage.googleapis.com/kubernetes-release/release/stable.txt | cat -) && \
+RUN release=$(wget -O - https://storage.googleapis.com/kubernetes-release/release/stable.txt | cat -) && \
     wget https://storage.googleapis.com/kubernetes-release/release/$release/bin/linux/amd64/kubectl && \
     chmod +x ./kubectl && \
     mv ./kubectl /usr/bin/kubectl
 
-RUN zsh -ci 'venv /tools && pip install -r /install/tools.txt && \
-             venv /devenv && pip install -r /install/devenv.txt'
-
 RUN --mount=type=bind,target=/tmp \
-    cat /tmp/cloud/.zshrc.zsh >> /root/.zshrc
+    zsh -ci 'venv /tools && pip install -r /tmp/cloud/tools.txt && \
+             venv /devenv && pip install -r /tmp/cloud/devenv.txt'
 
+RUN --mount=type=bind,target=/tmp cat /tmp/cloud/.zshrc.zsh >> /root/.zshrc
 
+# native
+FROM essentials as native
+LABEL stage=native
+
+RUN --mount=type=cache,target=/var/cache/apt \
+    apt-get update && apt-get install -y --no-install-recommends autoconf automake doxygen graphviz ccache gdb && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN --mount=type=cache,target=/root/.cache --mount=type=bind,target=/tmp \
+    pip install -r /tmp/native/native.txt
 

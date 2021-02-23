@@ -4,7 +4,7 @@ FROM aimmspro/devenv-essentials:$VERSION
 ENV TERM="xterm"
 ENV LLVM_VERSION=11
 
-RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates gnupg
+RUN apt-get install -y --no-install-recommends ca-certificates gnupg
 
 # add latest clang / llvm repo
 RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
