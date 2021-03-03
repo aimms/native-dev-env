@@ -1,6 +1,4 @@
-export PATH="$PATH:$HOME/.local/bin"
 
-# disable heavy zshrc parts
 if [ -e $DEVENV_LIGHTWEIGHT ]; then
     # shellcheck disable=SC1090
     source ~/.fzf.zsh

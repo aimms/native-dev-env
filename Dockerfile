@@ -15,6 +15,7 @@ ENV LANG=en_US.utf8
 ENV LC_ALL=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV TERM=xterm
+ENV ANTIGEN_CACHE=false
 
 # https://vsupalov.com/buildkit-cache-mount-dockerfile/
 RUN rm -f /etc/apt/apt.conf.d/docker-clean
@@ -36,20 +37,20 @@ RUN ln -s /bin/fdfind /bin/fd
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
   dpkg-reconfigure --frontend=noninteractive locales && update-locale LANG=en_US.UTF-8
 
+# copy dotfiles
+RUN --mount=type=bind,target=/tmp zsh -c 'autoload -U zmv && noglob zmv -W -C /tmp/essentials/.* /root/.*' && \
+        cd /root && mv .zshrc.zsh .zshrc
+
 #fzf; config is embedded into .zshrc.zsh
-RUN git clone --depth=1 https://github.com/junegunn/fzf.git /usr/local/fzf && \
-    /usr/local/fzf/install --no-bash --no-fish --no-zsh
+RUN --mount=type=cache,target=/usr/local/fzf git clone --depth=1 https://github.com/junegunn/fzf.git /usr/local/fzf && \
+    /usr/local/fzf/install --no-bash --no-fish
 
 # antigen
 RUN curl -L git.io/antigen > /root/.antigen.zsh
 
-# host mount using new BuildKit feture
-# install .zshrc.zsh stuff
-RUN --mount=type=bind,target=/tmp \
-    zsh -c 'autoload -U zmv && noglob zmv -W -C /tmp/essentials/.* /root/.*' && cd /root && mv .zshrc.zsh .zshrc
-
-# init; ensure theme support is installed; update pip
-RUN TERM=xterm-256color zsh -ci 'pip install -U pip wheel setuptools && rm -f /root/.antigen_theme.zsh.zwc'
+# cache theming (inside the image also); install pipx
+RUN --mount=type=cache,target=/root/.antigen --mount=type=cache,target=/root/.cache echo b && \
+    TERM=xterm-256color zsh -ci 'pip install pipx && pipx ensurepath'
 
 CMD zsh
 

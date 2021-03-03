@@ -27,6 +27,9 @@ antigen bundle history-substring-search
 # shellcheck disable=SC2034
 PROMPT='%(?.%F{green}>.%F{red}?%?)%f %B%F{240}%1~%f%b %# ' # overridden by antigen theme
 
-source ~/.antigen_theme.zsh
+# shellcheck disable=SC2086
+if [[ "$TERM" == "xterm-256color" ]]; then
+  antigen theme jackharrisonsherlock/common
+fi
 
 antigen apply
