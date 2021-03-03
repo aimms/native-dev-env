@@ -1,0 +1,53 @@
+--- install.sh	2021-03-03 22:17:29.000000000 +0100
++++ install.sh	2021-03-03 22:21:18.000000000 +0100
+@@ -60,19 +60,20 @@
+ fi
+ 
+ #
+-# Modify .zshrc
++# Modify zshrc 
+ #
+ THE_ZDOTDIR="${ZDOTDIR:-$HOME}"
++THE_ZSHRC_NAME="${ZSHRC_NAME:-.zshrc}"
+ RCUPDATE=1
+-if egrep '(zinit|zplugin)\.zsh' "$THE_ZDOTDIR/.zshrc" >/dev/null 2>&1; then
+-    echo "[34m▓▒░[0m .zshrc already contains \`zinit …' commands – not making changes."
++if egrep '(zinit|zplugin)\.zsh' "$THE_ZDOTDIR/$THE_ZSHRC_NAME" >/dev/null 2>&1; then
++    echo "[34m▓▒░[0m $THE_ZSHRC_NAME already contains \`zinit …' commands – not making changes."
+     RCUPDATE=0
+ fi
+ 
+ if [ $RCUPDATE -eq 1 ]; then
+-    echo "[34m▓▒░[0m Updating $THE_ZDOTDIR/.zshrc (10 lines of code, at the bottom)"
++    echo "[34m▓▒░[0m Updating $THE_ZDOTDIR/$THE_ZSHRC_NAME (10 lines of code, at the bottom)"
+     ZINIT_HOME="$(echo $ZINIT_HOME | sed "s|$HOME|\$HOME|")"
+-    command cat <<-EOF >> "$THE_ZDOTDIR/.zshrc"
++    command cat <<-EOF >> "$THE_ZDOTDIR/$THE_ZSHRC_NAME"
+ 
+ ### Added by Zinit's installer
+ if [[ ! -f $ZINIT_HOME/$ZINIT_BIN_DIR_NAME/zinit.zsh ]]; then
+@@ -102,13 +103,13 @@
+ echo
+ echo "[38;5;219m▓▒░[0m Would you like to add 4 useful plugins" \
+     "- the most useful annexes (Zinit extensions that add new" \
+-    "functions-features to the plugin manager) to the zshrc as well?" \
++    "functions-features to the plugin manager) to the $THE_ZSHRC_NAME as well?" \
+     "It will be the following snippet:"
+     command cat "$file"
+     echo -n "[38;5;219m▓▒░[0m Enter y/n and press Return: "
+     read input
+     if [ "$input" = y ] || [ "$input" = Y ]; then
+-        command cat "$file" >> "$THE_ZDOTDIR"/.zshrc
++        command cat "$file" >> "$THE_ZDOTDIR"/$THE_ZSHRC_NAME
+         echo
+         echo "[34m▓▒░[0m Done."
+         echo
+@@ -118,7 +119,7 @@
+         echo
+     fi
+ 
+-    command cat <<-EOF >> "$THE_ZDOTDIR/.zshrc"
++    command cat <<-EOF >> "$THE_ZDOTDIR/$THE_ZSHRC_NAME"
+ ### End of Zinit's installer chunk
+ EOF
+ fi

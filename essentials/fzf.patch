@@ -1,0 +1,36 @@
+--- ./fzf/install1	2021-03-03 22:49:14.000000000 +0100
++++ ./fzf/install	2021-03-03 22:53:43.000000000 +0100
+@@ -7,10 +7,13 @@
+ key_bindings=
+ update_config=2
+ shells="bash zsh fish"
+-prefix='~/.fzf'
+-prefix_expand=~/.fzf
++
++prefix=${FZF_HOME_DIR:-~/.fzf}
++prefix_expand=$prefix
+ fish_dir=${XDG_CONFIG_HOME:-$HOME/.config}/fish
+ 
++zshrc_name=${ZSHRC_NAME:-$zshrc_name}
++
+ help() {
+   cat << EOF
+ usage: $0 [OPTIONS]
+@@ -350,7 +353,7 @@
+ echo
+ for shell in $shells; do
+   [[ "$shell" = fish ]] && continue
+-  [ $shell = zsh ] && dest=${ZDOTDIR:-~}/.zshrc || dest=~/.bashrc
++  [ $shell = zsh ] && dest=${ZDOTDIR:-~}/$zshrc_name || dest=~/.bashrc
+   append_line $update_config "[ -f ${prefix}.${shell} ] && source ${prefix}.${shell}" "$dest" "${prefix}.${shell}"
+ done
+ 
+@@ -373,7 +376,7 @@
+     [[ "$archi" =~ Darwin ]] && echo -n '  (.bashrc should be loaded from .bash_profile)'
+     echo
+   fi
+-  [[ "$shells" =~ zsh ]]  && echo "   source ${ZDOTDIR:-~}/.zshrc   # zsh"
++  [[ "$shells" =~ zsh ]]  && echo "   source ${ZDOTDIR:-~}/$zshrc_name   # zsh"
+   [[ "$shells" =~ fish ]] && [ $key_bindings -eq 1 ] && echo '   fzf_key_bindings  # fish'
+   echo
+   echo 'Use uninstall script to remove fzf.'

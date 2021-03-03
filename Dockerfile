@@ -1,9 +1,11 @@
 # syntax=docker/dockerfile:1.2
+# Previous line is not a comment
+# https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/syntax.md
 
-###
 # essentials
-###
 FROM ubuntu:20.10 as essentials
+
+ARG BUILDKIT_CACHE_DIR=/var/cache/buildkit/
 
 ARG NATIVE_BASE=essentials
 ARG BUNDLE_BASE=native
@@ -15,17 +17,25 @@ ENV LANG=en_US.utf8
 ENV LC_ALL=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV TERM=xterm
-ENV ANTIGEN_CACHE=false
+ENV PIP_CACHE_DIR=/var/cache/buildkit/pip
+ENV PIPX_HOME=/usr/local/pipx
+ENV PIPX_BIN_DIR=/usr/local/bin
+ENV USE_EMOJI=0
+ENV ZINIT_HOME=/usr/local/zinit
+ENV THE_ZDOTDIR=/etc/zsh
 
-# https://vsupalov.com/buildkit-cache-mount-dockerfile/
-RUN rm -f /etc/apt/apt.conf.d/docker-clean
+# without dot in /etc/zsh
+ENV ZSHRC_NAME=zshrc
 
-RUN --mount=type=cache,target=/var/cache/apt \
-    apt-get update && apt-get upgrade -y && apt-get --no-install-recommends install -y \
+## https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/syntax.md
+RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' \
+    > /etc/apt/apt.conf.d/keep-cache
+
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
+    apt-get update && apt-get --no-install-recommends install -y \
         git highlight pcre2-utils zsh \
         python3.9 python3.9-venv python3.9-dev python3-pip libpython3.9-dev  \
-        build-essential tmux vim wget curl zip unzip locales libpq-dev neofetch fd-find && \
-    rm -rf /var/lib/apt/lists/*
+        build-essential tmux vim wget curl zip unzip locales libpq-dev neofetch fd-find
 
 RUN update-alternatives --install /usr/bin/python3  python3 /usr/bin/python3.9 1 && \
     update-alternatives --install /usr/bin/python  python /usr/bin/python3.9 1
@@ -37,20 +47,45 @@ RUN ln -s /bin/fdfind /bin/fd
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
   dpkg-reconfigure --frontend=noninteractive locales && update-locale LANG=en_US.UTF-8
 
-# copy dotfiles
-RUN --mount=type=bind,target=/tmp zsh -c 'autoload -U zmv && noglob zmv -W -C /tmp/essentials/.* /root/.*' && \
-        cd /root && mv .zshrc.zsh .zshrc
+# python / pipx (for standalone installations)
+RUN --mount=type=cache,target=$PIP_CACHE_DIR pip install pipx
 
-#fzf; config is embedded into .zshrc.zsh
-RUN --mount=type=cache,target=/usr/local/fzf git clone --depth=1 https://github.com/junegunn/fzf.git /usr/local/fzf && \
-    /usr/local/fzf/install --no-bash --no-fish --no-zsh
+# zinit && fzf
+# use patches to append to global zshrc (/etc/zshrc)
+RUN --mount=type=bind,target=/mnt,readonly \
+#    --mount=type=tmpfs,target=/tmp \
+    cd /tmp && \
+    wget -nd https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh && \
+    patch -p0 < /mnt/essentials/zinit.patch && \
+    chmod +x install.sh && ./install.sh \
+    cd /usr/local && git clone --depth 1 https://github.com/junegunn/fzf.git && \
+    patch -p0 < /mnt/essentials/fzf.patch && \
+    chmod +x install && ./install --all --no-fish --no-bash
 
-# antigen
-RUN curl -L git.io/antigen > /root/.antigen.zsh
 
-# cache theming (inside the image also); install pipx
-RUN --mount=type=cache,target=/root/.antigen --mount=type=cache,target=/root/.cache echo b && \
-    TERM=xterm-256color zsh -ci 'pip install pipx'
+#RUN --mount=type=bind,target=/mnt,readonly cat /mnt/essentials/.zshrc.zsh >> ~/.zshrc
+
+
+RUN zsh -ci 'echo Initializing zsh...'
+
+
+
+## copy dotfiles
+#RUN --mount=type=bind,target=/mnt,readonly,readonly zsh -c 'autoload -U zmv && noglob zmv -W -C /mnt/essentials/.* /root/.*' && \
+#        cd /root && mv .zshrc.zsh .zshrc
+#
+##fzf; config is embedded into .zshrc.zsh
+#RUN --mount=type=cache,target=$BUILDKIT_CACHE_DIR \
+#        git clone --depth=1 https://github.com/junegunn/fzf.git $BUILDKIT_CACHE_DIR/fzf && \
+#        cp -R=$BUILDKIT_CACHE_DIR/fzf /usr/local/fzf && \
+#        /usr/local/fzf/install --no-bash --no-fish --no-zsh
+#
+## antigen
+#RUN curl -L git.io/antigen > /root/.antigen.zsh
+#
+## cache theming (inside the image also); install pipx
+#RUN --mount=type=cache,target=/root/.antigen --mount=type=cache,target=/root/.cache && \
+#    TERM=xterm-256color zsh -ci 'pip install pipx'
 
 CMD zsh
 
@@ -70,11 +105,11 @@ RUN release=$(wget -O - https://storage.googleapis.com/kubernetes-release/releas
     chmod +x ./kubectl && \
     mv ./kubectl /usr/bin/kubectl
 
-RUN --mount=type=bind,target=/tmp \
-    zsh -ci 'venv /tools && pip install -r /tmp/cloud/tools.txt && \
-             venv /devenv && pip install -r /tmp/cloud/devenv.txt'
+RUN --mount=type=bind,target=/mnt,readonly \
+    zsh -ci 'venv /tools && pip install -r /mnt/cloud/tools.txt && \
+             venv /devenv && pip install -r /mnt/cloud/devenv.txt'
 
-RUN --mount=type=bind,target=/tmp cat /tmp/cloud/.zshrc.zsh >> /root/.zshrc
+RUN --mount=type=bind,target=/mnt,readonly cat /mnt/cloud/.zshrc.zsh >> /root/.zshrc
 
 # native image
 FROM essentials as native
@@ -84,8 +119,8 @@ RUN --mount=type=cache,target=/var/cache/apt \
         autoconf automake doxygen graphviz ccache gdb && \
     rm -rf /var/lib/apt/lists/*
 
-RUN --mount=type=cache,target=/root/.cache --mount=type=bind,target=/tmp \
-    pip install -r /tmp/native/native.txt
+RUN --mount=type=cache,target=/root/.cache --mount=type=bind,target=/mnt,readonly \
+    pip install -r /mnt/native/native.txt
 
 ###
 # native-server
