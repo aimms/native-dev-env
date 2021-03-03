@@ -43,14 +43,14 @@ RUN --mount=type=bind,target=/tmp zsh -c 'autoload -U zmv && noglob zmv -W -C /t
 
 #fzf; config is embedded into .zshrc.zsh
 RUN --mount=type=cache,target=/usr/local/fzf git clone --depth=1 https://github.com/junegunn/fzf.git /usr/local/fzf && \
-    /usr/local/fzf/install --no-bash --no-fish
+    /usr/local/fzf/install --no-bash --no-fish --no-zsh
 
 # antigen
 RUN curl -L git.io/antigen > /root/.antigen.zsh
 
 # cache theming (inside the image also); install pipx
 RUN --mount=type=cache,target=/root/.antigen --mount=type=cache,target=/root/.cache echo b && \
-    TERM=xterm-256color zsh -ci 'pip install pipx && pipx ensurepath'
+    TERM=xterm-256color zsh -ci 'pip install pipx'
 
 CMD zsh
 
