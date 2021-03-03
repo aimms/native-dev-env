@@ -49,7 +49,7 @@ RUN --mount=type=bind,target=/tmp \
     zsh -c 'autoload -U zmv && noglob zmv -W -C /tmp/essentials/.* /root/.*' && cd /root && mv .zshrc.zsh .zshrc
 
 # init; ensure theme support is installed; update pip
-RUN --mount=type=cache,target=/root/.cache TERM=xterm-256color zsh -ci 'pip install -U pip wheel setuptools'
+RUN TERM=xterm-256color zsh -ci 'pip install -U pip wheel setuptools && rm -f /root/.antigen_theme.zsh.zwc'
 
 CMD zsh
 
@@ -76,7 +76,7 @@ RUN --mount=type=bind,target=/tmp \
 RUN --mount=type=bind,target=/tmp cat /tmp/cloud/.zshrc.zsh >> /root/.zshrc
 
 # native image
-FROM $NATIVE_BASE as native
+FROM essentials as native
 
 RUN --mount=type=cache,target=/var/cache/apt \
     apt-get update && apt-get --no-install-recommends install -y \
@@ -119,18 +119,18 @@ RUN chown -R $BUILD_USER:$BUILD_USER /home/$BUILD_USER/*
 EXPOSE 22
 ENTRYPOINT ["/usr/sbin/sshd", "-D"]
 
-###
-# go
-###
-FROM $BUNDLE_BASE as go
-
-RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/root/go \
-       apt-get update && apt-get install -y --no-install-recommends golang
-
-###
-# rust
-###
-FROM $BUNDLE_BASE as rust
-
-RUN --mount=type=cache,target=/root/.cargo \
-    sh -c $(curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs) -y
+####
+## go
+####
+#FROM $BUNDLE_BASE as go
+#
+#RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/root/go \
+#       apt-get update && apt-get install -y --no-install-recommends golang
+#
+####
+## rust
+####
+#FROM $BUNDLE_BASE as rust
+#
+#RUN --mount=type=cache,target=/root/.cargo \
+#    sh -c $(curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs) -y
