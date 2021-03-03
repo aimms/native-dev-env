@@ -22,7 +22,7 @@ ENV PIPX_HOME=/usr/local/pipx
 ENV PIPX_BIN_DIR=/usr/local/bin
 ENV USE_EMOJI=0
 ENV ZINIT_HOME=/usr/local/zinit
-ENV THE_ZDOTDIR=/etc/zsh
+ENV ZDOTDIR=/etc/zsh
 
 # without dot in /etc/zsh
 ENV ZSHRC_NAME=zshrc
@@ -33,9 +33,13 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloa
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
     apt-get update && apt-get --no-install-recommends install -y \
-        git highlight pcre2-utils zsh \
-        python3.9 python3.9-venv python3.9-dev python3-pip libpython3.9-dev  \
-        build-essential tmux vim wget curl zip unzip locales libpq-dev neofetch fd-find
+#        git highlight pcre2-utils \
+        python3.9 python3.9-venv python3-pip \
+#        python3.9-dev python3-pip \
+#         libpython3.9-dev  \
+         vim git  curl zip unzip p7zip patch locales neofetch fd-find
+#        build-essential tmux libpq-dev  libpq-dev wget vim
+
 
 RUN update-alternatives --install /usr/bin/python3  python3 /usr/bin/python3.9 1 && \
     update-alternatives --install /usr/bin/python  python /usr/bin/python3.9 1
@@ -55,12 +59,12 @@ RUN --mount=type=cache,target=$PIP_CACHE_DIR pip install pipx
 RUN --mount=type=bind,target=/mnt,readonly \
 #    --mount=type=tmpfs,target=/tmp \
     cd /tmp && \
-    wget -nd https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh && \
+    curl -L -o install.sh https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh && \
     patch -p0 < /mnt/essentials/zinit.patch && \
     chmod +x install.sh && ./install.sh \
     cd /usr/local && git clone --depth 1 https://github.com/junegunn/fzf.git && \
     patch -p0 < /mnt/essentials/fzf.patch && \
-    chmod +x install && ./install --all --no-fish --no-bash
+    ./fzf/install --all --no-fish --no-bash
 
 
 #RUN --mount=type=bind,target=/mnt,readonly cat /mnt/essentials/.zshrc.zsh >> ~/.zshrc
