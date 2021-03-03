@@ -5,10 +5,11 @@
 # essentials
 FROM ubuntu:20.10 as essentials
 
-ARG BUILDKIT_CACHE_DIR=/var/cache/buildkit/
+ARG BUILDKIT_CACHE_DIR=/var/cache/buildkit
+ARG ZINIT_CACHE_DIR=$BUILDKIT_CACHE_DIR/zinit
+ARG FZF_CACHE_DIR=$BUILDKIT_CACHE_DIR/fzf
+ARG PIP_CACHE_DIR=$BUILDKIT_CACHE_DIR/pip
 
-ARG NATIVE_BASE=essentials
-ARG BUNDLE_BASE=native
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Europe/Amsterdam"
@@ -17,7 +18,7 @@ ENV LANG=en_US.utf8
 ENV LC_ALL=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV TERM=xterm
-ENV PIP_CACHE_DIR=/var/cache/buildkit/pip
+
 ENV PIPX_HOME=/usr/local/pipx
 ENV PIPX_BIN_DIR=/usr/local/bin
 ENV USE_EMOJI=0
@@ -33,19 +34,17 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloa
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
     apt-get update && apt-get --no-install-recommends install -y \
+    zsh \
 #        git highlight pcre2-utils \
         python3.9 python3.9-venv python3-pip \
 #        python3.9-dev python3-pip \
 #         libpython3.9-dev  \
-         vim git  curl zip unzip p7zip patch locales neofetch fd-find
+         vim git  curl zip unzip p7zip patch locales neofetch fd-find && \
 #        build-essential tmux libpq-dev  libpq-dev wget vim
-
-
-RUN update-alternatives --install /usr/bin/python3  python3 /usr/bin/python3.9 1 && \
-    update-alternatives --install /usr/bin/python  python /usr/bin/python3.9 1
-
-RUN chsh -s /bin/zsh
-RUN ln -s /bin/fdfind /bin/fd
+        update-alternatives --install /usr/bin/python3  python3 /usr/bin/python3.9 1 && \
+        update-alternatives --install /usr/bin/python  python /usr/bin/python3.9 1 && \
+        chsh -s /bin/zsh && \
+        ln -s /bin/fdfind /bin/fd
 
 # generate locales
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -54,31 +53,36 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
 # python / pipx (for standalone installations)
 RUN --mount=type=cache,target=$PIP_CACHE_DIR pip install pipx
 
-# zinit && fzf
-# use patches to append to global zshrc (/etc/zshrc)
+# zinit
 RUN --mount=type=bind,target=/mnt,readonly \
-#    --mount=type=tmpfs,target=/tmp \
-    cd /tmp && \
-    curl -L -o install.sh https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh && \
-    patch -p0 < /mnt/essentials/zinit.patch && \
-    chmod +x install.sh && ./install.sh \
-    cd /usr/local && git clone --depth 1 https://github.com/junegunn/fzf.git && \
-    patch -p0 < /mnt/essentials/fzf.patch && \
-    ./fzf/install --all --no-fish --no-bash
+    --mount=type=cache,target=$ZINIT_CACHE_DIR \
+    set -e ; \
+    mkdir -p $ZINIT_CACHE_DIR && cd $ZINIT_CACHE_DIR ; \
+    [[ -f install.sh ]] || curl -L -o install.sh https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh && \
+        patch -p0 < /mnt/essentials/zinit.patch ; \
+    chmod +x install.sh
 
+RUN --mount=type=cache,target=$ZINIT_CACHE_DIR \
+    # 'y' for installing plugins
+    zsh -c "$ZINIT_CACHE_DIR/install.sh < <(echo y)"
 
-#RUN --mount=type=bind,target=/mnt,readonly cat /mnt/essentials/.zshrc.zsh >> ~/.zshrc
+RUN --mount=type=bind,target=/mnt,readonly \
+    --mount=type=cache,target=$FZF_CACHE_DIR \
+    set -e ; \
+    [[ -d $ZINIT_CACHE_DIR ]] || git clone --depth 1 https://github.com/junegunn/fzf.git $FZF_CACHE_DIR && \
+        cd $FZF_CACHE_DIR && patch -p0 < /mnt/essentials/fzf.patch ; \
+    cp -R $FZF_CACHE_DIR /usr/local
 
+RUN /usr/local/fzf/install --all --no-fish --no-bash
 
-RUN zsh -ci 'echo Initializing zsh...'
-
-
+RUN --mount=type=bind,target=/mnt,readonly cat /mnt/essentials/zshrc.zsh >>  /etc/zsh/zshrc
+#RUN zsh -ci 'echo Initializing zsh...'
 
 ## copy dotfiles
 #RUN --mount=type=bind,target=/mnt,readonly,readonly zsh -c 'autoload -U zmv && noglob zmv -W -C /mnt/essentials/.* /root/.*' && \
-#        cd /root && mv .zshrc.zsh .zshrc
+#        cd /root && mv zshrc.zsh .zshrc
 #
-##fzf; config is embedded into .zshrc.zsh
+##fzf; config is embedded into zshrc.zsh
 #RUN --mount=type=cache,target=$BUILDKIT_CACHE_DIR \
 #        git clone --depth=1 https://github.com/junegunn/fzf.git $BUILDKIT_CACHE_DIR/fzf && \
 #        cp -R=$BUILDKIT_CACHE_DIR/fzf /usr/local/fzf && \
