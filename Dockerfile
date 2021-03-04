@@ -31,7 +31,6 @@ ENV ZINIT_COMPLETIONS_DIR=$ZINIT_HOME_DIR/completions
 ENV ZINIT_SNIPPETS_DIR=$ZINIT_HOME_DIR/snippets
 ENV ZINI_ZCOMPDUMP_PATH=$ZINIT_HOME_DIR/.zcompdump
 
-
 ENV ZDOTDIR=/etc/zsh
 
 # without dot in /etc/zsh
@@ -42,19 +41,20 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloa
     > /etc/apt/apt.conf.d/keep-cache
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
-    apt-get update && apt-get --no-install-recommends install -y \
-    zsh exa neofetch fd-find  \
-#        git highlight pcre2-utils \
+    apt-get update && apt-get upgrade -y && apt-get --no-install-recommends install -y \
+    zsh exa neofetch fd-find git wget \
         python3.9 python3.9-venv python3-pip \
-#        python3.9-dev python3-pip \
-#         libpython3.9-dev  \
-         vim git curl zip unzip p7zip patch locales && \
-         gcc make && \
-#        build-essential tmux libpq-dev  libpq-dev wget
+         vim curl zip unzip p7zip patch locales  \
+         build-essential tmux libpq-dev  libpq-dev highlight tmux libncurses-dev autoconf automake  \
+         iputils-ping traceroute net-tools openssh-client && \
+         apt-get autoremove && \
         update-alternatives --install /usr/bin/python3  python3 /usr/bin/python3.9 1 && \
         update-alternatives --install /usr/bin/python  python /usr/bin/python3.9 1 && \
         chsh -s /bin/zsh && \
         ln -s /bin/fdfind /bin/fd
+
+        #pcre2-utils
+
 
 # generate locales
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -73,11 +73,11 @@ RUN --mount=type=bind,target=/mnt,readonly \
 
 # 'y' for installing plugins
 RUN --mount=type=cache,target=$ZINIT_CACHE_DIR \
-    zsh -c '$ZINIT_CACHE_DIR/install.sh < <(echo y)'
+    $ZINIT_CACHE_DIR/install.sh
 
 RUN --mount=type=bind,target=/mnt,readonly \
     --mount=type=cache,target=$FZF_CACHE_DIR \
-    zsh -c " set -e ; [[ -d $FZF_CACHE_DIR ]] || git clone --depth 1 https://github.com/junegunn/fzf.git $FZF_CACHE_DIR && \
+    zsh -c "set -e ; [[ -d $FZF_CACHE_DIR ]] || git clone --depth 1 https://github.com/junegunn/fzf.git $FZF_CACHE_DIR && \
         cd $FZF_CACHE_DIR && patch -p0 < /mnt/essentials/fzf.patch ; \
         cp -R $FZF_CACHE_DIR /usr/local"
 
@@ -86,38 +86,16 @@ RUN /usr/local/fzf/install --all --no-fish --no-bash
 RUN --mount=type=bind,target=/mnt,readonly \
         cat /mnt/essentials/zshrc.zsh >>  /etc/zsh/zshrc && \
         cp /mnt/essentials/devenv_aliases.zsh /etc/zsh/ && \
-        cp /mnt/essentials/devenv_bindings.zsh /etc/zsh/
+        cp /mnt/essentials/devenv_key_bindings.zsh /etc/zsh/
 
 RUN zsh -ci 'echo Initializing zsh...'
 
-## copy dotfiles
-#RUN --mount=type=bind,target=/mnt,readonly,readonly zsh -c 'autoload -U zmv && noglob zmv -W -C /mnt/essentials/.* /root/.*' && \
-#        cd /root && mv zshrc.zsh .zshrc
-#
-##fzf; config is embedded into zshrc.zsh
-#RUN --mount=type=cache,target=$BUILDKIT_CACHE_DIR \
-#        git clone --depth=1 https://github.com/junegunn/fzf.git $BUILDKIT_CACHE_DIR/fzf && \
-#        cp -R=$BUILDKIT_CACHE_DIR/fzf /usr/local/fzf && \
-#        /usr/local/fzf/install --no-bash --no-fish --no-zsh
-#
-## antigen
-#RUN curl -L git.io/antigen > /root/.antigen.zsh
-#
-## cache theming (inside the image also); install pipx
-#RUN --mount=type=cache,target=/root/.antigen --mount=type=cache,target=/root/.cache && \
-#    TERM=xterm-256color zsh -ci 'pip install pipx'
 
 CMD zsh
 
-###
-# cloud image
-###
-FROM essentials as cloud
 
-RUN --mount=type=cache,target=/var/cache/apt \
-    apt-get update && apt-get --no-install-recommends install -y \
-        iputils-ping traceroute net-tools openssh-client dos2unix && \
-    rm -rf /var/lib/apt/lists/*
+# cloud image
+FROM essentials as cloud
 
 # shellcheck disable=SC2046npx
 RUN release=$(wget -O - https://storage.googleapis.com/kubernetes-release/release/stable.txt | cat -) && \
@@ -126,10 +104,11 @@ RUN release=$(wget -O - https://storage.googleapis.com/kubernetes-release/releas
     mv ./kubectl /usr/bin/kubectl
 
 RUN --mount=type=bind,target=/mnt,readonly \
-    zsh -ci 'venv /tools && pip install -r /mnt/cloud/tools.txt && \
-             venv /devenv && pip install -r /mnt/cloud/devenv.txt'
+    --mount=type=cache,target=$PIP_CACHE_DIR \
+    pipx install -r azure-cli && \
+    pipx install -r kube
 
-RUN --mount=type=bind,target=/mnt,readonly cat /mnt/cloud/.zshrc.zsh >> /root/.zshrc
+RUN --mount=type=bind,target=/mnt,readonly cat /mnt/cloud/.zshrc.zsh >> /etc/zsh/zshrc
 
 # native image
 FROM essentials as native
@@ -139,8 +118,9 @@ RUN --mount=type=cache,target=/var/cache/apt \
         autoconf automake doxygen graphviz ccache gdb && \
     rm -rf /var/lib/apt/lists/*
 
-RUN --mount=type=cache,target=/root/.cache --mount=type=bind,target=/mnt,readonly \
-    pip install -r /mnt/native/native.txt
+RUN --mount=type=bind,target=/mnt,readonly \
+    --mount=type=cache,target=$PIP_CACHE_DIR \
+    pipx install -r /mnt/native/native.txt
 
 ###
 # native-server

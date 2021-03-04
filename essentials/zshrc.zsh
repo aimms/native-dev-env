@@ -1,9 +1,22 @@
 # shellcheck disable=SC2034
 # Skip the not really helping Ubuntu global compinit
+zinit_module_path=/usr/local/zinit/bin/zmodules/Src
+[[ -d "$zinit_module_path" ]] || zinit module build
+
+module_path+=( "$zinit_module_path" )
+zmodload zdharma/zplugin
+
 skip_global_compinit=1
 typeset -g ZPLG_MOD_DEBUG=1
-zinit module build
 zpmod source-study
+
+# Load a few important annexes, without Turbo
+# (this is currently required for annexes)
+zinit light-mode for \
+    zinit-zsh/z-a-rust \
+    zinit-zsh/z-a-as-monitor \
+    zinit-zsh/z-a-patch-dl \
+    zinit-zsh/z-a-bin-gem-node
 
 # PROMPT='%(?.%F{green}❯.%F{red}?%?)%f %B%F{240}%1~%f%b %# '
 # shellcheck disable=SC2034
@@ -12,6 +25,9 @@ zpmod source-study
 # shellcheck disable=SC1090
 source /etc/zsh/devenv_aliases.zsh
 source /etc/zsh/devenv_key_bindings.zsh
+
+# shellcheck disable=SC1090
+[[ -f $(which kubectl) ]] && source <(kubectl completion zsh)
 
 # Load the pure theme, with zsh-async library that's bundled with it.
 zinit ice pick"async.zsh" src"pure.zsh"
@@ -32,12 +48,6 @@ compinit
 
 zinit cdreplay -q # -quietly replays all 'compdefs', caught before compinit call
 zinit cdlist # look at gathered compdefs
-
-#
-## shellcheck disable=SC1090
-#source ~/devenv_aliases.zsh
-#
-## shellcheck disable=SC2086
 
 # shellcheck disable=SC2154
 echo "${normal}Type ${bold}'info' ${normal}for the image information."

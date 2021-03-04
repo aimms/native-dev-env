@@ -1,4 +1,4 @@
-alias vi-rc="vi ~/.zshrc"
+alias vi-rc="vi /etc/zsh/zshrc"
 
 autoload -U colors && colors
 # shellcheck disable=SC2154
@@ -38,12 +38,11 @@ venv() {
 alias_info() {
   echo -e "Alias Information:\n"
 
-  echo -e "${bold}vi-rc:${normal} vi $HOME/.zshrc"
-  echo -e "${bold}src:${normal} source $HOME/.zshrc\n"
+  echo -e "${bold}vi-rc:${normal} vi /etc/zsh/zshrc"
+  echo -e "${bold}src:${normal} source /etc/zsh/zshrc\n"
   echo -e "${bold}upgrade_pip:${normal} in the current env: upgrades pip, setuptools and wheel"
   echo -e "${bold}venv <path>:${normal} creates (if not created yet) virtual env with <path> and activates it"
 
-  echo -e "\nMore info about plugins installed can be found in ${bold}~/.antigen_plugins.zsh${normal}\n"
 }
 
 main_info() {
