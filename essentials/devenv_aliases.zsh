@@ -31,10 +31,8 @@ venv() {
 	if [ ! -d "$1" ]; then
 		python -m venv "$1"
 		_venv "$1"
-		upgrade_pip
 	fi
 	_venv "$1"
-
 }
 
 alias_info() {

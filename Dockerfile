@@ -34,13 +34,13 @@ RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloa
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
     apt-get update && apt-get --no-install-recommends install -y \
-    zsh \
+    zsh exa neofetch fd-find  \
 #        git highlight pcre2-utils \
         python3.9 python3.9-venv python3-pip \
 #        python3.9-dev python3-pip \
 #         libpython3.9-dev  \
-         vim git  curl zip unzip p7zip patch locales neofetch fd-find && \
-#        build-essential tmux libpq-dev  libpq-dev wget vim
+         vim git curl zip unzip p7zip patch locales && \
+#        build-essential tmux libpq-dev  libpq-dev wget
         update-alternatives --install /usr/bin/python3  python3 /usr/bin/python3.9 1 && \
         update-alternatives --install /usr/bin/python  python /usr/bin/python3.9 1 && \
         chsh -s /bin/zsh && \
@@ -56,27 +56,30 @@ RUN --mount=type=cache,target=$PIP_CACHE_DIR pip install pipx
 # zinit
 RUN --mount=type=bind,target=/mnt,readonly \
     --mount=type=cache,target=$ZINIT_CACHE_DIR \
-    set -e ; \
-    mkdir -p $ZINIT_CACHE_DIR && cd $ZINIT_CACHE_DIR ; \
-    [[ -f install.sh ]] || curl -L -o install.sh https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh && \
+    zsh -c "set -e ; mkdir -p $ZINIT_CACHE_DIR ; cd $ZINIT_CACHE_DIR ; \
+        [[ -f install.sh ]] || curl -L -o install.sh https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh && \
         patch -p0 < /mnt/essentials/zinit.patch ; \
-    chmod +x install.sh
+        chmod +x install.sh"
 
+# 'y' for installing plugins
 RUN --mount=type=cache,target=$ZINIT_CACHE_DIR \
-    # 'y' for installing plugins
-    zsh -c "$ZINIT_CACHE_DIR/install.sh < <(echo y)"
+    zsh -c '$ZINIT_CACHE_DIR/install.sh < <(echo y)'
 
 RUN --mount=type=bind,target=/mnt,readonly \
     --mount=type=cache,target=$FZF_CACHE_DIR \
-    set -e ; \
-    [[ -d $ZINIT_CACHE_DIR ]] || git clone --depth 1 https://github.com/junegunn/fzf.git $FZF_CACHE_DIR && \
+    zsh -c " set -e ; [[ -d $FZF_CACHE_DIR ]] || git clone --depth 1 https://github.com/junegunn/fzf.git $FZF_CACHE_DIR && \
         cd $FZF_CACHE_DIR && patch -p0 < /mnt/essentials/fzf.patch ; \
-    cp -R $FZF_CACHE_DIR /usr/local
+        cp -R $FZF_CACHE_DIR /usr/local"
 
 RUN /usr/local/fzf/install --all --no-fish --no-bash
 
-RUN --mount=type=bind,target=/mnt,readonly cat /mnt/essentials/zshrc.zsh >>  /etc/zsh/zshrc
-#RUN zsh -ci 'echo Initializing zsh...'
+
+RUN --mount=type=bind,target=/mnt,readonly \
+        cat /mnt/essentials/zshrc.zsh >>  /etc/zsh/zshrc && \
+        cp /mnt/essentials/devenv_aliases.zsh /etc/zsh/ && \
+        cp /mnt/essentials/devenv_bindings.zsh /etc/zsh/
+
+RUN zsh -ci 'echo Initializing zsh...'
 
 ## copy dotfiles
 #RUN --mount=type=bind,target=/mnt,readonly,readonly zsh -c 'autoload -U zmv && noglob zmv -W -C /mnt/essentials/.* /root/.*' && \
