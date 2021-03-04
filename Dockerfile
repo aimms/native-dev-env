@@ -93,7 +93,7 @@ RUN --mount=type=bind,target=/mnt,ro \
         cp /mnt/essentials/devenv_aliases.zsh /etc/zsh/ && \
         cp /mnt/essentials/devenv_key_bindings.zsh /etc/zsh/
 
-RUN zsh -c "source /usr/local/zinit/bin/zinit.zsh && zinit self-update"
+RUN zsh -c "source /usr/local/zinit/bin/zinit.zsh && zinit compile --all"
 
 CMD zsh
 
