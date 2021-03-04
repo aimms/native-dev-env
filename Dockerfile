@@ -22,7 +22,16 @@ ENV TERM=xterm
 ENV PIPX_HOME=/usr/local/pipx
 ENV PIPX_BIN_DIR=/usr/local/bin
 ENV USE_EMOJI=0
+# for installer
 ENV ZINIT_HOME=/usr/local/zinit
+ENV ZINIT_HOME_DIR=$ZINIT_HOME
+ENV ZINIT_BIN_DIR=$ZINIT_HOME_DIR/bin
+ENV ZINIT_PLUGINS_DIR=$ZINIT_HOME_DIR/plugins
+ENV ZINIT_COMPLETIONS_DIR=$ZINIT_HOME_DIR/completions
+ENV ZINIT_SNIPPETS_DIR=$ZINIT_HOME_DIR/snippets
+ENV ZINI_ZCOMPDUMP_PATH=$ZINIT_HOME_DIR/.zcompdump
+
+
 ENV ZDOTDIR=/etc/zsh
 
 # without dot in /etc/zsh
@@ -40,6 +49,7 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
 #        python3.9-dev python3-pip \
 #         libpython3.9-dev  \
          vim git curl zip unzip p7zip patch locales && \
+         gcc make && \
 #        build-essential tmux libpq-dev  libpq-dev wget
         update-alternatives --install /usr/bin/python3  python3 /usr/bin/python3.9 1 && \
         update-alternatives --install /usr/bin/python  python /usr/bin/python3.9 1 && \
@@ -72,7 +82,6 @@ RUN --mount=type=bind,target=/mnt,readonly \
         cp -R $FZF_CACHE_DIR /usr/local"
 
 RUN /usr/local/fzf/install --all --no-fish --no-bash
-
 
 RUN --mount=type=bind,target=/mnt,readonly \
         cat /mnt/essentials/zshrc.zsh >>  /etc/zsh/zshrc && \
