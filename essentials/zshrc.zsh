@@ -1,15 +1,3 @@
-# shellcheck disable=SC2034
-# Skip the not really helping Ubuntu global compinit
-zinit_module_path=/usr/local/zinit/bin/zmodules/Src
-[[ -d "$zinit_module_path" ]] || zinit module build
-
-module_path+=( "$zinit_module_path" )
-zmodload zdharma/zplugin
-
-skip_global_compinit=1
-typeset -g ZPLG_MOD_DEBUG=1
-zpmod source-study
-
 # Load a few important annexes, without Turbo
 # (this is currently required for annexes)
 zinit light-mode for \

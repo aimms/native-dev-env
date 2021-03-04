@@ -24,13 +24,6 @@ ENV PIPX_BIN_DIR=/usr/local/bin
 ENV USE_EMOJI=0
 # for installer
 ENV ZINIT_HOME=/usr/local/zinit
-ENV ZINIT_HOME_DIR=$ZINIT_HOME
-ENV ZINIT_BIN_DIR=$ZINIT_HOME_DIR/bin
-ENV ZINIT_PLUGINS_DIR=$ZINIT_HOME_DIR/plugins
-ENV ZINIT_COMPLETIONS_DIR=$ZINIT_HOME_DIR/completions
-ENV ZINIT_SNIPPETS_DIR=$ZINIT_HOME_DIR/snippets
-ENV ZINI_ZCOMPDUMP_PATH=$ZINIT_HOME_DIR/.zcompdump
-
 ENV ZDOTDIR=/etc/zsh
 
 # without dot in /etc/zsh
@@ -63,33 +56,44 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
 # python / pipx (for standalone installations)
 RUN --mount=type=cache,target=$PIP_CACHE_DIR pip install pipx
 
+# disable Ubuntu compinit in zshrc
+# build zinit module and include its loading to zshrc
+RUN sed -i '/^# skip_global_compinit=1/s/^# //' /etc/zsh/zshrc
+
+# zinit vars for locations
+RUN --mount=type=bind,target=/mnt,ro \
+    cat /mnt/essentials/zinit_vars.zsh >> /etc/zsh/zshrc
+
 # zinit
-RUN --mount=type=bind,target=/mnt,readonly \
+RUN --mount=type=bind,target=/mnt,ro \
     --mount=type=cache,target=$ZINIT_CACHE_DIR \
     zsh -c "set -e ; mkdir -p $ZINIT_CACHE_DIR ; cd $ZINIT_CACHE_DIR ; \
-        [[ -f install.sh ]] || curl -L -o install.sh https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh && \
+        test -f  install.sh || curl -L -o install.sh https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh && \
         patch -p0 < /mnt/essentials/zinit.patch ; \
-        chmod +x install.sh"
-
-# 'y' for installing plugins
+        chmod +x install.sh
 RUN --mount=type=cache,target=$ZINIT_CACHE_DIR \
     $ZINIT_CACHE_DIR/install.sh
 
-RUN --mount=type=bind,target=/mnt,readonly \
+# zinit module
+RUN --mount=type=bind,target=/mnt,ro \
+    cat /mnt/essentials/zinit_module.zsh >> /etc/zsh/zshrc && \
+    zsh -c 'source /usr/local/zinit/bin/zinit.zsh && \
+        zinit module build'
+
+# fzf
+RUN --mount=type=bind,target=/mnt,ro \
     --mount=type=cache,target=$FZF_CACHE_DIR \
-    zsh -c "set -e ; [[ -d $FZF_CACHE_DIR ]] || git clone --depth 1 https://github.com/junegunn/fzf.git $FZF_CACHE_DIR && \
+    zsh -c "set -e ; test -d install.sh  || git clone --depth 1 https://github.com/junegunn/fzf.git $FZF_CACHE_DIR && \
         cd $FZF_CACHE_DIR && patch -p0 < /mnt/essentials/fzf.patch ; \
         cp -R $FZF_CACHE_DIR /usr/local"
-
 RUN /usr/local/fzf/install --all --no-fish --no-bash
 
-RUN --mount=type=bind,target=/mnt,readonly \
+RUN --mount=type=bind,target=/mnt,ro \
         cat /mnt/essentials/zshrc.zsh >>  /etc/zsh/zshrc && \
         cp /mnt/essentials/devenv_aliases.zsh /etc/zsh/ && \
         cp /mnt/essentials/devenv_key_bindings.zsh /etc/zsh/
 
-RUN zsh -ci 'echo Initializing zsh...'
-
+RUN zsh -c "source /usr/local/zinit/bin/zinit.zsh && zinit self-update"
 
 CMD zsh
 
@@ -99,28 +103,28 @@ FROM essentials as cloud
 
 # shellcheck disable=SC2046npx
 RUN release=$(wget -O - https://storage.googleapis.com/kubernetes-release/release/stable.txt | cat -) && \
+    cd /usr/local/bin && \
     wget https://storage.googleapis.com/kubernetes-release/release/$release/bin/linux/amd64/kubectl && \
-    chmod +x ./kubectl && \
-    mv ./kubectl /usr/bin/kubectl
+    chmod +x ./kubectl
 
-RUN --mount=type=bind,target=/mnt,readonly \
-    --mount=type=cache,target=$PIP_CACHE_DIR \
-    pipx install -r azure-cli && \
-    pipx install -r kube
+RUN --mount=type=cache,target=$PIP_CACHE_DIR \
+    pipx install azure-cli && \
+    pipx install kube
 
-RUN --mount=type=bind,target=/mnt,readonly cat /mnt/cloud/.zshrc.zsh >> /etc/zsh/zshrc
+RUN --mount=type=bind,target=/mnt,ro cat /mnt/cloud/zshrc.zsh >> /etc/zsh/zshrc
 
 # native image
 FROM essentials as native
 
-RUN --mount=type=cache,target=/var/cache/apt \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
     apt-get update && apt-get --no-install-recommends install -y \
-        autoconf automake doxygen graphviz ccache gdb && \
-    rm -rf /var/lib/apt/lists/*
+        doxygen graphviz ccache gdb && \
 
-RUN --mount=type=bind,target=/mnt,readonly \
+RUN --mount=type=bind,target=/mnt,ro \
     --mount=type=cache,target=$PIP_CACHE_DIR \
-    pipx install -r /mnt/native/native.txt
+    pipx inject conan && \
+    pipx install ninja && \
+    pipx install cmake
 
 ###
 # native-server
