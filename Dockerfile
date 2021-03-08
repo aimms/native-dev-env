@@ -2,13 +2,8 @@
 # Previous line is not a comment
 # https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/syntax.md
 
-# essentials
+# ----------------------------------------------------------------------------------------------------------------------
 FROM ubuntu:20.10 as essentials
-
-ARG BUILDKIT_CACHE_DIR=/var/cache/buildkit
-ARG ZINIT_CACHE_DIR=$BUILDKIT_CACHE_DIR/zinit
-ARG FZF_CACHE_DIR=$BUILDKIT_CACHE_DIR/fzf
-ARG PIP_CACHE_DIR=$BUILDKIT_CACHE_DIR/pip
 
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -19,22 +14,17 @@ ENV LC_ALL=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV TERM=xterm
 
-ENV PIPX_HOME=/usr/local/pipx
-ENV PIPX_BIN_DIR=/usr/local/bin
+ENV PIPX_HOME=/opt/pipx
+ENV PIPX_BIN_DIR=/opt/bin
 ENV USE_EMOJI=0
 # for installer
-ENV ZINIT_HOME=/usr/local/zinit
-ENV ZDOTDIR=/etc/zsh
-
-# without dot in /etc/zsh
-ENV ZSHRC_NAME=zshrc
 
 ## https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/syntax.md
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' \
     > /etc/apt/apt.conf.d/keep-cache
 
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
-    apt-get update && apt-get upgrade -y && apt-get --no-install-recommends install -y \
+    apt-get update && apt-get upgrade -y && apt-get install --no-install-recommends -y \
     zsh exa neofetch fd-find git wget \
         python3.9 python3.9-venv python3-pip \
          vim curl zip unzip p7zip patch locales  \
@@ -46,9 +36,6 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
         chsh -s /bin/zsh && \
         ln -s /bin/fdfind /bin/fd
 
-        #pcre2-utils
-
-
 # generate locales
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
   dpkg-reconfigure --frontend=noninteractive locales && update-locale LANG=en_US.UTF-8
@@ -56,44 +43,57 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
 # python / pipx (for standalone installations)
 RUN --mount=type=cache,target=$PIP_CACHE_DIR pip install pipx
 
-# disable Ubuntu compinit in zshrc
-# build zinit module and include its loading to zshrc
-RUN sed -i '/^# skip_global_compinit=1/s/^# //' /etc/zsh/zshrc
 
-# zinit vars for locations
-RUN --mount=type=bind,target=/mnt,ro \
-    cat /mnt/essentials/zinit_vars.zsh >> /etc/zsh/zshrc
+# shell
+FROM essentials as shell
+
+ARG BUILDKIT_CACHE_DIR=/var/cache/buildkit
+ARG ZINIT_CACHE_DIR=$BUILDKIT_CACHE_DIR/zinit
+ARG FZF_CACHE_DIR=$BUILDKIT_CACHE_DIR/fzf
+ARG PIP_CACHE_DIR=$BUILDKIT_CACHE_DIR/pip
+ENV ZINIT_HOME=/opt/zinit
+ENV ZDOTDIR=/etc/zsh
+# without dot in /etc/zsh
+ENV ZSHRC_NAME=zshrc
 
 # zinit
 RUN --mount=type=bind,target=/mnt,ro \
     --mount=type=cache,target=$ZINIT_CACHE_DIR \
-    zsh -c "set -e ; mkdir -p $ZINIT_CACHE_DIR ; cd $ZINIT_CACHE_DIR ; \
-        test -f  install.sh || curl -L -o install.sh https://raw.githubusercontent.com/zdharma/zinit/master/doc/install.sh && \
-        patch -p0 < /mnt/essentials/zinit.patch ; \
-        chmod +x install.sh
-RUN --mount=type=cache,target=$ZINIT_CACHE_DIR \
-    $ZINIT_CACHE_DIR/install.sh
+    ZDOTDIR=/mnt/essentials ZINIT_HOME=$ZINIT_CACHE_DIR zsh -c "set -e ; \
+        test -d $ZINIT_CACHE_DIR || \
+        git clone https://github.com/zdharma/zinit.git $ZINIT_CACHE_DIR && \
+        source /mnt/essentials/zinit_vars.zsh && \
+        source $ZINIT_CACHE_DIR/zinit.zsh && zinit module build && \
+        source /mnt/essentials/zshrc.zsh"
 
-# zinit module
-RUN --mount=type=bind,target=/mnt,ro \
-    cat /mnt/essentials/zinit_module.zsh >> /etc/zsh/zshrc && \
-    zsh -c 'source /usr/local/zinit/bin/zinit.zsh && \
-        zinit module build'
+## fzf
+#RUN --mount=type=bind,target=/mnt,ro \
+#    --mount=type=cache,target=$FZF_CACHE_DIR \
+#    zsh -c "set -e ; test -d $FZF_CACHE_DIR  || git clone --depth 1 https://github.com/junegunn/fzf.git $FZF_CACHE_DIR && \
+#        cd $FZF_CACHE_DIR && patch -p0 < /mnt/essentials/fzf.patch ; \
+#        cp -R $FZF_CACHE_DIR /opt"
+#RUN /opt/fzf/install --all --no-fish --no-bash
 
-# fzf
-RUN --mount=type=bind,target=/mnt,ro \
-    --mount=type=cache,target=$FZF_CACHE_DIR \
-    zsh -c "set -e ; test -d install.sh  || git clone --depth 1 https://github.com/junegunn/fzf.git $FZF_CACHE_DIR && \
-        cd $FZF_CACHE_DIR && patch -p0 < /mnt/essentials/fzf.patch ; \
-        cp -R $FZF_CACHE_DIR /usr/local"
-RUN /usr/local/fzf/install --all --no-fish --no-bash
 
-RUN --mount=type=bind,target=/mnt,ro \
-        cat /mnt/essentials/zshrc.zsh >>  /etc/zsh/zshrc && \
-        cp /mnt/essentials/devenv_aliases.zsh /etc/zsh/ && \
-        cp /mnt/essentials/devenv_key_bindings.zsh /etc/zsh/
+#RUN --mount=type=cache,target=$ZINIT_CACHE_DIR \
+#    $ZINIT_CACHE_DIR/install.sh
+#
 
-RUN zsh -c "source /usr/local/zinit/bin/zinit.zsh && zinit compile --all"
+## adding shell files
+#RUN --mount=type=bind,target=/mnt,ro \
+#    cat /mnt/essentials/zinit_vars.zsh >> /etc/zsh/zshrc
+#
+## zinit initialization
+#RUN --mount=type=bind,target=/mnt,ro \
+#    cat /mnt/essentials/zinit.zsh >> /etc/zsh/zshrc
+
+#
+#RUN --mount=type=bind,target=/mnt,ro \
+#        cat /mnt/essentials/zshrc.zsh >>  /etc/zsh/zshrc && \
+#        cp /mnt/essentials/devenv_aliases.zsh /etc/zsh/ && \
+#        cp /mnt/essentials/devenv_key_bindings.zsh /etc/zsh/
+#
+#RUN zsh -c "source /opt/zinit/bin/zinit.zsh && zinit compile --all"
 
 CMD zsh
 
@@ -103,7 +103,7 @@ FROM essentials as cloud
 
 # shellcheck disable=SC2046npx
 RUN release=$(wget -O - https://storage.googleapis.com/kubernetes-release/release/stable.txt | cat -) && \
-    cd /usr/local/bin && \
+    cd /opt/bin && \
     wget https://storage.googleapis.com/kubernetes-release/release/$release/bin/linux/amd64/kubectl && \
     chmod +x ./kubectl
 
@@ -167,6 +167,10 @@ ENTRYPOINT ["/usr/sbin/sshd", "-D"]
 #RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/root/go \
 #       apt-get update && apt-get install -y --no-install-recommends golang
 #
+# assume ubuntu
+#    sudo add-apt-repository ppa:longsleep/golang-backports
+#    sudo apt update
+#    sudo apt install golang-go
 ####
 ## rust
 ####

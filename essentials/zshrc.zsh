@@ -1,3 +1,12 @@
+# Skip the not really helping Ubuntu global compinit
+# shellcheck disable=SC2034
+skip_global_compinit=1
+
+# shellcheck disable=SC1090
+source ${ZDOTDIR}/devenv_aliases.zsh
+source ${ZDOTDIR}/devenv_key_bindings.zsh
+
+
 # Load a few important annexes, without Turbo
 # (this is currently required for annexes)
 zinit light-mode for \
@@ -11,11 +20,7 @@ zinit light-mode for \
 #PROMPT='%(?.%F{green}>.%F{red}?%?)%f %B%F{240}%1~%f%b %# ' # overridden by antigen theme
 
 # shellcheck disable=SC1090
-source /etc/zsh/devenv_aliases.zsh
-source /etc/zsh/devenv_key_bindings.zsh
-
-# shellcheck disable=SC1090
-[[ -f $(which kubectl) ]] && source <(kubectl completion zsh)
+zinit snippet OMZP::kubectl
 
 # Load the pure theme, with zsh-async library that's bundled with it.
 zinit ice pick"async.zsh" src"pure.zsh"
@@ -38,5 +43,7 @@ zinit cdreplay -q # -quietly replays all 'compdefs', caught before compinit call
 zinit cdlist # look at gathered compdefs
 
 # shellcheck disable=SC2154
-echo "${normal}Type ${bold}'info' ${normal}for the image information."
+if [ -e $DEVENV_LIGHTWEIGHT  ]; then
+  echo "${normal}Type ${bold}'info' ${normal}for the image information."
+fi
 
